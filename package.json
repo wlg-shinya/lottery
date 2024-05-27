@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "serve": "cd ./srv && poetry run uvicorn api.main:app --host 127.0.0.1 --reload"
   },
   "dependencies": {
     "vue": "^3.3.11"
