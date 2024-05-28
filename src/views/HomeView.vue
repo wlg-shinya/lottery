@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import Lottery from "../components/Lottery.vue";
 
-const APP_TITLE = `${import.meta.env.VITE_APP_TITLE} version ${__APP_VERSION__}`;
+const title = `${import.meta.env.VITE_APP_TITLE}`;
 // const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
 </script>
 
 <template>
   <div class="card">
-    <div class="card-header">
-      <h1 class="text-center">{{ APP_TITLE }}</h1>
+    <div class="card-header text-center">
+      <h1>{{ title }}</h1>
     </div>
     <div class="card-body">
       <Suspense>
