@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// import TableList from "../components/TableList.vue";
+import Lottery from "../components/Lottery.vue";
 
 const APP_TITLE = `${import.meta.env.VITE_APP_TITLE} version ${__APP_VERSION__}`;
 // const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
@@ -12,7 +12,7 @@ const APP_TITLE = `${import.meta.env.VITE_APP_TITLE} version ${__APP_VERSION__}`
     </div>
     <div class="card-body">
       <Suspense>
-        <!-- <TableList /> -->
+        <Lottery />
       </Suspense>
     </div>
     <div class="card-footer">
