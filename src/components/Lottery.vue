@@ -5,7 +5,10 @@ import FlexTextarea from "./FlexTextarea.vue";
 const inputLotteryList = ref("");
 const resultLottery = ref("");
 
-const lotteryList = computed(() => inputLotteryList.value.split("\n"));
+// 抽選文字列一覧
+// - 改行単位
+// - 空行は抽選対象外
+const lotteryList = computed(() => inputLotteryList.value.split("\n").filter((x) => x));
 
 function onClickLotteryButton() {
   resultLottery.value = lotteryList.value[random(lotteryList.value.length)];
