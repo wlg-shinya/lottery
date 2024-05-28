@@ -2,12 +2,12 @@
 import { ref, computed } from "vue";
 
 const inputLotteryList = ref("");
-const selectedLottery = ref("");
+const resultLottery = ref("");
 
 const lotteryList = computed(() => inputLotteryList.value.split("\n"));
 
 function onClickLotteryButton() {
-  selectedLottery.value = lotteryList.value[random(lotteryList.value.length)];
+  resultLottery.value = lotteryList.value[random(lotteryList.value.length)];
 }
 
 function random(max: number) {
@@ -24,9 +24,9 @@ function random(max: number) {
     <div>
       <button @click="onClickLotteryButton()" class="btn btn-primary btn-lg">抽選</button>
     </div>
-    <div v-id="selectedLottery">
+    <div v-id="resultLottery">
       <span>結果</span>
-      <h1>{{ selectedLottery }}</h1>
+      <h1>{{ resultLottery }}</h1>
     </div>
   </div>
 </template>
