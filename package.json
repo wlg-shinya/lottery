@@ -10,6 +10,8 @@
     "srv": "cd ./srv && poetry run uvicorn api.main:app --host 127.0.0.1 --reload"
   },
   "dependencies": {
+    "@mdi/font": "^7.4.47",
+    "bootstrap": "^5.3.3",
     "vue": "^3.3.11"
   },
   "devDependencies": {
