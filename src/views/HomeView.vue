@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Lottery from "../components/Lottery.vue";
+import ContactUs from "../components/ContactUs.vue";
 
 const title = `${import.meta.env.VITE_APP_TITLE}`;
-// const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
 </script>
 
 <template>
@@ -16,10 +16,7 @@ const title = `${import.meta.env.VITE_APP_TITLE}`;
       </Suspense>
     </div>
     <div class="card-footer">
-      <!-- <ul>
-        <li>〇〇な機能に対応してほしい！</li>
-      </ul>
-      <span>ご要望は Chatwork 上で {{ ADMIN_EMAIL }} にコンタクトください</span> -->
+      <ContactUs />
     </div>
   </div>
 </template>
