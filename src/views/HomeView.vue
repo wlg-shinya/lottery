@@ -2,7 +2,7 @@
 import Lottery from "../components/Lottery.vue";
 import ContactUs from "../components/ContactUs.vue";
 
-const title = `${import.meta.env.VITE_APP_TITLE}`;
+const title = import.meta.env.VITE_APP_TITLE;
 </script>
 
 <template>
