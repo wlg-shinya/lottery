@@ -2,14 +2,14 @@ export interface LotteryData {
   text: string;
   result: string;
   title: string;
-  history: string[];
+  histories: string[];
 }
 
 export const defaultLotteryData: LotteryData = {
   text: "",
   result: "",
   title: "",
-  history: [],
+  histories: [],
 };
 
 export interface LotteryListData {

@@ -2,6 +2,7 @@
 import { ref, watch, computed } from "vue";
 import { type LotteryData, defaultLotteryData } from "../lottery-data";
 import FlexTextarea from "./FlexTextarea.vue";
+import LotteryHistoryList from "./LotteryHistoryList.vue";
 
 const PLACEHOLDER_TEXT = "一行がひとつのくじとなります\n空白行は無視されます";
 
@@ -35,7 +36,7 @@ function onClickLotteryButton() {
   const result = lotteryTargets.value[random(lotteryTargets.value.length)];
   // 結果の記録と履歴保存
   inputData.value.result = result;
-  inputData.value.history.push(result);
+  inputData.value.histories.push(result);
 }
 
 function onInputFlexTextarea(inputText: string) {
@@ -53,24 +54,31 @@ function random(max: number) {
     <div v-if="inputData.title">
       <h2>{{ inputData.title }}</h2>
     </div>
-    <FlexTextarea
-      @input="onInputFlexTextarea"
-      :initText="inputData.text"
-      :placeholder="PLACEHOLDER_TEXT"
-      :disabled="!editable"
-      style="min-width: 250px"
-    />
-    <div>
-      <button @click="onClickLotteryButton()" class="btn btn-primary btn-lg">抽選</button>
-    </div>
-    <div v-if="inputData.result">
-      <span>結果</span>
-      <h1>{{ inputData.result }}</h1>
-    </div>
-    <div v-if="editable">
-      <div class="input-group">
-        <span class="input-group-text"><span class="mdi mdi-pencil" /></span>
-        <input v-model="inputData.title" class="form-control" placeholder="このくじ引きに名前をつける" />
+    <div class="d-flex flex-row">
+      <div class="d-flex flex-column align-items-center">
+        <FlexTextarea
+          @input="onInputFlexTextarea"
+          :initText="inputData.text"
+          :placeholder="PLACEHOLDER_TEXT"
+          :disabled="!editable"
+          style="min-width: 250px"
+        />
+        <div>
+          <button @click="onClickLotteryButton()" class="btn btn-primary btn-lg">抽選</button>
+        </div>
+        <div v-if="inputData.result">
+          <span>結果</span>
+          <h1>{{ inputData.result }}</h1>
+        </div>
+        <div v-if="editable">
+          <div class="input-group">
+            <span class="input-group-text"><span class="mdi mdi-pencil" /></span>
+            <input v-model="inputData.title" class="form-control" placeholder="このくじ引きに名前をつける" />
+          </div>
+        </div>
+      </div>
+      <div>
+        <LotteryHistoryList :histories="inputData.histories" />
       </div>
     </div>
   </div>
