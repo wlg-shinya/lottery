@@ -33,7 +33,7 @@ function onChangedLottery(data: LotteryData) {
 
 function showLotteryList(): boolean {
   // 最初のデータでタイトルを入力したか、データが一つよりも多くある場合はリスト表示ON
-  return lotteryListData.value.list[0].title !== "" || lotteryListData.value.list.length > 1;
+  return lotteryListData.value.list[0].input.title !== "" || lotteryListData.value.list.length > 1;
 }
 
 onStart();

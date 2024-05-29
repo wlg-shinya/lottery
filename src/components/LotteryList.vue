@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { type LotteryListData, defaultLotteryListData, defaultLotteryData } from "../lottery-data";
+import { type LotteryListData, defaultLotteryData, defaultLotteryListData } from "../lottery-data";
 
 const props = defineProps<{
   initData: LotteryListData;
@@ -23,19 +23,23 @@ function onClickData(index: number) {
 }
 
 function onClickAddButton() {
-  listData.value.list.push(structuredClone(defaultLotteryData));
+  addNewData();
 }
 
 function onClickDeleteButton(index: number) {
   listData.value.list = listData.value.list.filter((_x, i) => index !== i);
   // 最後の一つを削除した場合は初期状態を復元する
   if (listData.value.list.length === 0) {
-    listData.value.list.push(structuredClone(defaultLotteryData));
+    addNewData();
   }
   // 選択インデックスの更新
   if (listData.value.selectedIndex >= index && listData.value.selectedIndex > 0) {
     listData.value.selectedIndex--;
   }
+}
+
+function addNewData() {
+  listData.value.list.push(structuredClone(defaultLotteryData));
 }
 </script>
 
@@ -59,7 +63,7 @@ function onClickDeleteButton(index: number) {
           :class="listData.selectedIndex === index ? 'table-active' : ''"
         >
           <td>{{ index }}</td>
-          <td>{{ d.title }}</td>
+          <td>{{ d.input.title }}</td>
           <td>
             <button @click.stop="onClickDeleteButton(index)" class="btn btn-danger"><span class="mdi mdi-trash-can" /></button>
           </td>

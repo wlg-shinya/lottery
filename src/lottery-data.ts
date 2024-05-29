@@ -1,15 +1,33 @@
-export interface LotteryData {
+export interface LotteryUserInputData {
   text: string;
-  result: string;
   title: string;
+}
+
+export const defaultLotteryUserInputData: LotteryUserInputData = {
+  text: "",
+  title: "",
+};
+
+export interface LotteryResultData {
+  result: string;
   histories: string[];
+  historyShowCount: number;
+}
+
+export const defaultLotteryResultData: LotteryResultData = {
+  result: "",
+  histories: [],
+  historyShowCount: 10,
+};
+
+export interface LotteryData {
+  input: LotteryUserInputData;
+  result: LotteryResultData;
 }
 
 export const defaultLotteryData: LotteryData = {
-  text: "",
-  result: "",
-  title: "",
-  histories: [],
+  input: defaultLotteryUserInputData,
+  result: defaultLotteryResultData,
 };
 
 export interface LotteryListData {

@@ -17,34 +17,38 @@ const emit = defineEmits<{
 // TODO:認証情報をもとに編集可能かどうかを判断するように。DB書き込みも同様にする必要がある
 const editable = ref(true);
 
-const inputData = ref<LotteryData>(structuredClone(defaultLotteryData));
+const data = ref<LotteryData>(structuredClone(defaultLotteryData));
 // 入力されたデータに変化あったらイベント発火
-watch(inputData, () => emit("changed", inputData.value), { deep: true });
+watch(data, () => emit("changed", data.value), { deep: true });
 
 // 初期データはローカルストレージ読込による遅延が起きるので watch で検出する
 watch(
   () => props.initData,
-  () => (inputData.value = props.initData)
+  () => (data.value = props.initData)
 );
 
 // 抽選対象群
 // PLACEHOLDER_TEXT の条件をここで表現
-const lotteryTargets = computed(() => inputData.value.text.split("\n").filter((x) => x));
+const lotteryTargets = computed(() => data.value.input.text.split("\n").filter((x) => x));
 
 function onClickLotteryButton() {
   // 抽選
   const result = lotteryTargets.value[random(lotteryTargets.value.length)];
   // 結果の記録と履歴保存
-  inputData.value.result = result;
-  inputData.value.histories.push(result);
+  data.value.result.result = result;
+  data.value.result.histories.push(result);
 }
 
 function onInputFlexTextarea(inputText: string) {
-  inputData.value.text = inputText;
+  data.value.input.text = inputText;
 }
 
-function OnClearedLotteryHistoryList() {
-  inputData.value.histories = [];
+function onClearedHistoryLotteryHistoryList() {
+  data.value.result.histories = [];
+}
+
+function onChangedShowCountLotteryHistoryList(value: number) {
+  data.value.result.historyShowCount = value;
 }
 
 function random(max: number) {
@@ -55,14 +59,14 @@ function random(max: number) {
 
 <template>
   <div class="d-flex flex-column align-items-center">
-    <div v-if="inputData.title">
-      <h2>{{ inputData.title }}</h2>
+    <div v-if="data.input.title">
+      <h2>{{ data.input.title }}</h2>
     </div>
     <div class="d-flex flex-row">
       <div class="d-flex flex-column align-items-center">
         <FlexTextarea
           @input="onInputFlexTextarea"
-          :initText="inputData.text"
+          :initText="data.input.text"
           :placeholder="PLACEHOLDER_TEXT"
           :disabled="!editable"
           style="min-width: 250px"
@@ -70,19 +74,24 @@ function random(max: number) {
         <div>
           <button @click="onClickLotteryButton()" class="btn btn-primary btn-lg">抽選</button>
         </div>
-        <div v-if="inputData.result">
+        <div v-if="data.result.result">
           <span>結果</span>
-          <h1>{{ inputData.result }}</h1>
+          <h1>{{ data.result.result }}</h1>
         </div>
         <div v-if="editable">
           <div class="input-group">
             <span class="input-group-text"><span class="mdi mdi-pencil" /></span>
-            <input v-model="inputData.title" class="form-control" placeholder="このくじ引きに名前をつける" />
+            <input v-model="data.input.title" class="form-control" placeholder="このくじ引きに名前をつける" />
           </div>
         </div>
       </div>
       <div>
-        <LotteryHistoryList @cleared="OnClearedLotteryHistoryList" :histories="inputData.histories" />
+        <LotteryHistoryList
+          @clearedHistory="onClearedHistoryLotteryHistoryList"
+          @changedShowCount="onChangedShowCountLotteryHistoryList"
+          :histories="data.result.histories"
+          :initShowCount="data.result.historyShowCount"
+        />
       </div>
     </div>
   </div>
