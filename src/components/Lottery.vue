@@ -7,6 +7,7 @@ const PLACEHOLDER_TEXT = "一行がひとつのくじとなります\n空白行�
 
 const inputLotteryList = ref("");
 const resultLottery = ref("");
+const editable = ref(true);
 
 // 入力された文字に変化あり次第ローカルストレージに保存
 watch([inputLotteryList, resultLottery], () =>
@@ -48,9 +49,13 @@ onStart();
 
 <template>
   <div class="d-flex flex-column align-items-center">
-    <div>
-      <FlexTextarea @input="onInputFlexTextarea" :initText="inputLotteryList" :placeholder="PLACEHOLDER_TEXT" style="min-width: 250px" />
-    </div>
+    <FlexTextarea
+      @input="onInputFlexTextarea"
+      :initText="inputLotteryList"
+      :placeholder="PLACEHOLDER_TEXT"
+      :disabled="!editable"
+      style="min-width: 250px"
+    />
     <div>
       <button @click="onClickLotteryButton()" class="btn btn-primary btn-lg">抽選</button>
     </div>

@@ -7,6 +7,7 @@ import { ref, watch } from "vue";
 const props = defineProps<{
   initText: string;
   placeholder: string;
+  disabled: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -38,6 +39,7 @@ function onInputFlexTextarea() {
       @input="onInputFlexTextarea"
       v-model="inputText"
       :placeholder="placeholder"
+      :disabled="disabled"
     />
   </div>
 </template>
