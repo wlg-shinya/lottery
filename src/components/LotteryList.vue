@@ -41,7 +41,7 @@ function onClickDeleteButton(index: number) {
 
 <template>
   <div>
-    <table class="table table-hover border text-center">
+    <table class="table table-hover border text-center align-middle">
       <thead>
         <tr>
           <th class="col-1">#</th>
