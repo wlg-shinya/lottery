@@ -2,13 +2,13 @@
 import Lottery from "../components/Lottery.vue";
 import ContactUs from "../components/ContactUs.vue";
 
-const title = import.meta.env.VITE_APP_TITLE;
+const TITLE = import.meta.env.VITE_APP_TITLE;
 </script>
 
 <template>
   <div class="card">
     <div class="card-header text-center">
-      <h1>{{ title }}</h1>
+      <h1>{{ TITLE }}</h1>
     </div>
     <div class="card-body">
       <Suspense>

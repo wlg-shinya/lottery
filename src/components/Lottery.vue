@@ -3,6 +3,8 @@ import { ref, watch, computed } from "vue";
 import LocalStorageLottery from "../local-storage-lottery";
 import FlexTextarea from "./FlexTextarea.vue";
 
+const PLACEHOLDER_TEXT = "一行がひとつのくじとなります\n空白行は無視されます";
+
 const inputLotteryList = ref("");
 const resultLottery = ref("");
 
@@ -45,13 +47,7 @@ onStart();
 <template>
   <div class="d-flex flex-column align-items-center">
     <div>
-      <FlexTextarea @input="onInputFlexTextarea" :initText="inputLotteryList" style="min-width: 200px" />
-    </div>
-    <div>
-      <ul>
-        <li>一行がひとつのくじとなります</li>
-        <li>空白行は無視されます</li>
-      </ul>
+      <FlexTextarea @input="onInputFlexTextarea" :initText="inputLotteryList" :placeholder="PLACEHOLDER_TEXT" style="min-width: 250px" />
     </div>
     <div>
       <button @click="onClickLotteryButton()" class="btn btn-primary btn-lg">抽選</button>

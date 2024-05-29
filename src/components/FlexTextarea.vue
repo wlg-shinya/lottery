@@ -6,6 +6,7 @@ import { ref, watch } from "vue";
 
 const props = defineProps<{
   initText: string;
+  placeholder: string;
 }>();
 
 const emit = defineEmits<{
@@ -31,7 +32,13 @@ function onInputFlexTextarea() {
 <template>
   <div class="FlexTextarea">
     <div ref="flexTextareaDummy" class="FlexTextarea__dummy" aria-hidden="true" />
-    <textarea id="FlexTextarea" class="FlexTextarea__textarea input-body form-control" @input="onInputFlexTextarea" v-model="inputText" />
+    <textarea
+      id="FlexTextarea"
+      class="FlexTextarea__textarea input-body form-control"
+      @input="onInputFlexTextarea"
+      v-model="inputText"
+      :placeholder="placeholder"
+    />
   </div>
 </template>
 
