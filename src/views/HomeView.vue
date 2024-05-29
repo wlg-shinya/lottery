@@ -31,6 +31,11 @@ function onChangedLottery(data: LotteryData) {
   lotteryListData.value.list[lotteryListData.value.selectedIndex] = data;
 }
 
+function showLotteryList(): boolean {
+  // 最初のデータでタイトルを入力したか、データが一つよりも多くある場合はリスト表示ON
+  return lotteryListData.value.list[0].title !== "" || lotteryListData.value.list.length > 1;
+}
+
 onStart();
 </script>
 
@@ -41,7 +46,7 @@ onStart();
     </div>
     <div class="card-body">
       <div class="d-flex">
-        <div class="col-3">
+        <div v-show="showLotteryList()" class="col-3">
           <LotteryList @selected="onSelectedLotteryList" :initData="lotteryListData" />
         </div>
         <div class="col-auto flex-fill">
