@@ -30,9 +30,7 @@ export class SaveLoadBehavior<T extends object> {
         const defaultData = this.getDefaultData();
         const dataKeys = Object.keys(data);
         const defaultDataKeys = Object.keys(defaultData);
-        // TS正攻法が思いつかないので抑制。文脈上 x は data にも defaultData にも存在するプロパティなので問題なし
-        // @ts-ignore
-        const entries = defaultDataKeys.map((x) => [[x], dataKeys.some((y) => y === x) ? data[x] : defaultData[x]]);
+        const entries = defaultDataKeys.map((x) => [[x], dataKeys.some((y) => y === x) ? data[x as keyof T] : defaultData[x as keyof T]]);
         return Object.fromEntries(entries) as T;
       })
       .catch(() => this.defaultData);
