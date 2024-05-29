@@ -30,6 +30,12 @@ function random(max: number) {
       <FlexTextarea @input="onInputFlexTextarea" style="min-width: 200px" />
     </div>
     <div>
+      <ul>
+        <li>一行がひとつのくじとなります</li>
+        <li>空白行は無視されます</li>
+      </ul>
+    </div>
+    <div>
       <button @click="onClickLotteryButton()" class="btn btn-primary btn-lg">抽選</button>
     </div>
     <div v-if="resultLottery">
