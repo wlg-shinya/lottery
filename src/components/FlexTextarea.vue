@@ -21,7 +21,11 @@ const inputText = ref("");
 // 初期文字列はローカルストレージ読込による遅延が起きるので watch で検出する
 watch(
   () => props.initText,
-  () => (inputText.value = props.initText)
+  () => {
+    inputText.value = props.initText;
+    // inputText に変化があったので入力イベントを発火させる
+    onInputFlexTextarea();
+  }
 );
 
 function onInputFlexTextarea() {
