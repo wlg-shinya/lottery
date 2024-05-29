@@ -9,9 +9,10 @@ const inputLotteryList = ref("");
 const resultLottery = ref("");
 
 // 入力された文字に変化あり次第ローカルストレージに保存
-watch(inputLotteryList, () =>
+watch([inputLotteryList, resultLottery], () =>
   LocalStorageLottery.save({
     input: inputLotteryList.value,
+    result: resultLottery.value,
   })
 );
 
@@ -25,6 +26,7 @@ async function onStart() {
   // ローカルストレージのデータから初期文字列を復元
   await LocalStorageLottery.load().then((data) => {
     inputLotteryList.value = data.input;
+    resultLottery.value = data.result;
   });
 }
 
