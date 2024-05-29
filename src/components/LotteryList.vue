@@ -7,7 +7,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  selected: [index: number];
+  select: [index: number];
 }>();
 
 const listData = ref(structuredClone(defaultLotteryListData));
@@ -19,7 +19,7 @@ watch(
 );
 
 function onClickData(index: number) {
-  emit("selected", index);
+  emit("select", index);
 }
 
 function onClickAddButton() {

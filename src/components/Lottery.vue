@@ -11,7 +11,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  changed: [data: LotteryData];
+  change: [data: LotteryData];
 }>();
 
 // TODO:認証情報をもとに編集可能かどうかを判断するように。DB書き込みも同様にする必要がある
@@ -19,7 +19,7 @@ const editable = ref(true);
 
 const data = ref<LotteryData>(structuredClone(defaultLotteryData));
 // 入力されたデータに変化あったらイベント発火
-watch(data, () => emit("changed", data.value), { deep: true });
+watch(data, () => emit("change", data.value), { deep: true });
 
 // 初期データはローカルストレージ読込による遅延が起きるので watch で検出する
 watch(
@@ -43,11 +43,11 @@ function onInputFlexTextarea(inputText: string) {
   data.value.input.text = inputText;
 }
 
-function onClearedHistoryLotteryHistoryList() {
+function onClearHistoryLotteryHistoryList() {
   data.value.result.histories = [];
 }
 
-function onChangedShowCountLotteryHistoryList(value: number) {
+function onChangeShowCountLotteryHistoryList(value: number) {
   data.value.result.historyShowCount = value;
 }
 
@@ -87,8 +87,8 @@ function random(max: number) {
       </div>
       <div>
         <LotteryHistoryList
-          @clearedHistory="onClearedHistoryLotteryHistoryList"
-          @changedShowCount="onChangedShowCountLotteryHistoryList"
+          @clearHistory="onClearHistoryLotteryHistoryList"
+          @changeShowCount="onChangeShowCountLotteryHistoryList"
           :histories="data.result.histories"
           :initShowCount="data.result.historyShowCount"
         />

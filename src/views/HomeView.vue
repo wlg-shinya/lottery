@@ -23,11 +23,11 @@ async function onStart() {
   });
 }
 
-function onSelectedLotteryList(index: number) {
+function onSelectLotteryList(index: number) {
   lotteryListData.value.selectedIndex = index;
 }
 
-function onChangedLottery(data: LotteryData) {
+function onChangeLottery(data: LotteryData) {
   lotteryListData.value.list[lotteryListData.value.selectedIndex] = data;
 }
 
@@ -47,10 +47,10 @@ onStart();
     <div class="card-body">
       <div class="d-flex">
         <div v-show="showLotteryList()" class="col-3">
-          <LotteryList @selected="onSelectedLotteryList" :initData="lotteryListData" />
+          <LotteryList @select="onSelectLotteryList" :initData="lotteryListData" />
         </div>
         <div class="col-auto flex-fill">
-          <Lottery @changed="onChangedLottery" :initData="lotteryListData.list[lotteryListData.selectedIndex]" />
+          <Lottery @change="onChangeLottery" :initData="lotteryListData.list[lotteryListData.selectedIndex]" />
         </div>
       </div>
     </div>

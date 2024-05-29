@@ -8,12 +8,12 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  clearedHistory: [];
-  changedShowCount: [value: number];
+  clearHistory: [];
+  changeShowCount: [value: number];
 }>();
 
 const showCount = ref(defaultLotteryResultData.historyShowCount);
-watch(showCount, () => emit("changedShowCount", showCount.value));
+watch(showCount, () => emit("changeShowCount", showCount.value));
 
 // 初期データはローカルストレージ読込による遅延が起きるので watch で検出する
 watch(
@@ -24,7 +24,7 @@ watch(
 const historiesReversed = computed(() => props.histories.slice().reverse().slice(0, showCount.value));
 
 function onClickClearHistoryButton() {
-  emit("clearedHistory");
+  emit("clearHistory");
 }
 </script>
 
