@@ -1,20 +1,9 @@
 import { LocalStorage } from "./storage";
+import { type LotteryListData, defaultLotteryListData } from "./lottery-data";
 
-export interface LocalStorageLotteryData {
-  text: string;
-  result: string;
-  title: string;
-}
-
-const defaultData: LocalStorageLotteryData = {
-  text: "",
-  result: "",
-  title: "",
-};
-
-class LocalStorageLottery extends LocalStorage<LocalStorageLotteryData> {
+class LocalStorageLottery extends LocalStorage<LotteryListData> {
   constructor() {
-    super(LocalStorageLottery.name, defaultData);
+    super(LocalStorageLottery.name, defaultLotteryListData);
   }
 }
 
