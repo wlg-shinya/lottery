@@ -1,24 +1,41 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { type LotteryListData, defaultLotteryListData } from "../lottery-data";
+import { type LotteryListData, defaultLotteryListData, defaultLotteryData } from "../lottery-data";
 
 const props = defineProps<{
   initData: LotteryListData;
 }>();
-// 初期データはローカルストレージ読込による遅延が起きるので watch で検出する
-watch(
-  () => props.initData,
-  () => (data.value = props.initData)
-);
 
 const emit = defineEmits<{
   selected: [index: number];
 }>();
 
-const data = ref(defaultLotteryListData);
+const listData = ref(structuredClone(defaultLotteryListData));
+
+// 初期データはローカルストレージ読込による遅延が起きるので watch で検出する
+watch(
+  () => props.initData,
+  () => (listData.value = props.initData)
+);
 
 function onClickData(index: number) {
   emit("selected", index);
+}
+
+function onClickAddButton() {
+  listData.value.list.push(structuredClone(defaultLotteryData));
+}
+
+function onClickDeleteButton(index: number) {
+  listData.value.list = listData.value.list.filter((_x, i) => index !== i);
+  // 最後の一つを削除した場合は初期状態を復元する
+  if (listData.value.list.length === 0) {
+    listData.value.list.push(structuredClone(defaultLotteryData));
+  }
+  // 選択インデックスの更新
+  if (listData.value.selectedIndex >= index && listData.value.selectedIndex > 0) {
+    listData.value.selectedIndex--;
+  }
 }
 </script>
 
@@ -35,16 +52,21 @@ function onClickData(index: number) {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(d, index) in data.list" :key="index" @click="onClickData(index)" :class="data.selectedIndex === index ? 'table-active' : ''">
+        <tr
+          v-for="(d, index) in listData.list"
+          :key="index"
+          @click="onClickData(index)"
+          :class="listData.selectedIndex === index ? 'table-active' : ''"
+        >
           <td>{{ index }}</td>
           <td>{{ d.title }}</td>
           <td>
-            <button @click.stop="" class="btn btn-danger"><span class="mdi mdi-trash-can" /></button>
+            <button @click.stop="onClickDeleteButton(index)" class="btn btn-danger"><span class="mdi mdi-trash-can" /></button>
           </td>
         </tr>
         <tr>
           <td colspan="3">
-            <button class="btn btn-primary w-100"><span class="mdi mdi-plus" /></button>
+            <button @click="onClickAddButton" class="btn btn-primary w-100"><span class="mdi mdi-plus" /></button>
           </td>
         </tr>
       </tbody>

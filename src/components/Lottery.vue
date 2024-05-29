@@ -17,7 +17,7 @@ const emit = defineEmits<{
 // TODO:認証情報をもとに編集可能かどうかを判断するように。DB書き込みも同様にする必要がある
 const editable = ref(true);
 
-const inputData = ref<LotteryData>(defaultLotteryData);
+const inputData = ref<LotteryData>(structuredClone(defaultLotteryData));
 // 入力されたデータに変化あったらイベント発火
 watch(inputData, () => emit("changed", inputData.value), { deep: true });
 

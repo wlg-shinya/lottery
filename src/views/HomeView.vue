@@ -8,7 +8,7 @@ import ContactUs from "../components/ContactUs.vue";
 
 const TITLE = import.meta.env.VITE_APP_TITLE;
 
-const lotteryListData = ref(defaultLotteryListData);
+const lotteryListData = ref(structuredClone(defaultLotteryListData));
 // データに変化あり次第ローカルストレージに保存
 watch(
   () => lotteryListData,
@@ -40,11 +40,11 @@ onStart();
       <h1>{{ TITLE }}</h1>
     </div>
     <div class="card-body">
-      <div class="row">
+      <div class="d-flex">
         <div class="col-3">
           <LotteryList @selected="onSelectedLotteryList" :initData="lotteryListData" />
         </div>
-        <div class="col-9">
+        <div class="col-auto flex-fill">
           <Lottery @changed="onChangedLottery" :initData="lotteryListData.list[lotteryListData.selectedIndex]" />
         </div>
       </div>
