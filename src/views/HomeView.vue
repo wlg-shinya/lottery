@@ -45,11 +45,11 @@ onStart();
       <h1>{{ TITLE }}</h1>
     </div>
     <div class="card-body">
-      <div class="d-flex">
-        <div v-show="showLotteryList()" class="col-3">
+      <div class="d-flex justify-content-center">
+        <div v-show="showLotteryList()">
           <LotteryList @select="onSelectLotteryList" :initData="lotteryListData" />
         </div>
-        <div class="col-auto flex-fill">
+        <div class="col-auto">
           <Lottery @change="onChangeLottery" :initData="lotteryListData.list[lotteryListData.selectedIndex]" />
         </div>
       </div>
