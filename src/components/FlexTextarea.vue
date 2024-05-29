@@ -1,14 +1,26 @@
 <script setup lang="ts">
+// 入力された文字列に合わせて可変する textarea
 // ref. https://qiita.com/tsmd/items/fce7bf1f65f03239eef0
 
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
-const flexTextareaDummy = ref();
-const inputText = ref("");
+const props = defineProps<{
+  initText: string;
+}>();
 
 const emit = defineEmits<{
   input: [text: string];
 }>();
+
+const flexTextareaDummy = ref();
+const inputText = ref("");
+
+// 入力文字列に初期文字列を設定
+// 初期文字列はローカルストレージ読込による遅延が起きるので watch で検出する
+watch(
+  () => props.initText,
+  () => (inputText.value = props.initText)
+);
 
 function onInputFlexTextarea() {
   flexTextareaDummy.value.textContent = inputText.value + "\u200b";

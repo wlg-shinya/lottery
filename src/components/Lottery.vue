@@ -1,14 +1,30 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, watch, computed } from "vue";
+import LocalStorageLottery from "../local-storage-lottery";
 import FlexTextarea from "./FlexTextarea.vue";
 
 const inputLotteryList = ref("");
 const resultLottery = ref("");
 
+// 入力された文字に変化あり次第ローカルストレージに保存
+watch(inputLotteryList, () =>
+  LocalStorageLottery.save({
+    input: inputLotteryList.value,
+  })
+);
+
 // 抽選文字列一覧
 // - 改行単位
 // - 空行は抽選対象外
 const lotteryList = computed(() => inputLotteryList.value.split("\n").filter((x) => x));
+
+async function onStart() {
+  await LocalStorageLottery.setup();
+  // ローカルストレージのデータから初期文字列を復元
+  await LocalStorageLottery.load().then((data) => {
+    inputLotteryList.value = data.input;
+  });
+}
 
 function onClickLotteryButton() {
   resultLottery.value = lotteryList.value[random(lotteryList.value.length)];
@@ -22,12 +38,14 @@ function random(max: number) {
   // TODO:サーバサイドから得るべきか検討する
   return Math.floor(Math.random() * max);
 }
+
+onStart();
 </script>
 
 <template>
   <div class="d-flex flex-column align-items-center">
     <div>
-      <FlexTextarea @input="onInputFlexTextarea" style="min-width: 200px" />
+      <FlexTextarea @input="onInputFlexTextarea" :initText="inputLotteryList" style="min-width: 200px" />
     </div>
     <div>
       <ul>
