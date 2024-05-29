@@ -7,6 +7,8 @@ const PLACEHOLDER_TEXT = "一行がひとつのくじとなります\n空白行�
 
 const inputLotteryList = ref("");
 const resultLottery = ref("");
+
+// TODO:認証情報をもとに編集可能かどうかを判断するように。DB書き込みも同様にする必要がある
 const editable = ref(true);
 
 // 入力された文字に変化あり次第ローカルストレージに保存
