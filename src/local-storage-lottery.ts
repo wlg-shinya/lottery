@@ -3,11 +3,13 @@ import { LocalStorage } from "./storage";
 export interface LocalStorageLotteryData {
   text: string;
   result: string;
+  title: string;
 }
 
 const defaultData: LocalStorageLotteryData = {
   text: "",
   result: "",
+  title: "",
 };
 
 class LocalStorageLottery extends LocalStorage<LocalStorageLotteryData> {
