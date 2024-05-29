@@ -43,6 +43,10 @@ function onInputFlexTextarea(inputText: string) {
   inputData.value.text = inputText;
 }
 
+function OnClearedLotteryHistoryList() {
+  inputData.value.histories = [];
+}
+
 function random(max: number) {
   // TODO:サーバサイドから得るべきか検討する
   return Math.floor(Math.random() * max);
@@ -78,7 +82,7 @@ function random(max: number) {
         </div>
       </div>
       <div>
-        <LotteryHistoryList :histories="inputData.histories" />
+        <LotteryHistoryList @cleared="OnClearedLotteryHistoryList" :histories="inputData.histories" />
       </div>
     </div>
   </div>
