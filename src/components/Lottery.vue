@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
-// import LocalStorageLottery from "../local-storage-lottery";
 import { type LotteryData, defaultLotteryData } from "../lottery-data";
 import FlexTextarea from "./FlexTextarea.vue";
 
@@ -32,7 +31,11 @@ watch(
 const lotteryTargets = computed(() => inputData.value.text.split("\n").filter((x) => x));
 
 function onClickLotteryButton() {
-  inputData.value.result = lotteryTargets.value[random(lotteryTargets.value.length)];
+  // 抽選
+  const result = lotteryTargets.value[random(lotteryTargets.value.length)];
+  // 結果の記録と履歴保存
+  inputData.value.result = result;
+  inputData.value.history.push(result);
 }
 
 function onInputFlexTextarea(inputText: string) {
