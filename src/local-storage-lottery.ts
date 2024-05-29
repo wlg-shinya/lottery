@@ -1,12 +1,12 @@
 import { LocalStorage } from "./storage";
 
 export interface LocalStorageLotteryData {
-  input: string;
+  text: string;
   result: string;
 }
 
 const defaultData: LocalStorageLotteryData = {
-  input: "",
+  text: "",
   result: "",
 };
 
