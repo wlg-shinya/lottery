@@ -14,7 +14,7 @@ const emit = defineEmits<{
 }>();
 
 // TODO:認証情報をもとに編集可能かどうかを判断するように。DB書き込みも同様にする必要がある
-const editable = ref(true);
+const editable = ref(false);
 
 const data = ref<LotteryData>(structuredClone(defaultLotteryData));
 // 入力されたデータに変化あったらイベント発火
@@ -48,27 +48,19 @@ function random(max: number) {
   return Math.floor(Math.random() * max);
 }
 
-function showTitle(): boolean {
-  // タイトルが入力されていたら表示ON
-  return data.value.input.title !== "";
-}
-
 function showResult(): boolean {
   // 抽選結果があれば表示ON
   return data.value.result.result !== "";
 }
 
 function showInputTitle(): boolean {
-  // 編集可能かつ抽選対象が入力されていれば表示ON
-  return editable.value && data.value.input.text !== "";
+  // 抽選対象が入力されていれば表示ON
+  return data.value.input.text !== "";
 }
 </script>
 
 <template>
   <div class="d-flex flex-column align-items-center">
-    <div v-show="showTitle()">
-      <h2>{{ data.input.title }}</h2>
-    </div>
     <div class="d-flex flex-column align-items-center w-100">
       <FlexTextarea
         class="w-100"
@@ -87,7 +79,12 @@ function showInputTitle(): boolean {
       <div v-show="showInputTitle()" class="w-100">
         <div class="input-group">
           <span class="input-group-text">くじ引き名</span>
-          <input v-model="data.input.title" class="form-control" placeholder="名前をつけると別のくじ引きも作成できるようになります" />
+          <input
+            v-model="data.input.title"
+            class="form-control"
+            placeholder="名前をつけると別のくじ引きも作成できるようになります"
+            :disabled="!editable"
+          />
         </div>
       </div>
     </div>
