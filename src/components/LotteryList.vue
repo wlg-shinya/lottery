@@ -37,6 +37,8 @@ function onClickDeleteButton(index: number) {
 
 function addNewData() {
   listData.value.list.push(structuredClone(defaultLotteryData));
+  // 今回追加した要素を選択する
+  listData.value.selectedIndex = listData.value.list.length - 1;
 }
 
 function doDelete(index: number) {
