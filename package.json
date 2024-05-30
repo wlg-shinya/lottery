@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@types/async-lock": "^1.4.2",
+    "@types/bootstrap": "^5.2.10",
     "@types/node": "^20.12.12",
     "@vitejs/plugin-vue": "^4.5.2",
     "sass": "^1.77.2",
