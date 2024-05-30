@@ -9,8 +9,10 @@ modal.value.show("Header", "Body", "AcationName", () => { ... });
 </script>
 
 <template>
-  <Modal ref="modal" />
-  ...
+  <div>
+    <Modal ref="modal" />
+    ...
+  </div
 </template> 
 -->
 <script setup lang="ts">

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { type LotteryListData, defaultLotteryData, defaultLotteryListData } from "../lottery-data";
+import Modal from "./Modal.vue";
 
 const props = defineProps<{
   initData: LotteryListData;
@@ -10,6 +11,7 @@ const emit = defineEmits<{
   select: [index: number];
 }>();
 
+const modal = ref();
 const listData = ref(structuredClone(defaultLotteryListData));
 
 // 初期データはローカルストレージ読込による遅延が起きるので watch で検出する
@@ -27,6 +29,14 @@ function onClickAddButton() {
 }
 
 function onClickDeleteButton(index: number) {
+  modal.value.show("注意", `${listData.value.list[index].input.title} を本当に削除しますか？この操作は取り消せません`, "削除", () => doDelete(index));
+}
+
+function addNewData() {
+  listData.value.list.push(structuredClone(defaultLotteryData));
+}
+
+function doDelete(index: number) {
   listData.value.list = listData.value.list.filter((_x, i) => index !== i);
   // 最後の一つを削除した場合は初期状態を復元する
   if (listData.value.list.length === 0) {
@@ -37,14 +47,11 @@ function onClickDeleteButton(index: number) {
     listData.value.selectedIndex--;
   }
 }
-
-function addNewData() {
-  listData.value.list.push(structuredClone(defaultLotteryData));
-}
 </script>
 
 <template>
   <div>
+    <Modal ref="modal" />
     <table class="table table-hover border text-center align-middle">
       <thead>
         <tr>
