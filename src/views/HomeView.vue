@@ -4,6 +4,7 @@ import { type LotteryData, defaultLotteryListData } from "../lottery-data";
 import LocalStorageLottery from "../local-storage-lottery";
 import Lottery from "../components/Lottery.vue";
 import LotteryList from "../components/LotteryList.vue";
+import LotteryHistoryList from "../components/LotteryHistoryList.vue";
 import ContactUs from "../components/ContactUs.vue";
 
 const TITLE = import.meta.env.VITE_APP_TITLE;
@@ -15,6 +16,8 @@ watch(
   () => LocalStorageLottery.save(lotteryListData.value),
   { deep: true }
 );
+
+const selectedLotteryData = () => lotteryListData.value.list[lotteryListData.value.selectedIndex];
 
 async function onStart() {
   await LocalStorageLottery.setup();
@@ -31,9 +34,22 @@ function onChangeLottery(data: LotteryData) {
   lotteryListData.value.list[lotteryListData.value.selectedIndex] = data;
 }
 
+function onClearHistoryLotteryHistoryList() {
+  selectedLotteryData().result.histories = [];
+}
+
+function onChangeShowCountLotteryHistoryList(value: number) {
+  selectedLotteryData().result.historyShowCount = value;
+}
+
 function showLotteryList(): boolean {
-  // 最初のデータでタイトルを入力したか、データが一つよりも多くある場合はリスト表示ON
+  // 最初のデータでタイトルを入力したか、データが一つよりも多くある場合は表示ON
   return lotteryListData.value.list[0].input.title !== "" || lotteryListData.value.list.length > 1;
+}
+
+function showLotteryHistoryList(): boolean {
+  // 履歴がひとつでもあれば表示ON
+  return selectedLotteryData().result.histories.length > 0;
 }
 
 onStart();
@@ -45,12 +61,21 @@ onStart();
       <h1>{{ TITLE }}</h1>
     </div>
     <div class="card-body">
-      <div class="d-flex justify-content-center">
-        <div v-show="showLotteryList()">
-          <LotteryList @select="onSelectLotteryList" :initData="lotteryListData" />
+      <div class="row justify-content-center">
+        <div class="col-4">
+          <LotteryList v-show="showLotteryList()" @select="onSelectLotteryList" :initData="lotteryListData" />
         </div>
-        <div class="col-auto">
-          <Lottery @change="onChangeLottery" :initData="lotteryListData.list[lotteryListData.selectedIndex]" />
+        <div class="col-4">
+          <Lottery @change="onChangeLottery" :initData="selectedLotteryData" />
+        </div>
+        <div class="col-4">
+          <LotteryHistoryList
+            v-show="showLotteryHistoryList()"
+            @clearHistory="onClearHistoryLotteryHistoryList"
+            @changeShowCount="onChangeShowCountLotteryHistoryList"
+            :histories="selectedLotteryData().result.histories"
+            :initShowCount="selectedLotteryData().result.historyShowCount"
+          />
         </div>
       </div>
     </div>

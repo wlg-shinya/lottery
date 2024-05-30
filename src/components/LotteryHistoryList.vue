@@ -29,7 +29,7 @@ function onClickClearHistoryButton() {
 </script>
 
 <template>
-  <div v-if="props.histories.length > 0">
+  <div>
     <div class="input-group">
       <span class="input-group-text">上限</span>
       <input v-model="showCount" type="number" class="form-control form-control-sm" />

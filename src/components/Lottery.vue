@@ -2,7 +2,6 @@
 import { ref, watch, computed } from "vue";
 import { type LotteryData, defaultLotteryData } from "../lottery-data";
 import FlexTextarea from "./FlexTextarea.vue";
-import LotteryHistoryList from "./LotteryHistoryList.vue";
 
 const PLACEHOLDER_TEXT = "一行がひとつのくじとなります\n空白行は無視されます";
 
@@ -43,14 +42,6 @@ function onInputFlexTextarea(inputText: string) {
   data.value.input.text = inputText;
 }
 
-function onClearHistoryLotteryHistoryList() {
-  data.value.result.histories = [];
-}
-
-function onChangeShowCountLotteryHistoryList(value: number) {
-  data.value.result.historyShowCount = value;
-}
-
 function random(max: number) {
   return Math.floor(Math.random() * max);
 }
@@ -83,14 +74,6 @@ function random(max: number) {
             <input v-model="data.input.title" class="form-control" placeholder="このくじ引きに名前をつける" />
           </div>
         </div>
-      </div>
-      <div>
-        <LotteryHistoryList
-          @clearHistory="onClearHistoryLotteryHistoryList"
-          @changeShowCount="onChangeShowCountLotteryHistoryList"
-          :histories="data.result.histories"
-          :initShowCount="data.result.historyShowCount"
-        />
       </div>
     </div>
   </div>
