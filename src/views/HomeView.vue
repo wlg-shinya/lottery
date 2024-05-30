@@ -7,9 +7,6 @@ import Signin from "../components/Signin.vue";
 import Lottery from "../components/Lottery.vue";
 import LotteryList from "../components/LotteryList.vue";
 import LotteryHistoryList from "../components/LotteryHistoryList.vue";
-import ContactUs from "../components/ContactUs.vue";
-
-const TITLE = import.meta.env.VITE_APP_TITLE;
 
 const modal = ref();
 
@@ -66,38 +63,28 @@ onStart();
 <template>
   <div>
     <Modal ref="modal" />
-    <div class="card">
-      <div class="card-header text-center">
-        <h1>{{ TITLE }}</h1>
-      </div>
-      <div class="card-body">
-        <Signin />
-        <hr />
-        <table class="table table-borderless">
-          <tbody>
-            <tr>
-              <td class="col-4">
-                <LotteryList v-show="showLotteryList()" @select="onSelectLotteryList" :initData="lotteryListData" />
-              </td>
-              <td class="col-4">
-                <Lottery @change="onChangeLottery" :initData="selectedLotteryData()" />
-              </td>
-              <td class="col-4">
-                <LotteryHistoryList
-                  v-show="showLotteryHistoryList()"
-                  @clearHistory="onClearHistoryLotteryHistoryList"
-                  @changeShowCount="onChangeShowCountLotteryHistoryList"
-                  :histories="selectedLotteryData().result.histories"
-                  :initShowCount="selectedLotteryData().result.historyShowCount"
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="card-footer">
-        <ContactUs />
-      </div>
-    </div>
+    <Signin />
+    <hr />
+    <table class="table table-borderless">
+      <tbody>
+        <tr>
+          <td class="col-4">
+            <LotteryList v-show="showLotteryList()" @select="onSelectLotteryList" :initData="lotteryListData" />
+          </td>
+          <td class="col-4">
+            <Lottery @change="onChangeLottery" :initData="selectedLotteryData()" />
+          </td>
+          <td class="col-4">
+            <LotteryHistoryList
+              v-show="showLotteryHistoryList()"
+              @clearHistory="onClearHistoryLotteryHistoryList"
+              @changeShowCount="onChangeShowCountLotteryHistoryList"
+              :histories="selectedLotteryData().result.histories"
+              :initShowCount="selectedLotteryData().result.historyShowCount"
+            />
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
