@@ -47,11 +47,26 @@ function onInputFlexTextarea(inputText: string) {
 function random(max: number) {
   return Math.floor(Math.random() * max);
 }
+
+function showTitle(): boolean {
+  // タイトルが入力されていたら表示ON
+  return data.value.input.title !== "";
+}
+
+function showResult(): boolean {
+  // 抽選結果があれば表示ON
+  return data.value.result.result !== "";
+}
+
+function showInputTitle(): boolean {
+  // 編集可能かつ抽選対象が入力されていれば表示ON
+  return editable.value && data.value.input.text !== "";
+}
 </script>
 
 <template>
   <div class="d-flex flex-column align-items-center">
-    <div v-if="data.input.title">
+    <div v-show="showTitle()">
       <h2>{{ data.input.title }}</h2>
     </div>
     <div class="d-flex flex-column align-items-center w-100">
@@ -65,11 +80,11 @@ function random(max: number) {
       <div class="w-100">
         <button @click="onClickLotteryButton()" class="btn btn-primary btn-lg w-100">抽選</button>
       </div>
-      <div v-if="data.result.result">
+      <div v-show="showResult()">
         <span>結果</span>
         <h1>{{ data.result.result }}</h1>
       </div>
-      <div v-if="editable" class="w-100">
+      <div v-show="showInputTitle()" class="w-100">
         <div class="input-group">
           <span class="input-group-text">くじ引き名</span>
           <input v-model="data.input.title" class="form-control" placeholder="名前をつけると別のくじ引きも作成できるようになります" />
