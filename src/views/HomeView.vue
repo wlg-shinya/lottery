@@ -70,7 +70,7 @@ onStart();
         <h1>{{ TITLE }}</h1>
       </div>
       <div class="card-body">
-        <table class="table">
+        <table class="table table-borderless">
           <tbody>
             <tr>
               <td class="col-4">
