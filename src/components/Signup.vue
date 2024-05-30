@@ -1,8 +1,18 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import router from "../router";
+
+const username = ref("");
+const password = ref("");
+
+function onClickSignupButton() {}
 
 function onClickBackButton() {
   router.push("/");
+}
+
+function canSignup(): boolean {
+  return username.value !== "" && password.value !== "";
 }
 </script>
 
@@ -11,13 +21,13 @@ function onClickBackButton() {
     <div class="d-flex flex-column">
       <div class="input-group">
         <span class="input-group-text" style="width: 100px">ユーザ名</span>
-        <input type="text" class="form-control" />
+        <input v-model="username" type="text" class="form-control" />
       </div>
       <div class="input-group">
         <span class="input-group-text" style="width: 100px">パスワード</span>
-        <input type="password" class="form-control" />
+        <input v-model="password" type="text" class="form-control" />
       </div>
-      <button class="btn btn-primary">登録</button>
+      <button @click="onClickSignupButton" class="btn btn-primary" :disabled="!canSignup()">新規登録</button>
       <button @click="onClickBackButton" class="btn btn-link"><span class="mdi mdi-arrow-left" />戻る</button>
     </div>
   </div>
