@@ -3,6 +3,7 @@ import { ref, watch } from "vue";
 import { type LotteryData, defaultLotteryListData } from "../lottery-data";
 import LocalStorageLottery from "../local-storage-lottery";
 import Modal from "../components/Modal.vue";
+import Signin from "../components/Signin.vue";
 import Lottery from "../components/Lottery.vue";
 import LotteryList from "../components/LotteryList.vue";
 import LotteryHistoryList from "../components/LotteryHistoryList.vue";
@@ -70,6 +71,8 @@ onStart();
         <h1>{{ TITLE }}</h1>
       </div>
       <div class="card-body">
+        <Signin />
+        <hr />
         <table class="table table-borderless">
           <tbody>
             <tr>
