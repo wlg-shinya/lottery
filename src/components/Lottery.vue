@@ -52,7 +52,6 @@ function onChangeShowCountLotteryHistoryList(value: number) {
 }
 
 function random(max: number) {
-  // TODO:サーバサイドから得るべきか検討する
   return Math.floor(Math.random() * max);
 }
 </script>
