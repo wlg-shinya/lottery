@@ -25,6 +25,9 @@ function onClickData(index: number) {
 }
 
 function onClickAddButton() {
+  // デフォルトデータが存在する場合は新規追加しない
+  if (listData.value.list.some((x) => JSON.stringify(x) === JSON.stringify(defaultLotteryData))) return;
+  // チェックに通過したので新規追加
   addNewData();
 }
 
