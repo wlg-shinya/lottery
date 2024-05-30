@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16-alpine
+    hostname: lottery-db
+    restart: always
+    ports:
+      - "8502:5432"
+    volumes:
+      - ./initdb.d:/docker-entrypoint-initdb.d
+      - ./pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - TZ=Asia/Tokyo
+      - PGTZ=Asia/Tokyo
