@@ -61,23 +61,27 @@ onStart();
       <h1>{{ TITLE }}</h1>
     </div>
     <div class="card-body">
-      <div class="row justify-content-center">
-        <div class="col-4">
-          <LotteryList v-show="showLotteryList()" @select="onSelectLotteryList" :initData="lotteryListData" />
-        </div>
-        <div class="col-4">
-          <Lottery @change="onChangeLottery" :initData="selectedLotteryData()" />
-        </div>
-        <div class="col-4">
-          <LotteryHistoryList
-            v-show="showLotteryHistoryList()"
-            @clearHistory="onClearHistoryLotteryHistoryList"
-            @changeShowCount="onChangeShowCountLotteryHistoryList"
-            :histories="selectedLotteryData().result.histories"
-            :initShowCount="selectedLotteryData().result.historyShowCount"
-          />
-        </div>
-      </div>
+      <table class="table">
+        <tbody>
+          <tr>
+            <td class="col-4">
+              <LotteryList v-show="showLotteryList()" @select="onSelectLotteryList" :initData="lotteryListData" />
+            </td>
+            <td class="col-4">
+              <Lottery @change="onChangeLottery" :initData="selectedLotteryData()" />
+            </td>
+            <td class="col-4">
+              <LotteryHistoryList
+                v-show="showLotteryHistoryList()"
+                @clearHistory="onClearHistoryLotteryHistoryList"
+                @changeShowCount="onChangeShowCountLotteryHistoryList"
+                :histories="selectedLotteryData().result.histories"
+                :initShowCount="selectedLotteryData().result.historyShowCount"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div class="card-footer">
       <ContactUs />

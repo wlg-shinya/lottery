@@ -31,6 +31,8 @@ watch(
 const lotteryTargets = computed(() => data.value.input.text.split("\n").filter((x) => x));
 
 function onClickLotteryButton() {
+  // 抽選対象がなければ何もしない
+  if (lotteryTargets.value.length === 0) return;
   // 抽選
   const result = lotteryTargets.value[random(lotteryTargets.value.length)];
   // 結果の記録と履歴保存
@@ -52,28 +54,17 @@ function random(max: number) {
     <div v-if="data.input.title">
       <h2>{{ data.input.title }}</h2>
     </div>
-    <div class="d-flex flex-row">
-      <div class="d-flex flex-column align-items-center">
-        <FlexTextarea
-          @input="onInputFlexTextarea"
-          :initText="data.input.text"
-          :placeholder="PLACEHOLDER_TEXT"
-          :disabled="!editable"
-          style="min-width: 250px"
-        />
-        <div>
-          <button @click="onClickLotteryButton()" class="btn btn-primary btn-lg">抽選</button>
-        </div>
-        <div v-if="data.result.result">
-          <span>結果</span>
-          <h1>{{ data.result.result }}</h1>
-        </div>
-        <div v-if="editable">
-          <div class="input-group">
-            <span class="input-group-text"><span class="mdi mdi-pencil" /></span>
-            <input v-model="data.input.title" class="form-control" placeholder="このくじ引きに名前をつける" />
-          </div>
-        </div>
+    <div class="d-flex flex-column align-items-center w-100">
+      <FlexTextarea class="w-100" @input="onInputFlexTextarea" :initText="data.input.text" :placeholder="PLACEHOLDER_TEXT" :disabled="!editable" />
+      <div class="w-100">
+        <button @click="onClickLotteryButton()" class="btn btn-primary btn-lg w-100">抽選</button>
+      </div>
+      <div v-if="data.result.result">
+        <span>結果</span>
+        <h1>{{ data.result.result }}</h1>
+      </div>
+      <div v-if="editable" class="w-100">
+        <input v-model="data.input.title" class="form-control" placeholder="このくじ引きに名前をつける" />
       </div>
     </div>
   </div>
