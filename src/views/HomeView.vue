@@ -66,7 +66,7 @@ onStart();
           <LotteryList v-show="showLotteryList()" @select="onSelectLotteryList" :initData="lotteryListData" />
         </div>
         <div class="col-4">
-          <Lottery @change="onChangeLottery" :initData="selectedLotteryData" />
+          <Lottery @change="onChangeLottery" :initData="selectedLotteryData()" />
         </div>
         <div class="col-4">
           <LotteryHistoryList
