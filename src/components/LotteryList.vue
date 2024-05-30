@@ -29,7 +29,7 @@ function onClickAddButton() {
 }
 
 function onClickDeleteButton(index: number) {
-  modal.value.show("注意", `${listData.value.list[index].input.title} を本当に削除しますか？この操作は取り消せません`, "削除", () => doDelete(index));
+  modal.value.show("注意", "本当に削除しますか？この操作は取り消せません", "削除", () => doDelete(index));
 }
 
 function addNewData() {

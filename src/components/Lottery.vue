@@ -3,7 +3,7 @@ import { ref, watch, computed } from "vue";
 import { type LotteryData, defaultLotteryData } from "../lottery-data";
 import FlexTextarea from "./FlexTextarea.vue";
 
-const PLACEHOLDER_TEXT = "一行がひとつのくじとなります\n空白行は無視されます";
+const INPUT_TEXT_PLACEHOLDER_TEXT = "一行がひとつのくじとなります\n空白行は無視されます";
 
 const props = defineProps<{
   initData: LotteryData;
@@ -27,7 +27,7 @@ watch(
 );
 
 // 抽選対象群
-// PLACEHOLDER_TEXT の条件をここで表現
+// INPUT_TEXT_PLACEHOLDER_TEXT の条件をここで表現
 const lotteryTargets = computed(() => data.value.input.text.split("\n").filter((x) => x));
 
 function onClickLotteryButton() {
@@ -55,7 +55,13 @@ function random(max: number) {
       <h2>{{ data.input.title }}</h2>
     </div>
     <div class="d-flex flex-column align-items-center w-100">
-      <FlexTextarea class="w-100" @input="onInputFlexTextarea" :initText="data.input.text" :placeholder="PLACEHOLDER_TEXT" :disabled="!editable" />
+      <FlexTextarea
+        class="w-100"
+        @input="onInputFlexTextarea"
+        :initText="data.input.text"
+        :placeholder="INPUT_TEXT_PLACEHOLDER_TEXT"
+        :disabled="!editable"
+      />
       <div class="w-100">
         <button @click="onClickLotteryButton()" class="btn btn-primary btn-lg w-100">抽選</button>
       </div>
@@ -64,7 +70,10 @@ function random(max: number) {
         <h1>{{ data.result.result }}</h1>
       </div>
       <div v-if="editable" class="w-100">
-        <input v-model="data.input.title" class="form-control" placeholder="このくじ引きに名前をつける" />
+        <div class="input-group">
+          <span class="input-group-text">くじ引き名</span>
+          <input v-model="data.input.title" class="form-control" placeholder="名前をつけると別のくじ引きも作成できるようになります" />
+        </div>
       </div>
     </div>
   </div>
