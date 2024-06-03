@@ -5,7 +5,6 @@ class LotteriesBase(BaseModel):
     user_id: int = Field(-1, desciption="このくじ引きの所有者ID")
     text: str = Field("", desciption="くじ引きの抽選対象")
     title: str = Field("", desciption="くじ引き名")
-    pass
 
 class LotteryCreate(LotteriesBase):
     pass
