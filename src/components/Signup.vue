@@ -20,7 +20,7 @@ function canSignup(): boolean {
   <div class="d-flex justify-content-center">
     <div class="d-flex flex-column">
       <div class="input-group">
-        <span class="input-group-text" style="width: 100px">ユーザ名</span>
+        <span class="input-group-text" style="width: 100px">アカウント</span>
         <input v-model="username" type="text" class="form-control" />
       </div>
       <div class="input-group">
