@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import router from "../router";
+import { dbUserCreate } from "../db";
 
 const username = ref("");
 const password = ref("");
 
-function onClickSignupButton() {}
+function onClickSignupButton() {
+  dbUserCreate(username.value, password.value);
+}
 
 function onClickBackButton() {
   router.push("/");
