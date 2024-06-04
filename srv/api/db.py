@@ -1,10 +1,9 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
+from core.config import env
 
-DB_URL = "postgres+asyncpg://postgres:postgres@localhost:8502/lottery"
-
-engine = create_async_engine(DB_URL, echo=True)
-session = sessionmaker(
+engine = create_async_engine(env().get_async_db_url(), echo=True)
+async_session = sessionmaker(
     autocommit = False,
     autoflush = False,
     bind = engine,
@@ -13,6 +12,6 @@ session = sessionmaker(
 
 Base = declarative_base()
 
-async def get_db():
-    async with session() as session:
+async def db():
+    async with async_session() as session:
         yield session

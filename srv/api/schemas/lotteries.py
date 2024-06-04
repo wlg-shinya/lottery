@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 class LotteriesBase(BaseModel):
     user_id: int = Field(-1, desciption="このくじ引きの所有者ID")
@@ -11,6 +11,8 @@ class LotteryCreate(LotteriesBase):
 
 class LotteryCreateResponse(LotteryCreate):
     id: int
+
+    model_config = ConfigDict(from_attributes=True)
 
 class Lotteries(LotteriesBase):
     id: int
