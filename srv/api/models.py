@@ -1,6 +1,6 @@
 from sqlalchemy import Column
 from sqlalchemy.dialects.postgresql import INTEGER, TIMESTAMP, VARCHAR
-from sqlalchemy.ext.declarative import declarative_base, declared_attr
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql.functions import current_timestamp
 
 Base = declarative_base()
@@ -21,3 +21,6 @@ class Lotteries(BaseModel):
 
 class Users(BaseModel):
     __tablename__ = "users"
+
+    account_name = Column(VARCHAR(128), nullable=False)
+    identification = Column(VARCHAR(128), nullable=False)

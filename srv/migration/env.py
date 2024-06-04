@@ -1,19 +1,16 @@
 import sys
 # 相対パスでcoreディレクトリが参照できないので、読み取れるように
 sys.path = ['', '..'] + sys.path[1:]
-
-import os
-from core.config import PROJECT_ROOT
-from dotenv import load_dotenv
+from core.config import env
 
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+# from sqlalchemy import engine_from_config
+# from sqlalchemy import pool
 
 from alembic import context
 
-from migration.models import Base
+from api.models import Base
 from migration.db import Engine
 
 # this is the Alembic Config object, which provides
@@ -36,8 +33,7 @@ target_metadata = Base.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-load_dotenv(dotenv_path=os.path.join(PROJECT_ROOT, '.env'))
-config.set_main_option('sqlalchemy.url', os.getenv('DB_URL'))
+config.set_main_option('sqlalchemy.url', env().get_sync_db_url())
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
