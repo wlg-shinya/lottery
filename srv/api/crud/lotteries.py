@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 from api.models import Lotteries as Model
@@ -15,7 +16,8 @@ async def create_lottery(
 async def read_lotteries(
     db: AsyncSession
 ) -> List[schema.Lotteries]:
-    pass
+    result = await db.execute(select(Model.id, Model.user_id, Model.text, Model.title))
+    return result.all()
 
 async def read_lottery(
     db: AsyncSession, id: int
