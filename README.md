@@ -4,9 +4,19 @@
 
 ```
 $ npm install
+$ cd ./srv
+$ poetry install
 ```
 
-### Build and run for development
+## Development
+
+### DB startup
+
+```
+$ docker-compose up db
+```
+
+### Build and run
 
 ```
 $ npm run dev && npm run srv
@@ -16,6 +26,16 @@ $ npm run dev && npm run srv
 
 ```
 $ npm run build && npm run preview && npm run srv
+```
+
+### DB migration
+
+After edit 'srv\api\models.py'
+
+```
+$ cd ./srv
+$ alembic revision --autogenerate
+$ alembic upgrade head
 ```
 
 ## Deploy
