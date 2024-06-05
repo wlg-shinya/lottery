@@ -7,11 +7,14 @@
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
+    "clean": "rm -rf ./dist",
     "srv": "cd ./srv && poetry run uvicorn api.main:app --host localhost --port 8501 --reload",
-    "clean": "rm -rf ./dist"
+    "openapi:download": "curl http://localhost:8501/openapi.json > ./src/openapi/openapi.json",
+    "openapi:generate": "openapi-generator-cli generate -g typescript-axios -i ./src/openapi/openapi.json -o ./src/openapi/generated"
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
+    "@openapitools/openapi-generator-cli": "^2.13.4",
     "async-lock": "^1.4.1",
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
