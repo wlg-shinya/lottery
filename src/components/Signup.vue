@@ -24,13 +24,21 @@ const message = ref<Message>(new Message());
 
 async function onClickSignupButton() {
   await DefaultApiClient.readUsersApiReadUsersGet()
-    .then((response) => {
+    .then(async (response) => {
       const users: Users[] = response.data;
       if (users.some((x) => x.account_name === username.value)) {
         throw new AlreadyExistsError(username.value);
       }
-      // console.log(users);
-      // await dbCreateUser(username.value, password.value).then((response) => {});
+      await DefaultApiClient.createUserApiCreateUserPost({
+        account_name: username.value,
+        identification: password.value,
+      })
+        .then(() => {
+          message.value.set("ユーザー登録しました。戻ってサインインしてください", "text-success");
+        })
+        .catch((error) => {
+          throw error;
+        });
     })
     .catch((error: Error) => {
       message.value.set(error.message, "text-danger");
