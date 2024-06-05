@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import router from "../router";
-import { dbCreateUser, dbReadUsers } from "../db";
+import { ApiClient } from "../openapi";
 
 const username = ref("");
 const password = ref("");
 
 async function onClickSignupButton() {
+  console.log(await ApiClient.readUsersApiReadUsersGet());
   // await dbReadUsers()
   //   .then((response) => {
   //     console.log(response);
