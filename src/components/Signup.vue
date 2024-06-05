@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import router from "../router";
 import { AlreadyExistsError } from "../error";
-import { DefaultApiClient, Users } from "../openapi";
+import { DefaultApiClient } from "../openapi";
 
 class Message {
   body: string = "";
@@ -25,7 +25,7 @@ const message = ref<Message>(new Message());
 async function onClickSignupButton() {
   await DefaultApiClient.readUsersApiReadUsersGet()
     .then(async (response) => {
-      const users: Users[] = response.data;
+      const users = response.data;
       if (users.some((x) => x.account_name === username.value)) {
         throw new AlreadyExistsError(username.value);
       }
