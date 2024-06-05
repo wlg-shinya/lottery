@@ -7,7 +7,5 @@ services:
       dockerfile: Dockerfile
       target: openapi-generate
     volumes:
-      - type: bind
-        source: ./src/openapi/generated
-        target: /usr/src/app/src/openapi/generated
+      - ./src/openapi/generated:/usr/src/app/src/openapi/generated
     command: npm run openapi:generate
