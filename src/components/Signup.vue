@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import router from "../router";
-import { dbUserCreate } from "../db";
+import { dbCreateUser, dbReadUsers } from "../db";
 
 const username = ref("");
 const password = ref("");
 
-function onClickSignupButton() {
-  dbUserCreate(username.value, password.value);
+async function onClickSignupButton() {
+  // await dbReadUsers()
+  //   .then((response) => {
+  //     console.log(response);
+  //     await dbCreateUser(username.value, password.value).then((response) => {});
+  //   })
+  //   .catch((_error) => {
+  //   });
 }
 
 function onClickBackButton() {

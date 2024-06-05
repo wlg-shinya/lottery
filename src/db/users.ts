@@ -10,12 +10,12 @@ import axios from "axios";
 // };
 
 function notNull(arg: any) {
-  if (!arg) {
+  if (typeof arg === "undefined" || arg === null) {
     throw new Error(`Invalid ${{ arg }}`);
   }
 }
 
-export async function dbUserCreate(accountName: string, identification: string): Promise<any> {
+export async function dbCreateUser(accountName: string, identification: string): Promise<any> {
   notNull(accountName);
   notNull(identification);
   return await axios
@@ -29,25 +29,16 @@ export async function dbUserCreate(accountName: string, identification: string):
     });
 }
 
-// export async function dbTableGet(name: string): Promise<TableQueryResult> {
-//   if (!name) {
-//     throw new Error(`Invalid name=${name}`);
-//   }
-//   return await axios
-//     .get("/api/db_table", {
-//       params: {
-//         name: name,
-//       },
-//     })
-//     .then((response) => {
-//       const data: QueryResult<any> = JSON.parse(JSON.stringify(response.data));
-//       // timestamptz型データはISO8601タイムゾーンUTCな文字列です(例 2023-12-22T02:16:43.000Z)
-//       return data;
-//     })
-//     .catch((error) => {
-//       throw error;
-//     });
-// }
+export async function dbReadUsers(): Promise<any> {
+  return await axios
+    .get("/api/read_users")
+    .then((response) => {
+      return JSON.parse(JSON.stringify(response.data));
+    })
+    .catch((error) => {
+      throw error;
+    });
+}
 
 // export async function dbTableDelete(id: number): Promise<any> {
 //   if (id <= 0) {
