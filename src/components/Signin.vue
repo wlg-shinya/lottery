@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import router from "../router";
 
+function onClickSigninButton() {}
+
 function onClickSignupButton() {
   router.push("/signup");
 }
@@ -17,7 +19,7 @@ function onClickSignupButton() {
         <span class="input-group-text" style="width: 100px">パスワード</span>
         <input type="password" class="form-control" />
       </div>
-      <button class="btn btn-outline-primary">サインイン</button>
+      <button @click="onClickSigninButton" class="btn btn-outline-primary">サインイン</button>
       <button @click="onClickSignupButton" class="btn btn-link">作ったくじ引きを保存したい？ならばアカウント登録です</button>
     </div>
   </div>
