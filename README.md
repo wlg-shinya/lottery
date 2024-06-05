@@ -30,12 +30,21 @@ $ npm run build && npm run preview && npm run srv
 
 ### DB migration
 
-After edit 'srv\api\models.py'
+After edit 'srv/api/models.py'
 
 ```
 $ cd ./srv
 $ alembic revision --autogenerate
 $ alembic upgrade head
+```
+
+### OpenAPI update
+
+After edit below 'srv/api/'
+
+```
+$ npm run openapi:download
+$ docker-compose up openapi_generate --build
 ```
 
 ## Deploy
