@@ -1,0 +1,13 @@
+services:
+  openapi-generate:
+    image: lottery-openapi-generate
+    restart: no
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: openapi-generate
+    volumes:
+      - type: bind
+        source: ./src/openapi/generated
+        target: /usr/src/app/src/openapi/generated
+    command: npm run openapi:generate

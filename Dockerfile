@@ -13,7 +13,7 @@
 # RUN npm install
 # RUN npm install -g http-server
 
-FROM openjdk:11 as openapi_generate
+FROM openjdk:11 as openapi-generate
 RUN apt update
 RUN apt install -y nodejs npm
 RUN npm install -g n
@@ -22,5 +22,5 @@ RUN apt purge -y nodejs npm
 RUN apt autoremove -y
 WORKDIR /usr/src/app
 COPY . /usr/src/app
+ENV NODE_ENV=development
 RUN npm install
-

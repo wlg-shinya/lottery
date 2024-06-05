@@ -44,7 +44,7 @@ After edit below 'srv/api/'
 
 ```
 $ npm run openapi:download
-$ docker-compose up openapi_generate --build
+$ docker-compose -f docker-compose-openapi-generate.yml up --build
 ```
 
 ## Deploy
