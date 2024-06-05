@@ -1,20 +1,40 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import router from "../router";
-import { DefaultApiClient } from "../openapi";
+import { AlreadyExistsError } from "../error";
+import { DefaultApiClient, Users } from "../openapi";
+
+class Message {
+  body: string = "";
+  color: string = ""; // ex. 'text-primary' ref. https://getbootstrap.jp/docs/5.3/utilities/colors/
+
+  valid(): boolean {
+    return this.body !== "" && this.color !== "";
+  }
+
+  set(body: string, color: string) {
+    this.body = body;
+    this.color = color;
+  }
+}
 
 const username = ref("");
 const password = ref("");
+const message = ref<Message>(new Message());
 
 async function onClickSignupButton() {
-  console.log(await DefaultApiClient.readUsersApiReadUsersGet());
-  // await dbReadUsers()
-  //   .then((response) => {
-  //     console.log(response);
-  //     await dbCreateUser(username.value, password.value).then((response) => {});
-  //   })
-  //   .catch((_error) => {
-  //   });
+  await DefaultApiClient.readUsersApiReadUsersGet()
+    .then((response) => {
+      const users: Users[] = response.data;
+      if (users.some((x) => x.account_name === username.value)) {
+        throw new AlreadyExistsError(username.value);
+      }
+      // console.log(users);
+      // await dbCreateUser(username.value, password.value).then((response) => {});
+    })
+    .catch((error: Error) => {
+      message.value.set(error.message, "text-danger");
+    });
 }
 
 function onClickBackButton() {
@@ -23,6 +43,11 @@ function onClickBackButton() {
 
 function canSignup(): boolean {
   return username.value !== "" && password.value !== "";
+}
+
+function showMessage(): boolean {
+  // メッセージデータが有効なら表示
+  return message.value.valid();
 }
 </script>
 
@@ -38,6 +63,9 @@ function canSignup(): boolean {
         <input v-model="password" type="text" class="form-control" />
       </div>
       <button @click="onClickSignupButton" class="btn btn-primary" :disabled="!canSignup()">新規登録</button>
+      <div v-show="showMessage()" class="text-center">
+        <span :class="`${message.color} fw-bold`">{{ message.body }}</span>
+      </div>
       <button @click="onClickBackButton" class="btn btn-link"><span class="mdi mdi-arrow-left" />戻る</button>
     </div>
   </div>
