@@ -1,21 +1,25 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import router from "../router";
-import { NoSignupError, InvalidPasswordError } from "../error";
+import { InvalidAccountOrPasswordError } from "../error";
 import { DefaultApiClient } from "../openapi";
 import AccountPasswordInput from "./AccountPasswordInput.vue";
 
 const accountPasswordInput = ref();
 
 async function onClickSigninButton(account: string, password: string) {
+  // TODO:サインインをサーバサイドで行うようにする
+  // MEMO:
+  // アカウントとパスワードを送信してアクセストークンを返すようなAPI
+  // - アクセストークンは期限付きでサーバサイドに保存
+  // - POST/PUT/DELETE についてはアクセストークンを合わせて送信。サーバサイドでアクセストークンを処理して適切にリソース変更
+  // - フロント側ではアクセストークンをlocalStorageに保存してもOK
   await DefaultApiClient.readUsersApiReadUsersGet()
     .then(async (response) => {
       const users = response.data;
       const user = users.find((x) => x.account_name === account);
-      if (!user) {
-        throw new NoSignupError(account);
-      } else if (user.identification !== password) {
-        throw new InvalidPasswordError();
+      if (!user || user.identification !== password) {
+        throw new InvalidAccountOrPasswordError();
       } else {
         // TODO:サインイン成功処理の実装
       }

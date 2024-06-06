@@ -8,6 +8,7 @@ import AccountPasswordInput from "./AccountPasswordInput.vue";
 const accountPasswordInput = ref();
 
 async function onClickSignupButton(account: string, password: string) {
+  // TODO:サインアップサーバサイドで行うようにする
   await DefaultApiClient.readUsersApiReadUsersGet()
     .then(async (response) => {
       const users = response.data;
