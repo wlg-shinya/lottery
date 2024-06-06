@@ -31,7 +31,7 @@ function set(body: string, color: string) {
 <template>
   <div>
     <div v-show="showMessage()">
-      <pre :class="`${message.color} fw-bold text-start`">{{ message.body }}</pre>
+      <pre :class="`${message.color} fw-bold fs-6`">{{ message.body }}</pre>
     </div>
   </div>
 </template>

@@ -9,10 +9,10 @@ import Signin from "../components/Signin.vue";
 import Lottery from "../components/Lottery.vue";
 import LotteryList from "../components/LotteryList.vue";
 import LotteryHistoryList from "../components/LotteryHistoryList.vue";
-import Upload from "../components/Upload.vue";
+import UploadDownload from "../components/UploadDownload.vue";
 
 const modal = ref();
-const upload = ref();
+const uploadDownload = ref();
 
 const lotteryTopData = ref(structuredClone(defaultLotteryTopData));
 // データに変化あり次第ローカルストレージに保存
@@ -32,25 +32,12 @@ async function onStart() {
   });
 }
 
-function onSignin(accessToken: string) {
+async function onSignin(accessToken: string) {
   // サインインで取得したアクセストークンをローカルに保存
   lotteryTopData.value.accessToken = accessToken;
   // ローカルに作成したデータがない場合はダウンロードしてくる
   if (isDefaultLotteryListData.value) {
-    DefaultApiClient.readLotteriesByUserIdApiReadLotteriesByUserIdGet(Number(accessToken)).then((response) => {
-      lotteryTopData.value.listData.list = [];
-      for (const lottery of response.data) {
-        lotteryTopData.value.listData.list.push({
-          inputData: {
-            id: lottery.id,
-            text: lottery.text ?? "",
-            title: lottery.title ?? "",
-          },
-          resultData: defaultLotteryResultData,
-        });
-      }
-      lotteryTopData.value.listData.selectedIndex = 0;
-    });
+    await downloadData(accessToken);
   }
 }
 
@@ -70,8 +57,29 @@ function onChangeShowCountLotteryHistoryList(value: number) {
   selectedLotteryData.value.resultData.historyShowCount = value;
 }
 
-async function onClickUpload(accessToken: string) {
-  // 作成したくじ引きデータをDBに書き込む
+async function onUpload(accessToken: string) {
+  uploadData(accessToken);
+}
+
+async function onDownload(accessToken: string) {
+  downloadData(accessToken);
+}
+
+function showLotteryList(): boolean {
+  // 最初のデータでタイトルを入力したか、データが一つよりも多くある場合は表示ON
+  return lotteryTopData.value.listData.list[0].inputData.title !== "" || lotteryTopData.value.listData.list.length > 1;
+}
+
+function showLotteryHistoryList(): boolean {
+  // 履歴がひとつでもあれば表示ON
+  return selectedLotteryData.value.resultData.histories.length > 0;
+}
+
+function doClearHistory() {
+  selectedLotteryData.value.resultData.histories = [];
+}
+
+async function uploadData(accessToken: string) {
   try {
     for (const list of lotteryTopData.value.listData.list) {
       const data: LotteryCreate = {
@@ -93,25 +101,35 @@ async function onClickUpload(accessToken: string) {
     }
 
     // 正常終了
-    upload.value.setMessage("保存しました", "text-success");
+    uploadDownload.value.setMessage("サーバーに保存しました", "text-success");
   } catch (e: any) {
     const error = e as Error;
-    upload.value.setMessage(error.message, "text-danger");
+    uploadDownload.value.setMessage(error.message, "text-danger");
   }
 }
 
-function showLotteryList(): boolean {
-  // 最初のデータでタイトルを入力したか、データが一つよりも多くある場合は表示ON
-  return lotteryTopData.value.listData.list[0].inputData.title !== "" || lotteryTopData.value.listData.list.length > 1;
-}
+async function downloadData(accessToken: string) {
+  await DefaultApiClient.readLotteriesByUserIdApiReadLotteriesByUserIdGet(Number(accessToken))
+    .then((response) => {
+      lotteryTopData.value.listData.list = [];
+      for (const lottery of response.data) {
+        lotteryTopData.value.listData.list.push({
+          inputData: {
+            id: lottery.id,
+            text: lottery.text ?? "",
+            title: lottery.title ?? "",
+          },
+          resultData: defaultLotteryResultData,
+        });
+      }
+      lotteryTopData.value.listData.selectedIndex = 0;
 
-function showLotteryHistoryList(): boolean {
-  // 履歴がひとつでもあれば表示ON
-  return selectedLotteryData.value.resultData.histories.length > 0;
-}
-
-function doClearHistory() {
-  selectedLotteryData.value.resultData.histories = [];
+      // 正常終了
+      uploadDownload.value.setMessage("サーバーから読み込みました", "text-success");
+    })
+    .catch((error) => {
+      uploadDownload.value.setMessage(error.message, "text-danger");
+    });
 }
 
 onStart();
@@ -144,6 +162,6 @@ onStart();
       </tbody>
     </table>
     <hr />
-    <Upload ref="upload" @click="onClickUpload" :accessToken="lotteryTopData.accessToken" />
+    <UploadDownload ref="uploadDownload" @upload="onUpload" @download="onDownload" :accessToken="lotteryTopData.accessToken" />
   </div>
 </template>

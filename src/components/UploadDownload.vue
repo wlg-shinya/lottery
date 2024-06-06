@@ -7,13 +7,18 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  click: [accessToken: string];
+  upload: [accessToken: string];
+  download: [accessToken: string];
 }>();
 
 defineExpose({ setMessage });
 
-function onClickButton() {
-  emit("click", props.accessToken);
+function onClickUploadButton() {
+  emit("upload", props.accessToken);
+}
+
+function onClickDownloadButton() {
+  emit("download", props.accessToken);
 }
 
 const message = ref();
@@ -30,7 +35,10 @@ function setMessage(body: string, color: string) {
 
 <template>
   <div v-show="show()" class="d-flex flex-column align-items-center">
-    <button @click="onClickButton()" class="btn btn-success"><span class="mdi mdi-upload" />サーバーに保存</button>
+    <div>
+      <button @click="onClickUploadButton()" class="btn btn-success"><span class="mdi mdi-upload" />サーバーに保存</button>
+      <button @click="onClickDownloadButton()" class="btn btn-outline-success"><span class="mdi mdi-download" />サーバーから読込</button>
+    </div>
     <Message ref="message" />
   </div>
 </template>
