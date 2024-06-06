@@ -2,6 +2,7 @@
 import { ref, watch, computed } from "vue";
 import { type LotteryData, defaultLotteryData } from "../lottery-data";
 import FlexTextarea from "./FlexTextarea.vue";
+import RotateSlot from "./RotateSlot.vue";
 
 const INPUT_TEXT_PLACEHOLDER_TEXT = "一行がひとつのくじとなります\n空白行は無視されます";
 
@@ -72,6 +73,9 @@ function showInputTitle(): boolean {
       <div class="w-100">
         <button @click="onClickLotteryButton()" class="btn btn-primary btn-lg w-100">抽選</button>
       </div>
+      <div v-show="!showResult()">
+        <RotateSlot :slots="lotteryTargets" slotClass="fs-1" />
+      </div>
       <div v-show="showResult()">
         <span>結果</span>
         <h1>{{ data.result.result }}</h1>
@@ -79,12 +83,7 @@ function showInputTitle(): boolean {
       <div v-show="showInputTitle()" class="w-100">
         <div class="input-group">
           <span class="input-group-text">くじ引き名</span>
-          <input
-            v-model="data.input.title"
-            class="form-control"
-            placeholder="名前をつけると別のくじ引きも作成できるようになります"
-            :disabled="!editable"
-          />
+          <input v-model="data.input.title" class="form-control" placeholder="名前をつけると別のくじ引きも作成できます" :disabled="!editable" />
         </div>
       </div>
     </div>
