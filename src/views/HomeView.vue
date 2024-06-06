@@ -3,7 +3,6 @@ import { ref, watch, computed } from "vue";
 import { type LotteryData, defaultLotteryTopData, defaultLotteryListData, defaultLotteryResultData } from "../lottery-data";
 import LocalStorageLottery from "../local-storage-lottery";
 import { DefaultApiClient, LotteryCreate } from "../openapi";
-import { CanNotSaveLotteryError } from "../error";
 import Modal from "../components/Modal.vue";
 import Signin from "../components/Signin.vue";
 import Lottery from "../components/Lottery.vue";
@@ -89,13 +88,13 @@ async function uploadData(accessToken: string) {
       };
       if (list.inputData.id < 0) {
         // IDが未定なら新規追加
-        await DefaultApiClient.createLotteryApiCreateLotteryPost(data).catch(() => {
-          throw new CanNotSaveLotteryError(data);
+        await DefaultApiClient.createLotteryApiCreateLotteryPost(data).catch((error) => {
+          throw error;
         });
       } else {
         // IDが設定済みなら更新
-        await DefaultApiClient.updateLotteryApiUpdateLotteryPut(list.inputData.id, data).catch(() => {
-          throw new CanNotSaveLotteryError(data);
+        await DefaultApiClient.updateLotteryApiUpdateLotteryPut(list.inputData.id, data).catch((error) => {
+          throw error;
         });
       }
     }
