@@ -19,6 +19,16 @@ async def read_lotteries(
     result = await db.execute(select(Model.id, Model.user_id, Model.text, Model.title))
     return result.all()
 
+async def read_lotteries_by_user_id(
+    db: AsyncSession, user_id: int
+) -> List[schema.Lotteries]:
+    result = await db.execute(
+        select(Model.id, Model.user_id, Model.text, Model.title)
+        .filter(Model.user_id == user_id)
+        )
+    return result.all()
+
+
 async def read_lottery(
     db: AsyncSession, id: int
 ) -> Model | None:

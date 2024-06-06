@@ -409,6 +409,43 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
+         * @summary Read Lotteries By User Id
+         * @param {number} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        readLotteriesByUserIdApiReadLotteriesByUserIdGet: async (userId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('readLotteriesByUserIdApiReadLotteriesByUserIdGet', 'userId', userId)
+            const localVarPath = `/api/read_lotteries_by_user_id`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (userId !== undefined) {
+                localVarQueryParameter['user_id'] = userId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Read Users
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -599,6 +636,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Read Lotteries By User Id
+         * @param {number} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async readLotteriesByUserIdApiReadLotteriesByUserIdGet(userId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Lotteries>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.readLotteriesByUserIdApiReadLotteriesByUserIdGet(userId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.readLotteriesByUserIdApiReadLotteriesByUserIdGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Read Users
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -698,6 +748,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
+         * @summary Read Lotteries By User Id
+         * @param {number} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        readLotteriesByUserIdApiReadLotteriesByUserIdGet(userId: number, options?: any): AxiosPromise<Array<Lotteries>> {
+            return localVarFp.readLotteriesByUserIdApiReadLotteriesByUserIdGet(userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Read Users
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -794,6 +854,18 @@ export class DefaultApi extends BaseAPI {
      */
     public readLotteriesApiReadLotteriesGet(options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).readLotteriesApiReadLotteriesGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Read Lotteries By User Id
+     * @param {number} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public readLotteriesByUserIdApiReadLotteriesByUserIdGet(userId: number, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).readLotteriesByUserIdApiReadLotteriesByUserIdGet(userId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

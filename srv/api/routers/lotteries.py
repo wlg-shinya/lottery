@@ -16,6 +16,10 @@ async def create_lottery(body: schema.LotteryCreate, db: AsyncSession = Depends(
 async def read_lotteries(db: AsyncSession = Depends(db)):
     return await crud.read_lotteries(db)
 
+@router.get("/api/read_lotteries_by_user_id", response_model=List[schema.Lotteries])
+async def read_lotteries_by_user_id(user_id: int, db: AsyncSession = Depends(db)):
+    return await crud.read_lotteries_by_user_id(db, user_id=user_id)
+
 @router.put("/api/update_lottery", response_model=schema.LotteryCreateResponse)
 async def update_lottery(id: int, body: schema.LotteryCreate, db: AsyncSession = Depends(db)):
     model = await read_lottery_with_errorcheck(id, db)
