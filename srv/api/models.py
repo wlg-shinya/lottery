@@ -9,8 +9,8 @@ class BaseModel(Base):
     __abstract__ = True
 
     id = Column(INTEGER, primary_key=True, autoincrement=True)
-    created_at = Column(TIMESTAMP(timezone=True), server_default=current_timestamp(), nullable=False, comment="作成日時")
-    updated_at = Column(TIMESTAMP(timezone=True), onupdate=current_timestamp(), comment="更新日時")
+    created_at = Column(TIMESTAMP(timezone=True), server_default=current_timestamp(), nullable=False)
+    updated_at = Column(TIMESTAMP(timezone=True), onupdate=current_timestamp())
 
 class Lotteries(BaseModel):
     __tablename__ = "lotteries"
@@ -24,3 +24,10 @@ class Users(BaseModel):
 
     account_name = Column(VARCHAR(128), nullable=False)
     identification = Column(VARCHAR(128), nullable=False)
+
+class Tokens(BaseModel):
+    __tablename__ = "tokens"
+
+    access_token = Column(VARCHAR(64), nullable=False)
+    user_id = Column(INTEGER, nullable=False)
+    expire_at = Column(TIMESTAMP(timezone=True), nullable=False)
