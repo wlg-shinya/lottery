@@ -48,7 +48,7 @@ function onClickSignupButton() {
         buttonClass="btn-outline-primary"
         buttonText="サインイン"
       />
-      <button @click="onClickSignupButton" class="btn btn-link">作ったくじ引きを保存したい？ならばアカウント登録です</button>
+      <button @click="onClickSignupButton" class="btn btn-link">作ったくじ引きをサーバーに保存したい？ならばアカウント登録です</button>
     </div>
   </div>
 </template>

@@ -77,7 +77,7 @@ onStart();
             <LotteryList v-show="showLotteryList()" @select="onSelectLotteryList" :initData="lotteryListData" />
           </td>
           <td class="col-4">
-            <Lottery @change="onChangeLottery" :initData="selectedLotteryData" />
+            <Lottery @change="onChangeLottery" :initData="selectedLotteryData" :accessToken="lotteryTopData.accessToken" />
           </td>
           <td class="col-4">
             <LotteryHistoryList
