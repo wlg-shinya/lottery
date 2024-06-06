@@ -9,7 +9,6 @@ const LOTTERY_TARGETS_SHOW_CLASS = "fs-1 fw-bold";
 
 const props = defineProps<{
   initData: LotteryData;
-  accessToken: string;
 }>();
 
 const emit = defineEmits<{
@@ -51,8 +50,6 @@ function onInputFlexTextarea(inputText: string) {
   data.value.inputData.text = inputText;
 }
 
-function onClickUploadDataButton() {}
-
 function random(max: number) {
   return Math.floor(Math.random() * max);
 }
@@ -70,11 +67,6 @@ function showResult(): boolean {
 function showInputTitle(): boolean {
   // 抽選対象が入力されていれば表示ON
   return data.value.inputData.text !== "";
-}
-
-function showUploadData(): boolean {
-  // アクセストークンが取得できていれば表示ON
-  return props.accessToken !== "";
 }
 </script>
 
@@ -109,10 +101,6 @@ function showUploadData(): boolean {
           <span class="input-group-text">くじ引き名</span>
           <input v-model="data.inputData.title" class="form-control" placeholder="名前をつけると別のくじ引きも作成できます" :disabled="!editable" />
         </div>
-      </div>
-      <br />
-      <div v-show="showUploadData()">
-        <button @click="onClickUploadDataButton()" class="btn btn-success"><span class="mdi mdi-upload" />サーバーに保存</button>
       </div>
     </div>
   </div>

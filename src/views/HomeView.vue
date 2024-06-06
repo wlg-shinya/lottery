@@ -7,6 +7,7 @@ import Signin from "../components/Signin.vue";
 import Lottery from "../components/Lottery.vue";
 import LotteryList from "../components/LotteryList.vue";
 import LotteryHistoryList from "../components/LotteryHistoryList.vue";
+import Upload from "../components/Upload.vue";
 
 const modal = ref();
 
@@ -30,6 +31,7 @@ async function onStart() {
 
 function onSignin(accessToken: string) {
   lotteryTopData.value.accessToken = accessToken;
+  // TODO:自分が作成したおみくじデータのダウンロード
 }
 
 function onSelectLotteryList(index: number) {
@@ -46,6 +48,10 @@ function onClearHistoryLotteryHistoryList() {
 
 function onChangeShowCountLotteryHistoryList(value: number) {
   selectedLotteryData.value.resultData.historyShowCount = value;
+}
+
+function onClickUpload(accessToken: string) {
+  console.log(accessToken);
 }
 
 function showLotteryList(): boolean {
@@ -77,7 +83,7 @@ onStart();
             <LotteryList v-show="showLotteryList()" @select="onSelectLotteryList" :initData="lotteryListData" />
           </td>
           <td class="col-4">
-            <Lottery @change="onChangeLottery" :initData="selectedLotteryData" :accessToken="lotteryTopData.accessToken" />
+            <Lottery @change="onChangeLottery" :initData="selectedLotteryData" />
           </td>
           <td class="col-4">
             <LotteryHistoryList
@@ -91,5 +97,7 @@ onStart();
         </tr>
       </tbody>
     </table>
+    <hr />
+    <Upload @click="onClickUpload" :accessToken="lotteryTopData.accessToken" />
   </div>
 </template>
