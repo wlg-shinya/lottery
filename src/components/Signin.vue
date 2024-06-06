@@ -6,6 +6,7 @@ import { DefaultApiClient } from "../openapi";
 import AccountPasswordInput from "./AccountPasswordInput.vue";
 
 const accountPasswordInput = ref();
+const accessToken = ref("");
 
 async function onClickSigninButton(account: string, password: string) {
   // TODO:サインインをサーバサイドで行うようにする
@@ -21,7 +22,7 @@ async function onClickSigninButton(account: string, password: string) {
       if (!user || user.identification !== password) {
         throw new InvalidAccountOrPasswordError();
       } else {
-        // TODO:サインイン成功処理の実装
+        accessToken.value = user.id.toString();
       }
     })
     .catch((error: Error) => {

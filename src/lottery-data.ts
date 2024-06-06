@@ -21,13 +21,13 @@ export const defaultLotteryResultData: LotteryResultData = {
 };
 
 export interface LotteryData {
-  input: LotteryUserInputData;
-  result: LotteryResultData;
+  inputData: LotteryUserInputData;
+  resultData: LotteryResultData;
 }
 
 export const defaultLotteryData: LotteryData = {
-  input: defaultLotteryUserInputData,
-  result: defaultLotteryResultData,
+  inputData: defaultLotteryUserInputData,
+  resultData: defaultLotteryResultData,
 };
 
 export interface LotteryListData {
@@ -38,4 +38,14 @@ export interface LotteryListData {
 export const defaultLotteryListData: LotteryListData = {
   list: [defaultLotteryData],
   selectedIndex: 0,
+};
+
+export interface LotteryTopData {
+  accessToken: string;
+  listData: LotteryListData;
+}
+
+export const defaultLotteryTopData: LotteryTopData = {
+  accessToken: "",
+  listData: defaultLotteryListData,
 };

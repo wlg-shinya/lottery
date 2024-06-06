@@ -75,7 +75,7 @@ function doDelete(index: number) {
           :class="listData.selectedIndex === index ? 'table-active' : ''"
         >
           <td>{{ index }}</td>
-          <td>{{ d.input.title }}</td>
+          <td>{{ d.inputData.title }}</td>
           <td>
             <button @click.stop="onClickDeleteButton(index)" class="btn btn-danger"><span class="mdi mdi-trash-can" /></button>
           </td>

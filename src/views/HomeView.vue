@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
-import { type LotteryData, defaultLotteryListData } from "../lottery-data";
+import { ref, watch, computed } from "vue";
+import { type LotteryData, defaultLotteryTopData } from "../lottery-data";
 import LocalStorageLottery from "../local-storage-lottery";
 import Modal from "../components/Modal.vue";
 import Signin from "../components/Signin.vue";
@@ -10,20 +10,21 @@ import LotteryHistoryList from "../components/LotteryHistoryList.vue";
 
 const modal = ref();
 
-const lotteryListData = ref(structuredClone(defaultLotteryListData));
+const lotteryTopData = ref(structuredClone(defaultLotteryTopData));
 // データに変化あり次第ローカルストレージに保存
 watch(
-  () => lotteryListData,
-  () => LocalStorageLottery.save(lotteryListData.value),
+  () => lotteryTopData,
+  () => LocalStorageLottery.save(lotteryTopData.value),
   { deep: true }
 );
 
-const selectedLotteryData = () => lotteryListData.value.list[lotteryListData.value.selectedIndex];
+const lotteryListData = computed(() => lotteryTopData.value.listData);
+const selectedLotteryData = computed(() => lotteryListData.value.list[lotteryListData.value.selectedIndex]);
 
 async function onStart() {
   await LocalStorageLottery.setup();
   await LocalStorageLottery.load().then((result) => {
-    lotteryListData.value = result;
+    lotteryTopData.value = result;
   });
 }
 
@@ -40,21 +41,21 @@ function onClearHistoryLotteryHistoryList() {
 }
 
 function onChangeShowCountLotteryHistoryList(value: number) {
-  selectedLotteryData().result.historyShowCount = value;
+  selectedLotteryData.value.resultData.historyShowCount = value;
 }
 
 function showLotteryList(): boolean {
   // 最初のデータでタイトルを入力したか、データが一つよりも多くある場合は表示ON
-  return lotteryListData.value.list[0].input.title !== "" || lotteryListData.value.list.length > 1;
+  return lotteryListData.value.list[0].inputData.title !== "" || lotteryListData.value.list.length > 1;
 }
 
 function showLotteryHistoryList(): boolean {
   // 履歴がひとつでもあれば表示ON
-  return selectedLotteryData().result.histories.length > 0;
+  return selectedLotteryData.value.resultData.histories.length > 0;
 }
 
 function doClearHistory() {
-  selectedLotteryData().result.histories = [];
+  selectedLotteryData.value.resultData.histories = [];
 }
 
 onStart();
@@ -72,15 +73,15 @@ onStart();
             <LotteryList v-show="showLotteryList()" @select="onSelectLotteryList" :initData="lotteryListData" />
           </td>
           <td class="col-4">
-            <Lottery @change="onChangeLottery" :initData="selectedLotteryData()" />
+            <Lottery @change="onChangeLottery" :initData="selectedLotteryData" />
           </td>
           <td class="col-4">
             <LotteryHistoryList
               v-show="showLotteryHistoryList()"
               @clearHistory="onClearHistoryLotteryHistoryList"
               @changeShowCount="onChangeShowCountLotteryHistoryList"
-              :histories="selectedLotteryData().result.histories"
-              :initShowCount="selectedLotteryData().result.historyShowCount"
+              :histories="selectedLotteryData.resultData.histories"
+              :initShowCount="selectedLotteryData.resultData.historyShowCount"
             />
           </td>
         </tr>

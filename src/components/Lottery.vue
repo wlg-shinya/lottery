@@ -30,7 +30,7 @@ watch(
 
 // 抽選対象群
 // INPUT_TEXT_PLACEHOLDER_TEXT の条件をここで表現
-const lotteryTargets = computed(() => data.value.input.text.split("\n").filter((x) => x));
+const lotteryTargets = computed(() => data.value.inputData.text.split("\n").filter((x) => x));
 
 function onClickLotteryButton() {
   // 抽選対象がなければ何もしない
@@ -38,16 +38,16 @@ function onClickLotteryButton() {
   // 抽選
   const result = lotteryTargets.value[random(lotteryTargets.value.length)];
   // 結果の記録と履歴保存
-  data.value.result.result = result;
-  data.value.result.histories.push(result);
+  data.value.resultData.result = result;
+  data.value.resultData.histories.push(result);
 }
 
 function onClickResultClearButton() {
-  data.value.result.result = "";
+  data.value.resultData.result = "";
 }
 
 function onInputFlexTextarea(inputText: string) {
-  data.value.input.text = inputText;
+  data.value.inputData.text = inputText;
 }
 
 function random(max: number) {
@@ -61,12 +61,12 @@ function showRotateSlot(): boolean {
 
 function showResult(): boolean {
   // 抽選結果があれば表示ON
-  return data.value.result.result !== "";
+  return data.value.resultData.result !== "";
 }
 
 function showInputTitle(): boolean {
   // 抽選対象が入力されていれば表示ON
-  return data.value.input.text !== "";
+  return data.value.inputData.text !== "";
 }
 </script>
 
@@ -76,7 +76,7 @@ function showInputTitle(): boolean {
       <FlexTextarea
         class="w-100"
         @input="onInputFlexTextarea"
-        :initText="data.input.text"
+        :initText="data.inputData.text"
         :placeholder="INPUT_TEXT_PLACEHOLDER_TEXT"
         :disabled="!editable"
       />
@@ -92,14 +92,14 @@ function showInputTitle(): boolean {
       <div v-show="showResult()">
         <div class="d-flex flex-column align-items-center">
           <span>結果</span>
-          <div :class="LOTTERY_TARGETS_SHOW_CLASS">{{ data.result.result }}</div>
+          <div :class="LOTTERY_TARGETS_SHOW_CLASS">{{ data.resultData.result }}</div>
           <button @click="onClickResultClearButton()" class="btn btn-outline-danger"><span class="mdi mdi-eraser" />結果を消す</button>
         </div>
       </div>
       <div v-show="showInputTitle()" class="w-100">
         <div class="input-group">
           <span class="input-group-text">くじ引き名</span>
-          <input v-model="data.input.title" class="form-control" placeholder="名前をつけると別のくじ引きも作成できます" :disabled="!editable" />
+          <input v-model="data.inputData.title" class="form-control" placeholder="名前をつけると別のくじ引きも作成できます" :disabled="!editable" />
         </div>
       </div>
     </div>

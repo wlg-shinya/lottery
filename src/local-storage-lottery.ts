@@ -1,9 +1,9 @@
 import { LocalStorage } from "./storage";
-import { type LotteryListData, defaultLotteryListData } from "./lottery-data";
+import { type LotteryTopData, defaultLotteryTopData } from "./lottery-data";
 
-class LocalStorageLottery extends LocalStorage<LotteryListData> {
+class LocalStorageLottery extends LocalStorage<LotteryTopData> {
   constructor() {
-    super(LocalStorageLottery.name, defaultLotteryListData);
+    super(LocalStorageLottery.name, defaultLotteryTopData);
   }
 }
 
