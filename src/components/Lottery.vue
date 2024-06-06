@@ -42,6 +42,10 @@ function onClickLotteryButton() {
   data.value.result.histories.push(result);
 }
 
+function onClickResultClearButton() {
+  data.value.result.result = "";
+}
+
 function onInputFlexTextarea(inputText: string) {
   data.value.input.text = inputText;
 }
@@ -52,7 +56,7 @@ function random(max: number) {
 
 function showRotateSlot(): boolean {
   // 結果が表示される状況じゃなく、抽選対象が2個以上ある場合に表示
-  return true || (!showResult() && lotteryTargets.value.length > 1);
+  return !showResult() && lotteryTargets.value.length > 1;
 }
 
 function showResult(): boolean {
@@ -89,7 +93,7 @@ function showInputTitle(): boolean {
         <div class="d-flex flex-column align-items-center">
           <span>結果</span>
           <div :class="LOTTERY_TARGETS_SHOW_CLASS">{{ data.result.result }}</div>
-          <button class="btn btn-info">クリア</button>
+          <button @click="onClickResultClearButton()" class="btn btn-outline-danger"><span class="mdi mdi-eraser" />結果を消す</button>
         </div>
       </div>
       <div v-show="showInputTitle()" class="w-100">
