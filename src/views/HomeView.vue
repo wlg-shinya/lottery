@@ -3,6 +3,7 @@ import { ref, watch, computed } from "vue";
 import { type LotteryData, defaultLotteryTopData } from "../lottery-data";
 import LocalStorageLottery from "../local-storage-lottery";
 import { DefaultApiClient, LotteryCreate } from "../openapi";
+import { CanNotCreateLotteryError, CanNotUpdateLotteryError } from "../error";
 import Modal from "../components/Modal.vue";
 import Signin from "../components/Signin.vue";
 import Lottery from "../components/Lottery.vue";
@@ -11,6 +12,7 @@ import LotteryHistoryList from "../components/LotteryHistoryList.vue";
 import Upload from "../components/Upload.vue";
 
 const modal = ref();
+const upload = ref();
 
 const lotteryTopData = ref(structuredClone(defaultLotteryTopData));
 // データに変化あり次第ローカルストレージに保存
@@ -32,7 +34,10 @@ async function onStart() {
 
 function onSignin(accessToken: string) {
   lotteryTopData.value.accessToken = accessToken;
-  // TODO:自分が作成したおみくじデータのダウンロード
+  // 自分が作成したおみくじデータのダウンロード
+  // DefaultApiClient.readLotteriesApiReadLotteriesGet().then((response) => {
+  //   response.filter()
+  // });
 }
 
 function onSelectLotteryList(index: number) {
@@ -53,19 +58,31 @@ function onChangeShowCountLotteryHistoryList(value: number) {
 
 function onClickUpload(accessToken: string) {
   // 作成したくじ引きデータをDBに書き込む
-  for (const list of lotteryListData.value.list) {
-    const data: LotteryCreate = {
-      user_id: Number(accessToken), // TODO:OpenAPI側もアクセストークンで処理するように変更
-      text: list.inputData.text,
-      title: list.inputData.title,
-    };
-    if (list.inputData.id < 0) {
-      // IDが未定なら新規追加
-      DefaultApiClient.createLotteryApiCreateLotteryPost(data);
-    } else {
-      // IDが設定済みなら更新
-      DefaultApiClient.updateLotteryApiUpdateLotteryPut(list.inputData.id, data);
+  try {
+    for (const list of lotteryListData.value.list) {
+      const data: LotteryCreate = {
+        user_id: Number(accessToken), // TODO:OpenAPI側もアクセストークンで処理するように変更
+        text: list.inputData.text,
+        title: list.inputData.title,
+      };
+      if (list.inputData.id < 0) {
+        // IDが未定なら新規追加
+        DefaultApiClient.createLotteryApiCreateLotteryPost(data).catch(() => {
+          throw new CanNotCreateLotteryError(data);
+        });
+      } else {
+        // IDが設定済みなら更新
+        DefaultApiClient.updateLotteryApiUpdateLotteryPut(list.inputData.id, data).catch(() => {
+          throw new CanNotUpdateLotteryError({ 999: list.inputData.id, data });
+        });
+      }
     }
+
+    // 正常終了
+    upload.value.setMessage("保存しました", "text-success");
+  } catch (e: any) {
+    const error = e as Error;
+    upload.value.setMessage(error.message, "text-danger");
   }
 }
 
@@ -113,6 +130,6 @@ onStart();
       </tbody>
     </table>
     <hr />
-    <Upload @click="onClickUpload" :accessToken="lotteryTopData.accessToken" />
+    <Upload ref="upload" @click="onClickUpload" :accessToken="lotteryTopData.accessToken" />
   </div>
 </template>
