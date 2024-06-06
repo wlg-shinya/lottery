@@ -85,7 +85,7 @@ function showInputTitle(): boolean {
       </div>
       <div v-show="showRotateSlot()">
         <div class="d-flex flex-column align-items-center">
-          <span>抽選待ち</span>
+          <span>...</span>
           <RotateSlot :slots="lotteryTargets" :slotClass="LOTTERY_TARGETS_SHOW_CLASS" />
         </div>
       </div>
