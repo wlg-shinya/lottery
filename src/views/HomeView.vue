@@ -3,7 +3,7 @@ import { ref, watch, computed } from "vue";
 import { type LotteryData, defaultLotteryTopData, defaultLotteryListData, defaultLotteryResultData } from "../lottery-data";
 import LocalStorageLottery from "../local-storage-lottery";
 import { DefaultApiClient, LotteryCreate } from "../openapi";
-import { CanNotCreateLotteryError, CanNotUpdateLotteryError } from "../error";
+import { CanNotSaveLotteryError } from "../error";
 import Modal from "../components/Modal.vue";
 import Signin from "../components/Signin.vue";
 import Lottery from "../components/Lottery.vue";
@@ -70,7 +70,7 @@ function onChangeShowCountLotteryHistoryList(value: number) {
   selectedLotteryData.value.resultData.historyShowCount = value;
 }
 
-function onClickUpload(accessToken: string) {
+async function onClickUpload(accessToken: string) {
   // 作成したくじ引きデータをDBに書き込む
   try {
     for (const list of lotteryTopData.value.listData.list) {
@@ -81,13 +81,13 @@ function onClickUpload(accessToken: string) {
       };
       if (list.inputData.id < 0) {
         // IDが未定なら新規追加
-        DefaultApiClient.createLotteryApiCreateLotteryPost(data).catch(() => {
-          throw new CanNotCreateLotteryError(data);
+        await DefaultApiClient.createLotteryApiCreateLotteryPost(data).catch(() => {
+          throw new CanNotSaveLotteryError(data);
         });
       } else {
         // IDが設定済みなら更新
-        DefaultApiClient.updateLotteryApiUpdateLotteryPut(list.inputData.id, data).catch(() => {
-          throw new CanNotUpdateLotteryError({ 999: list.inputData.id, data });
+        await DefaultApiClient.updateLotteryApiUpdateLotteryPut(list.inputData.id, data).catch(() => {
+          throw new CanNotSaveLotteryError(data);
         });
       }
     }

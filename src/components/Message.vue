@@ -29,9 +29,9 @@ function set(body: string, color: string) {
 </script>
 
 <template>
-  <div class="d-flex justify-content-center">
-    <div v-show="showMessage()" class="text-center">
-      <span :class="`${message.color} fw-bold`">{{ message.body }}</span>
+  <div>
+    <div v-show="showMessage()">
+      <pre :class="`${message.color} fw-bold text-start`">{{ message.body }}</pre>
     </div>
   </div>
 </template>

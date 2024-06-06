@@ -1,3 +1,5 @@
+import { LotteryCreate } from "./openapi";
+
 export class AlreadyExistsError implements Error {
   name = "AlreadyExistsError";
   message = "すでに存在しています";
@@ -16,24 +18,13 @@ export class InvalidAccountOrPasswordError implements Error {
   constructor() {}
 }
 
-export class CanNotCreateLotteryError implements Error {
-  name = "CanNotCreateLotteryError";
-  message = "くじ引きデータを新規追加できませんでした";
-
-  constructor(target?: object) {
-    if (target) {
-      this.message = `${this.message}\n${target}`;
-    }
-  }
-}
-
-export class CanNotUpdateLotteryError implements Error {
+export class CanNotSaveLotteryError implements Error {
   name = "CanNotUpdateLotteryError";
-  message = "くじ引きデータを更新できませんでした";
+  message = "くじ引きデータを保存できませんでした";
 
-  constructor(target?: object) {
+  constructor(target?: LotteryCreate) {
     if (target) {
-      this.message = `${this.message}\n${target}`;
+      this.message = `${this.message}\nuser_id: ${target.user_id},\ntext: ${target.text},\ntitle: ${target.title}`;
     }
   }
 }
