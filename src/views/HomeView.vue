@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
-import { type LotteryData, defaultLotteryTopData } from "../lottery-data";
+import { type LotteryData, defaultLotteryTopData, defaultLotteryListData, defaultLotteryResultData } from "../lottery-data";
 import LocalStorageLottery from "../local-storage-lottery";
 import { DefaultApiClient, LotteryCreate } from "../openapi";
 import { CanNotCreateLotteryError, CanNotUpdateLotteryError } from "../error";
@@ -22,8 +22,8 @@ watch(
   { deep: true }
 );
 
-const lotteryListData = computed(() => lotteryTopData.value.listData);
-const selectedLotteryData = computed(() => lotteryListData.value.list[lotteryListData.value.selectedIndex]);
+const selectedLotteryData = computed(() => lotteryTopData.value.listData.list[lotteryTopData.value.listData.selectedIndex]);
+const isDefaultLotteryListData = computed(() => JSON.stringify(lotteryTopData.value.listData) === JSON.stringify(defaultLotteryListData));
 
 async function onStart() {
   await LocalStorageLottery.setup();
@@ -33,19 +33,33 @@ async function onStart() {
 }
 
 function onSignin(accessToken: string) {
+  // サインインで取得したアクセストークンをローカルに保存
   lotteryTopData.value.accessToken = accessToken;
-  // 自分が作成したおみくじデータのダウンロード
-  // DefaultApiClient.readLotteriesApiReadLotteriesGet().then((response) => {
-  //   response.filter()
-  // });
+  // ローカルに作成したデータがない場合はダウンロードしてくる
+  if (isDefaultLotteryListData.value) {
+    DefaultApiClient.readLotteriesByUserIdApiReadLotteriesByUserIdGet(Number(accessToken)).then((response) => {
+      lotteryTopData.value.listData.list = [];
+      for (const lottery of response.data) {
+        lotteryTopData.value.listData.list.push({
+          inputData: {
+            id: lottery.id,
+            text: lottery.text ?? "",
+            title: lottery.title ?? "",
+          },
+          resultData: defaultLotteryResultData,
+        });
+      }
+      lotteryTopData.value.listData.selectedIndex = 0;
+    });
+  }
 }
 
 function onSelectLotteryList(index: number) {
-  lotteryListData.value.selectedIndex = index;
+  lotteryTopData.value.listData.selectedIndex = index;
 }
 
 function onChangeLottery(data: LotteryData) {
-  lotteryListData.value.list[lotteryListData.value.selectedIndex] = data;
+  lotteryTopData.value.listData.list[lotteryTopData.value.listData.selectedIndex] = data;
 }
 
 function onClearHistoryLotteryHistoryList() {
@@ -59,7 +73,7 @@ function onChangeShowCountLotteryHistoryList(value: number) {
 function onClickUpload(accessToken: string) {
   // 作成したくじ引きデータをDBに書き込む
   try {
-    for (const list of lotteryListData.value.list) {
+    for (const list of lotteryTopData.value.listData.list) {
       const data: LotteryCreate = {
         user_id: Number(accessToken), // TODO:OpenAPI側もアクセストークンで処理するように変更
         text: list.inputData.text,
@@ -88,7 +102,7 @@ function onClickUpload(accessToken: string) {
 
 function showLotteryList(): boolean {
   // 最初のデータでタイトルを入力したか、データが一つよりも多くある場合は表示ON
-  return lotteryListData.value.list[0].inputData.title !== "" || lotteryListData.value.list.length > 1;
+  return lotteryTopData.value.listData.list[0].inputData.title !== "" || lotteryTopData.value.listData.list.length > 1;
 }
 
 function showLotteryHistoryList(): boolean {
@@ -112,7 +126,7 @@ onStart();
       <tbody>
         <tr>
           <td class="col-4">
-            <LotteryList v-show="showLotteryList()" @select="onSelectLotteryList" :initData="lotteryListData" />
+            <LotteryList v-show="showLotteryList()" @select="onSelectLotteryList" :initData="lotteryTopData.listData" />
           </td>
           <td class="col-4">
             <Lottery @change="onChangeLottery" :initData="selectedLotteryData" />
