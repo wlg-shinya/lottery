@@ -2,6 +2,7 @@
 import { ref, watch, computed } from "vue";
 import { type LotteryData, defaultLotteryTopData } from "../lottery-data";
 import LocalStorageLottery from "../local-storage-lottery";
+import { DefaultApiClient, LotteryCreate } from "../openapi";
 import Modal from "../components/Modal.vue";
 import Signin from "../components/Signin.vue";
 import Lottery from "../components/Lottery.vue";
@@ -51,7 +52,21 @@ function onChangeShowCountLotteryHistoryList(value: number) {
 }
 
 function onClickUpload(accessToken: string) {
-  console.log(accessToken);
+  // 作成したくじ引きデータをDBに書き込む
+  for (const list of lotteryListData.value.list) {
+    const data: LotteryCreate = {
+      user_id: Number(accessToken), // TODO:OpenAPI側もアクセストークンで処理するように変更
+      text: list.inputData.text,
+      title: list.inputData.title,
+    };
+    if (list.inputData.id < 0) {
+      // IDが未定なら新規追加
+      DefaultApiClient.createLotteryApiCreateLotteryPost(data);
+    } else {
+      // IDが設定済みなら更新
+      DefaultApiClient.updateLotteryApiUpdateLotteryPut(list.inputData.id, data);
+    }
+  }
 }
 
 function showLotteryList(): boolean {
