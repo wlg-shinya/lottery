@@ -28,6 +28,10 @@ async function onStart() {
   });
 }
 
+function onSignin(accessToken: string) {
+  lotteryTopData.value.accessToken = accessToken;
+}
+
 function onSelectLotteryList(index: number) {
   lotteryListData.value.selectedIndex = index;
 }
@@ -64,7 +68,7 @@ onStart();
 <template>
   <div>
     <Modal ref="modal" />
-    <Signin />
+    <Signin @signin="onSignin" />
     <hr />
     <table class="table table-borderless">
       <tbody>

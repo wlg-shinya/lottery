@@ -5,8 +5,11 @@ import { InvalidAccountOrPasswordError } from "../error";
 import { DefaultApiClient } from "../openapi";
 import AccountPasswordInput from "./AccountPasswordInput.vue";
 
+const emit = defineEmits<{
+  signin: [accessToken: string];
+}>();
+
 const accountPasswordInput = ref();
-const accessToken = ref("");
 
 async function onClickSigninButton(account: string, password: string) {
   // TODO:サインインをサーバサイドで行うようにする
@@ -22,7 +25,7 @@ async function onClickSigninButton(account: string, password: string) {
       if (!user || user.identification !== password) {
         throw new InvalidAccountOrPasswordError();
       } else {
-        accessToken.value = user.id.toString();
+        emit("signin", user.id.toString());
       }
     })
     .catch((error: Error) => {
