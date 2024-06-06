@@ -5,6 +5,7 @@ import FlexTextarea from "./FlexTextarea.vue";
 import RotateSlot from "./RotateSlot.vue";
 
 const INPUT_TEXT_PLACEHOLDER_TEXT = "一行がひとつのくじとなります\n空白行は無視されます";
+const LOTTERY_TARGETS_SHOW_CLASS = "fs-1 fw-bold";
 
 const props = defineProps<{
   initData: LotteryData;
@@ -49,6 +50,11 @@ function random(max: number) {
   return Math.floor(Math.random() * max);
 }
 
+function showRotateSlot(): boolean {
+  // 結果が表示される状況じゃなく、抽選対象が2個以上ある場合に表示
+  return true || (!showResult() && lotteryTargets.value.length > 1);
+}
+
 function showResult(): boolean {
   // 抽選結果があれば表示ON
   return data.value.result.result !== "";
@@ -73,12 +79,18 @@ function showInputTitle(): boolean {
       <div class="w-100">
         <button @click="onClickLotteryButton()" class="btn btn-primary btn-lg w-100">抽選</button>
       </div>
-      <div v-show="!showResult()">
-        <RotateSlot :slots="lotteryTargets" slotClass="fs-1" />
+      <div v-show="showRotateSlot()">
+        <div class="d-flex flex-column align-items-center">
+          <span>抽選待ち</span>
+          <RotateSlot :slots="lotteryTargets" :slotClass="LOTTERY_TARGETS_SHOW_CLASS" />
+        </div>
       </div>
       <div v-show="showResult()">
-        <span>結果</span>
-        <h1>{{ data.result.result }}</h1>
+        <div class="d-flex flex-column align-items-center">
+          <span>結果</span>
+          <div :class="LOTTERY_TARGETS_SHOW_CLASS">{{ data.result.result }}</div>
+          <button class="btn btn-info">クリア</button>
+        </div>
       </div>
       <div v-show="showInputTitle()" class="w-100">
         <div class="input-group">

@@ -7,6 +7,6 @@ const props = defineProps<{
 
 <template>
   <div>
-    <span :class="slotClass">{{ slots[0] }}</span>
+    <div :class="slotClass">{{ slots[0] }}</div>
   </div>
 </template>
