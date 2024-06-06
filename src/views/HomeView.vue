@@ -56,17 +56,20 @@ function onChangeShowCountLotteryHistoryList(value: number) {
   selectedLotteryData.value.resultData.historyShowCount = value;
 }
 
-async function onUpload(accessToken: string) {
-  uploadData(accessToken);
+async function onUpload() {
+  uploadData(lotteryTopData.value.accessToken);
 }
 
-async function onDownload(accessToken: string) {
-  downloadData(accessToken);
+async function onDownload() {
+  downloadData(lotteryTopData.value.accessToken);
 }
 
 function showLotteryList(): boolean {
   // 最初のデータでタイトルを入力したか、データが一つよりも多くある場合は表示ON
-  return lotteryTopData.value.listData.list[0].inputData.title !== "" || lotteryTopData.value.listData.list.length > 1;
+  return (
+    (lotteryTopData.value.listData.list.length > 0 && lotteryTopData.value.listData.list[0].inputData.title !== "") ||
+    lotteryTopData.value.listData.list.length > 1
+  );
 }
 
 function showLotteryHistoryList(): boolean {
@@ -74,57 +77,78 @@ function showLotteryHistoryList(): boolean {
   return selectedLotteryData.value.resultData.histories.length > 0;
 }
 
+function showUploadDownload(): boolean {
+  // アクセストークンが取得できていれば表示ON
+  return lotteryTopData.value.accessToken !== "";
+}
+
 function doClearHistory() {
   selectedLotteryData.value.resultData.histories = [];
 }
 
 async function uploadData(accessToken: string) {
-  try {
-    for (const list of lotteryTopData.value.listData.list) {
-      const data: LotteryCreate = {
-        user_id: Number(accessToken), // TODO:OpenAPI側もアクセストークンで処理するように変更
-        text: list.inputData.text,
-        title: list.inputData.title,
-      };
-      if (list.inputData.id < 0) {
-        // IDが未定なら新規追加
-        await DefaultApiClient.createLotteryApiCreateLotteryPost(data).catch((error) => {
-          throw error;
-        });
-      } else {
-        // IDが設定済みなら更新
-        await DefaultApiClient.updateLotteryApiUpdateLotteryPut(list.inputData.id, data).catch((error) => {
+  await DefaultApiClient.readLotteriesByUserIdApiReadLotteriesByUserIdGet(Number(accessToken))
+    .then(async (response) => {
+      // ローカル側で削除されたデータがあればサーバー側も削除する
+      const serverIds = response.data.map((x) => x.id);
+      const localIds = lotteryTopData.value.listData.list.map((x) => x.inputData.id);
+      const deletedIds = serverIds.filter((id) => !localIds.some((x) => x === id));
+      for (const id of deletedIds) {
+        // 削除命令は一気に発行して問題ないので await しない
+        DefaultApiClient.deleteLotteryApiDeleteLotteryDelete(id).catch((error) => {
           throw error;
         });
       }
-    }
 
-    // 正常終了
-    uploadDownload.value.setMessage("サーバーに保存しました", "text-success");
-  } catch (e: any) {
-    const error = e as Error;
-    uploadDownload.value.setMessage(error.message, "text-danger");
-  }
+      // ローカル側をサーバー側にすべてアップロード
+      for (const list of lotteryTopData.value.listData.list) {
+        const data: LotteryCreate = {
+          user_id: Number(accessToken), // TODO:OpenAPI側もアクセストークンで処理するように変更
+          text: list.inputData.text,
+          title: list.inputData.title,
+        };
+        if (list.inputData.id < 0) {
+          // IDが未定なら新規追加
+          await DefaultApiClient.createLotteryApiCreateLotteryPost(data).catch((error) => {
+            throw error;
+          });
+        } else {
+          // IDが設定済みなら更新
+          await DefaultApiClient.updateLotteryApiUpdateLotteryPut(list.inputData.id, data).catch((error) => {
+            throw error;
+          });
+        }
+      }
+
+      // 正常終了
+      uploadDownload.value.setMessage("サーバーに保存しました", "text-success");
+    })
+    .catch((error) => {
+      uploadDownload.value.setMessage(error.message, "text-danger");
+    });
 }
 
 async function downloadData(accessToken: string) {
   await DefaultApiClient.readLotteriesByUserIdApiReadLotteriesByUserIdGet(Number(accessToken))
     .then((response) => {
-      lotteryTopData.value.listData.list = [];
-      for (const lottery of response.data) {
-        lotteryTopData.value.listData.list.push({
-          inputData: {
-            id: lottery.id,
-            text: lottery.text ?? "",
-            title: lottery.title ?? "",
-          },
-          resultData: defaultLotteryResultData,
-        });
-      }
-      lotteryTopData.value.listData.selectedIndex = 0;
+      // サーバー上にデータがあるときのみローカルと差し替える
+      if (response.data.length > 0) {
+        lotteryTopData.value.listData.list = [];
+        for (const lottery of response.data) {
+          lotteryTopData.value.listData.list.push({
+            inputData: {
+              id: lottery.id,
+              text: lottery.text ?? "",
+              title: lottery.title ?? "",
+            },
+            resultData: defaultLotteryResultData,
+          });
+        }
+        lotteryTopData.value.listData.selectedIndex = 0;
 
-      // 正常終了
-      uploadDownload.value.setMessage("サーバーから読み込みました", "text-success");
+        // 正常終了
+        uploadDownload.value.setMessage("サーバーから読み込みました", "text-success");
+      }
     })
     .catch((error) => {
       uploadDownload.value.setMessage(error.message, "text-danger");
@@ -160,7 +184,9 @@ onStart();
         </tr>
       </tbody>
     </table>
-    <hr />
-    <UploadDownload ref="uploadDownload" @upload="onUpload" @download="onDownload" :accessToken="lotteryTopData.accessToken" />
+    <div v-show="showUploadDownload()">
+      <hr />
+      <UploadDownload ref="uploadDownload" @upload="onUpload" @download="onDownload" />
+    </div>
   </div>
 </template>
