@@ -19,3 +19,10 @@ class UserCreateResponse(UsersBase):
     id: int
 
     model_config = ConfigDict(from_attributes=True)
+
+class UserSignin(UsersBase):
+    pass
+
+class UserSigninResponse(BaseModel):
+    access_token: str
+

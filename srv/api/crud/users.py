@@ -1,8 +1,12 @@
+from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 from api.models import Users as Model
+from hashlib import sha256
+from api.schemas.tokens import TokenCreate
 import api.schemas.users as schema
+import api.crud.tokens as tokens
 
 async def create_user(
     db: AsyncSession, body: schema.UserCreate
@@ -39,3 +43,26 @@ async def delete_user(
 ) -> None:
     await db.delete(original)
     await db.commit()
+
+async def signin(
+    db: AsyncSession, body: schema.UserSignin
+) -> schema.UserSigninResponse:
+    # アカウント・パスワードマッチング
+    row = (await db.execute(select(Model).filter(Model.account_name == body.account_name, Model.identification == body.identification))).first()
+    if row is None or row.count == 0:
+        raise HTTPException(status_code=404, detail="Not found account or passward")
+    users = row.tuple()[0]
+    
+    # トークン新規作成/更新
+    token_src = body.account_name + body.identification # TODO:salt/pepperの検討
+    access_token = sha256(token_src.encode("utf-8")).hexdigest()
+    tokens_model = await tokens.read_token(db, access_token)
+    tokens_body = TokenCreate(access_token=access_token, user_id=users.id)
+    if tokens_model != None:
+        # すでに存在しているならトークン有効期限を更新
+        await tokens.update_token(db, tokens_body, tokens_model)
+    else:
+        # 存在していないならトークン新規作成
+        await tokens.create_token(db, tokens_body)
+
+    return schema.UserSigninResponse(access_token=access_token)

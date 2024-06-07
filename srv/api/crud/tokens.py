@@ -1,36 +1,46 @@
+from fastapi import HTTPException
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.models import Tokens as Model
-from hashlib import sha256
-from datetime import datetime
+import datetime
 import api.schemas.tokens as schema
 
 async def create_token(
     db: AsyncSession, body: schema.TokenCreate
 ) -> Model:
-    access_token = sha256(body.src)
-    model = Model(access_token=access_token, user_id=body.user_id, expire_at=body.expire_at)
+    model = Model(**body.model_dump())
     db.add(model)
     await db.commit()
     await db.refresh(model)
     return model
 
+async def read_token(
+    db: AsyncSession, access_token: str
+) -> Model | None:
+    row = (await db.execute(select(Model).filter(Model.access_token == access_token))).first()
+    if row is None or row.count == 0:
+        raise HTTPException(status_code=404, detail=f"Not found '{access_token}' in {Model.__tablename__}")
+    return row.tuple()[0]
+
 async def validate_token(
     db: AsyncSession, access_token: str
 ) -> bool:
-    tokens = await db.get(Model, access_token)
+    tokens = await read_token(db, access_token)
     # 存在しない
-    if (tokens == None):
+    if tokens == None:
         return False
     # 期限切れ
-    if (datetime.now() > tokens.expire_at):
+    if datetime.datetime.now() > tokens.expire_at:
         return False
     # 検証正常通過
     return True
 
-async def update_token_expire(
-    db: AsyncSession, expire_at: datetime, original: Model
+async def update_token(
+    db: AsyncSession, body: schema.TokenCreate, original: Model
 ) -> Model:
-    original.expire_at = expire_at
+    original.access_token = body.access_token
+    original.user_id = body.user_id
+    original.expire_at = body.expire_at
     db.add(original)
     await db.commit()
     await db.refresh(original)

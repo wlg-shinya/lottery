@@ -26,6 +26,10 @@ async def delete_user(id: int, db: AsyncSession = Depends(db)):
     model = await read_user_with_errorcheck(id, db)
     await crud.delete_user(db, original=model)
 
+@router.post("/api/signin", response_model=schema.UserSigninResponse)
+async def signin(body: schema.UserSignin, db: AsyncSession = Depends(db)):
+    return await crud.signin(db, body)
+
 async def read_user_with_errorcheck(id: int, db: AsyncSession = Depends(db)) -> Model:
     model = await crud.read_user(db, id=id)
     if model is None:
