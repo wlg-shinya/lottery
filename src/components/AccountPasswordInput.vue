@@ -3,7 +3,6 @@ import { ref } from "vue";
 import Message from "./Message.vue";
 
 defineProps<{
-  showPassword: boolean; // TODO:このフラグの廃止をしてパスワード表示切り替え機能に対応する
   buttonClass: string;
   buttonText: string;
 }>();
@@ -17,9 +16,14 @@ defineExpose({ setMessage });
 const message = ref();
 const account = ref("");
 const password = ref("");
+const showPassword = ref(false);
 
-async function onClickButton() {
+function onClickSubmitButton() {
   emit("click", account.value, password.value);
+}
+
+function onClickShowPasswordButton() {
+  showPassword.value = !showPassword.value;
 }
 
 function canClick(): boolean {
@@ -41,8 +45,11 @@ function setMessage(body: string, color: string) {
       <div class="input-group">
         <span class="input-group-text" style="width: 100px">パスワード</span>
         <input v-model="password" :type="showPassword ? 'text' : 'password'" class="form-control" />
+        <button @click="onClickShowPasswordButton" :class="`btn ${showPassword ? 'btn-secondary' : 'btn-outline-secondary'}`">
+          <span class="mdi mdi-eye" />
+        </button>
       </div>
-      <button @click="onClickButton" :class="`btn ${buttonClass}`" :disabled="!canClick()">{{ buttonText }}</button>
+      <button @click="onClickSubmitButton" :class="`btn ${buttonClass}`" :disabled="!canClick()">{{ buttonText }}</button>
       <Message ref="message" />
     </div>
   </div>

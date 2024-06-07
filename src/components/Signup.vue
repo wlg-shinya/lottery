@@ -28,13 +28,7 @@ function onClickBackButton() {
 <template>
   <div class="d-flex justify-content-center">
     <div class="d-flex flex-column">
-      <AccountPasswordInput
-        ref="accountPasswordInput"
-        @click="onClickSignupButton"
-        :showPassword="true"
-        buttonClass="btn-primary"
-        buttonText="新規登録"
-      />
+      <AccountPasswordInput ref="accountPasswordInput" @click="onClickSignupButton" buttonClass="btn-primary" buttonText="新規登録" />
       <button @click="onClickBackButton" class="btn btn-link"><span class="mdi mdi-arrow-left" />戻る</button>
     </div>
   </div>

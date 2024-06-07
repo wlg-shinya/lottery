@@ -32,13 +32,7 @@ function onClickSignupButton() {
 <template>
   <div class="d-flex justify-content-center">
     <div class="d-flex flex-column">
-      <AccountPasswordInput
-        ref="accountPasswordInput"
-        @click="onClickSigninButton"
-        :showPassword="false"
-        buttonClass="btn-outline-primary"
-        buttonText="サインイン"
-      />
+      <AccountPasswordInput ref="accountPasswordInput" @click="onClickSigninButton" buttonClass="btn-outline-primary" buttonText="サインイン" />
       <button @click="onClickSignupButton" class="btn btn-link">作ったくじ引きをサーバーに保存したい？ならばアカウント登録です</button>
     </div>
   </div>
