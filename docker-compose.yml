@@ -6,10 +6,23 @@ services:
     ports:
       - "8502:5432"
     volumes:
-      - ./initdb.d:/docker-entrypoint-initdb.d
       - ./pgdata:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - TZ=Asia/Tokyo
       - PGTZ=Asia/Tokyo
+  backend:
+    image: lottery
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: srv
+    ports:
+      - "8501:8501"
+    command: poetry run uvicorn api.main:app --host 0.0.0.0 --port 8501 --reload
+    # environment:
+    #   - DB_URL=
+    depends_on:
+      - db

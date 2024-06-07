@@ -13,6 +13,12 @@
 # RUN npm install
 # RUN npm install -g http-server
 
+FROM python:3.12-alpine as srv
+WORKDIR /usr/src/app
+COPY ./srv /usr/src/app
+RUN pip install poetry
+RUN poetry install
+
 FROM openjdk:11 as openapi-generate
 RUN apt update
 RUN apt install -y nodejs npm
