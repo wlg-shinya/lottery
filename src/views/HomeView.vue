@@ -11,6 +11,8 @@ import LotteryList from "../components/LotteryList.vue";
 import LotteryHistoryList from "../components/LotteryHistoryList.vue";
 import UploadDownload from "../components/UploadDownload.vue";
 
+// TODO:サインアウト処理
+
 const modal = ref();
 const uploadDownload = ref();
 
