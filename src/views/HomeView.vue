@@ -3,6 +3,7 @@ import { ref, watch, computed } from "vue";
 import { type LotteryData, defaultLotteryTopData, defaultLotteryListData, defaultLotteryResultData } from "../lottery-data";
 import LocalStorageLottery from "../local-storage-lottery";
 import { DefaultApiClient, LotteryCreate } from "../openapi";
+import { getErrorMessage } from "../error";
 import Modal from "../components/Modal.vue";
 import Signin from "../components/Signin.vue";
 import Lottery from "../components/Lottery.vue";
@@ -124,7 +125,7 @@ async function uploadData(accessToken: string) {
       uploadDownload.value.setMessage("サーバーに保存しました", "text-success");
     })
     .catch((error) => {
-      uploadDownload.value.setMessage(error.message, "text-danger");
+      uploadDownload.value.setMessage(getErrorMessage(error), "text-danger");
     });
 }
 
@@ -151,7 +152,7 @@ async function downloadData(accessToken: string) {
       }
     })
     .catch((error) => {
-      uploadDownload.value.setMessage(error.message, "text-danger");
+      uploadDownload.value.setMessage(getErrorMessage(error), "text-danger");
     });
 }
 

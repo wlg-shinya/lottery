@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import router from "../router";
 import { DefaultApiClient } from "../openapi";
+import { getErrorMessage } from "../error";
 import AccountPasswordInput from "./AccountPasswordInput.vue";
 
 const accountPasswordInput = ref();
@@ -15,7 +16,7 @@ async function onClickSignupButton(account: string, password: string) {
       accountPasswordInput.value.setMessage("ユーザー登録しました。戻ってサインインしてください", "text-success");
     })
     .catch((error) => {
-      accountPasswordInput.value.setMessage(error.message, "text-danger");
+      accountPasswordInput.value.setMessage(getErrorMessage(error), "text-danger");
     });
 }
 

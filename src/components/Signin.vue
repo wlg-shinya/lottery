@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import router from "../router";
 import { DefaultApiClient } from "../openapi";
+import { getErrorMessage } from "../error";
 import AccountPasswordInput from "./AccountPasswordInput.vue";
 
 const emit = defineEmits<{
@@ -19,7 +20,7 @@ async function onClickSigninButton(account: string, password: string) {
       emit("signin", response.data.access_token);
     })
     .catch((error: Error) => {
-      accountPasswordInput.value.setMessage(error.message, "text-danger");
+      accountPasswordInput.value.setMessage(getErrorMessage(error), "text-danger");
     });
 }
 

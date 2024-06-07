@@ -1,10 +1,13 @@
-// export class AlreadyExistsError implements Error {
-//   name = "AlreadyExistsError";
-//   message = "すでに存在しています";
+import { AxiosError } from "axios";
 
-//   constructor(target?: string) {
-//     if (target) {
-//       this.message = `${target} は${this.message}`;
-//     }
-//   }
-// }
+export const getErrorMessage = (error: any): string => {
+  if (error instanceof AxiosError) {
+    if (error.response) {
+      return error.response?.data.detail as string;
+    } else {
+      return error.message;
+    }
+  } else {
+    return error.message;
+  }
+};
