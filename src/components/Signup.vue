@@ -1,32 +1,20 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import router from "../router";
-import { AlreadyExistsError } from "../error";
 import { DefaultApiClient } from "../openapi";
 import AccountPasswordInput from "./AccountPasswordInput.vue";
 
 const accountPasswordInput = ref();
 
 async function onClickSignupButton(account: string, password: string) {
-  // TODO:サインアップサーバサイドで行うようにする
-  await DefaultApiClient.readUsersApiReadUsersGet()
-    .then(async (response) => {
-      const users = response.data;
-      if (users.some((x) => x.account_name === account)) {
-        throw new AlreadyExistsError(account);
-      }
-      await DefaultApiClient.createUserApiCreateUserPost({
-        account_name: account,
-        identification: password,
-      })
-        .then(() => {
-          accountPasswordInput.value.setMessage("ユーザー登録しました。戻ってサインインしてください", "text-success");
-        })
-        .catch((error) => {
-          throw error;
-        });
+  await DefaultApiClient.signupApiSignupPost({
+    account_name: account,
+    identification: password,
+  })
+    .then(() => {
+      accountPasswordInput.value.setMessage("ユーザー登録しました。戻ってサインインしてください", "text-success");
     })
-    .catch((error: Error) => {
+    .catch((error) => {
       accountPasswordInput.value.setMessage(error.message, "text-danger");
     });
 }
