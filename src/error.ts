@@ -8,10 +8,3 @@ export class AlreadyExistsError implements Error {
     }
   }
 }
-
-export class InvalidAccountOrPasswordError implements Error {
-  name = "InvalidAccountOrPasswordError";
-  message = "アカウントかパスワードが間違っています";
-
-  constructor() {}
-}

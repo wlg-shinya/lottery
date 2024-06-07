@@ -87,7 +87,7 @@ function doClearHistory() {
 }
 
 async function uploadData(accessToken: string) {
-  await DefaultApiClient.readLotteriesByUserIdApiReadLotteriesByUserIdGet(Number(accessToken))
+  await DefaultApiClient.readMyLotteriesApiReadMyLotteriesGet(accessToken)
     .then(async (response) => {
       // ローカル側で削除されたデータがあればサーバー側も削除する
       const serverIds = response.data.map((x) => x.id);
@@ -95,7 +95,7 @@ async function uploadData(accessToken: string) {
       const deletedIds = serverIds.filter((id) => !localIds.some((x) => x === id));
       for (const id of deletedIds) {
         // 削除命令は一気に発行して問題ないので await しない
-        DefaultApiClient.deleteLotteryApiDeleteLotteryDelete(id).catch((error) => {
+        DefaultApiClient.deleteLotteryApiDeleteLotteryDelete(id, { access_token: accessToken }).catch((error) => {
           throw error;
         });
       }
@@ -103,7 +103,7 @@ async function uploadData(accessToken: string) {
       // ローカル側をサーバー側にすべてアップロード
       for (const list of lotteryTopData.value.listData.list) {
         const data: LotteryCreate = {
-          user_id: Number(accessToken), // TODO:OpenAPI側もアクセストークンで処理するように変更
+          access_token: accessToken,
           text: list.inputData.text,
           title: list.inputData.title,
         };
@@ -129,7 +129,7 @@ async function uploadData(accessToken: string) {
 }
 
 async function downloadData(accessToken: string) {
-  await DefaultApiClient.readLotteriesByUserIdApiReadLotteriesByUserIdGet(Number(accessToken))
+  await DefaultApiClient.readMyLotteriesApiReadMyLotteriesGet(accessToken)
     .then((response) => {
       // サーバー上にデータがあるときのみローカルと差し替える
       if (response.data.length > 0) {
