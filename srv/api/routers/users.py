@@ -15,12 +15,14 @@ async def read_users(db: AsyncSession = Depends(db)):
 
 @router.put("/api/update_user", response_model=schema.UserUpdateResponse)
 async def update_user(id: int, body: schema.UserUpdate, db: AsyncSession = Depends(db)):
+    # TODO: 指定IDとアクセストークンと紐づくユーザーIDが一致したときのみ更新を許容する
     await validate_token(db, body.access_token)
     model = await read_user_with_errorcheck(id, db)
     return await crud.update_user(db, body, original=model)
 
 @router.delete("/api/delete_user", response_model=None)
 async def delete_user(id: int, body: schema.UserDelete, db: AsyncSession = Depends(db)):
+    # TODO: 指定IDとアクセストークンと紐づくユーザーIDが一致したときのみ削除を許容する
     await validate_token(db, body.access_token)
     model = await read_user_with_errorcheck(id, db)
     await crud.delete_user(db, original=model)
