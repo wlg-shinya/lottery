@@ -14,10 +14,18 @@ async def create_token(
     await db.refresh(model)
     return model
 
-async def exist_token(
+async def validate_token(
     db: AsyncSession, access_token: str
 ) -> bool:
-    return await (db.get(Model, access_token) != None)
+    tokens = await db.get(Model, access_token)
+    # 存在しない
+    if (tokens == None):
+        return False
+    # 期限切れ
+    if (datetime.now() > tokens.expire_at):
+        return False
+    # 検証正常通過
+    return True
 
 async def update_token_expire(
     db: AsyncSession, expire_at: datetime, original: Model
