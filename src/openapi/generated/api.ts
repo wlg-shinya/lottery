@@ -44,12 +44,6 @@ export interface HTTPValidationError {
 export interface Lotteries {
     /**
      * 
-     * @type {number}
-     * @memberof Lotteries
-     */
-    'user_id'?: number;
-    /**
-     * 
      * @type {string}
      * @memberof Lotteries
      */
@@ -66,6 +60,24 @@ export interface Lotteries {
      * @memberof Lotteries
      */
     'id': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Lotteries
+     */
+    'user_id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Lotteries
+     */
+    'created_at': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Lotteries
+     */
+    'updated_at': string | null;
 }
 /**
  * 
@@ -75,12 +87,6 @@ export interface Lotteries {
 export interface LotteryCreate {
     /**
      * 
-     * @type {number}
-     * @memberof LotteryCreate
-     */
-    'user_id'?: number;
-    /**
-     * 
      * @type {string}
      * @memberof LotteryCreate
      */
@@ -91,6 +97,12 @@ export interface LotteryCreate {
      * @memberof LotteryCreate
      */
     'title'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LotteryCreate
+     */
+    'access_token': string;
 }
 /**
  * 
@@ -100,12 +112,6 @@ export interface LotteryCreate {
 export interface LotteryCreateResponse {
     /**
      * 
-     * @type {number}
-     * @memberof LotteryCreateResponse
-     */
-    'user_id'?: number;
-    /**
-     * 
      * @type {string}
      * @memberof LotteryCreateResponse
      */
@@ -118,10 +124,29 @@ export interface LotteryCreateResponse {
     'title'?: string;
     /**
      * 
+     * @type {string}
+     * @memberof LotteryCreateResponse
+     */
+    'access_token': string;
+    /**
+     * 
      * @type {number}
      * @memberof LotteryCreateResponse
      */
     'id': number;
+}
+/**
+ * 
+ * @export
+ * @interface LotteryDelete
+ */
+export interface LotteryDelete {
+    /**
+     * 
+     * @type {string}
+     * @memberof LotteryDelete
+     */
+    'access_token': string;
 }
 /**
  * 
@@ -134,13 +159,13 @@ export interface UserCreate {
      * @type {string}
      * @memberof UserCreate
      */
-    'account_name'?: string;
+    'account_name': string;
     /**
      * 
      * @type {string}
      * @memberof UserCreate
      */
-    'identification'?: string;
+    'identification': string;
 }
 /**
  * 
@@ -153,17 +178,118 @@ export interface UserCreateResponse {
      * @type {string}
      * @memberof UserCreateResponse
      */
-    'account_name'?: string;
+    'account_name': string;
     /**
      * 
      * @type {string}
      * @memberof UserCreateResponse
      */
-    'identification'?: string;
+    'identification': string;
     /**
      * 
      * @type {number}
      * @memberof UserCreateResponse
+     */
+    'id': number;
+}
+/**
+ * 
+ * @export
+ * @interface UserDelete
+ */
+export interface UserDelete {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserDelete
+     */
+    'access_token': string;
+}
+/**
+ * 
+ * @export
+ * @interface UserSignin
+ */
+export interface UserSignin {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSignin
+     */
+    'account_name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSignin
+     */
+    'identification': string;
+}
+/**
+ * 
+ * @export
+ * @interface UserSigninResponse
+ */
+export interface UserSigninResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSigninResponse
+     */
+    'access_token': string;
+}
+/**
+ * 
+ * @export
+ * @interface UserUpdate
+ */
+export interface UserUpdate {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserUpdate
+     */
+    'account_name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserUpdate
+     */
+    'identification': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserUpdate
+     */
+    'access_token': string;
+}
+/**
+ * 
+ * @export
+ * @interface UserUpdateResponse
+ */
+export interface UserUpdateResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserUpdateResponse
+     */
+    'account_name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserUpdateResponse
+     */
+    'identification': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserUpdateResponse
+     */
+    'access_token': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof UserUpdateResponse
      */
     'id': number;
 }
@@ -178,19 +304,31 @@ export interface Users {
      * @type {string}
      * @memberof Users
      */
-    'account_name'?: string;
+    'account_name': string;
     /**
      * 
      * @type {string}
      * @memberof Users
      */
-    'identification'?: string;
+    'identification': string;
     /**
      * 
      * @type {number}
      * @memberof Users
      */
     'id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Users
+     */
+    'created_at': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Users
+     */
+    'updated_at': string | null;
 }
 /**
  * 
@@ -307,12 +445,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * 
          * @summary Delete Lottery
          * @param {number} id 
+         * @param {LotteryDelete} lotteryDelete 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteLotteryApiDeleteLotteryDelete: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deleteLotteryApiDeleteLotteryDelete: async (id: number, lotteryDelete: LotteryDelete, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('deleteLotteryApiDeleteLotteryDelete', 'id', id)
+            // verify required parameter 'lotteryDelete' is not null or undefined
+            assertParamExists('deleteLotteryApiDeleteLotteryDelete', 'lotteryDelete', lotteryDelete)
             const localVarPath = `/api/delete_lottery`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -331,9 +472,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
 
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(lotteryDelete, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -344,12 +488,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * 
          * @summary Delete User
          * @param {number} id 
+         * @param {UserDelete} userDelete 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteUserApiDeleteUserDelete: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deleteUserApiDeleteUserDelete: async (id: number, userDelete: UserDelete, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('deleteUserApiDeleteUserDelete', 'id', id)
+            // verify required parameter 'userDelete' is not null or undefined
+            assertParamExists('deleteUserApiDeleteUserDelete', 'userDelete', userDelete)
             const localVarPath = `/api/delete_user`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -368,9 +515,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
 
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(userDelete, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -409,15 +559,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @summary Read Lotteries By User Id
-         * @param {number} userId 
+         * @summary Read My Lotteries
+         * @param {string} accessToken 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        readLotteriesByUserIdApiReadLotteriesByUserIdGet: async (userId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userId' is not null or undefined
-            assertParamExists('readLotteriesByUserIdApiReadLotteriesByUserIdGet', 'userId', userId)
-            const localVarPath = `/api/read_lotteries_by_user_id`;
+        readMyLotteriesApiReadMyLotteriesGet: async (accessToken: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'accessToken' is not null or undefined
+            assertParamExists('readMyLotteriesApiReadMyLotteriesGet', 'accessToken', accessToken)
+            const localVarPath = `/api/read_my_lotteries`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -429,8 +579,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            if (userId !== undefined) {
-                localVarQueryParameter['user_id'] = userId;
+            if (accessToken !== undefined) {
+                localVarQueryParameter['access_token'] = accessToken;
             }
 
 
@@ -468,6 +618,42 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Signin
+         * @param {UserSignin} userSignin 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        signinApiSigninPost: async (userSignin: UserSignin, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userSignin' is not null or undefined
+            assertParamExists('signinApiSigninPost', 'userSignin', userSignin)
+            const localVarPath = `/api/signin`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(userSignin, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -521,15 +707,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * 
          * @summary Update User
          * @param {number} id 
-         * @param {UserCreate} userCreate 
+         * @param {UserUpdate} userUpdate 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateUserApiUpdateUserPut: async (id: number, userCreate: UserCreate, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateUserApiUpdateUserPut: async (id: number, userUpdate: UserUpdate, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('updateUserApiUpdateUserPut', 'id', id)
-            // verify required parameter 'userCreate' is not null or undefined
-            assertParamExists('updateUserApiUpdateUserPut', 'userCreate', userCreate)
+            // verify required parameter 'userUpdate' is not null or undefined
+            assertParamExists('updateUserApiUpdateUserPut', 'userUpdate', userUpdate)
             const localVarPath = `/api/update_user`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -553,7 +739,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(userCreate, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(userUpdate, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -600,11 +786,12 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * 
          * @summary Delete Lottery
          * @param {number} id 
+         * @param {LotteryDelete} lotteryDelete 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteLotteryApiDeleteLotteryDelete(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteLotteryApiDeleteLotteryDelete(id, options);
+        async deleteLotteryApiDeleteLotteryDelete(id: number, lotteryDelete: LotteryDelete, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteLotteryApiDeleteLotteryDelete(id, lotteryDelete, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.deleteLotteryApiDeleteLotteryDelete']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -613,11 +800,12 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * 
          * @summary Delete User
          * @param {number} id 
+         * @param {UserDelete} userDelete 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteUserApiDeleteUserDelete(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteUserApiDeleteUserDelete(id, options);
+        async deleteUserApiDeleteUserDelete(id: number, userDelete: UserDelete, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteUserApiDeleteUserDelete(id, userDelete, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.deleteUserApiDeleteUserDelete']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -636,15 +824,15 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Read Lotteries By User Id
-         * @param {number} userId 
+         * @summary Read My Lotteries
+         * @param {string} accessToken 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async readLotteriesByUserIdApiReadLotteriesByUserIdGet(userId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Lotteries>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.readLotteriesByUserIdApiReadLotteriesByUserIdGet(userId, options);
+        async readMyLotteriesApiReadMyLotteriesGet(accessToken: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Lotteries>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.readMyLotteriesApiReadMyLotteriesGet(accessToken, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DefaultApi.readLotteriesByUserIdApiReadLotteriesByUserIdGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.readMyLotteriesApiReadMyLotteriesGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -657,6 +845,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.readUsersApiReadUsersGet(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.readUsersApiReadUsersGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Signin
+         * @param {UserSignin} userSignin 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async signinApiSigninPost(userSignin: UserSignin, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserSigninResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.signinApiSigninPost(userSignin, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.signinApiSigninPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -677,12 +878,12 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * 
          * @summary Update User
          * @param {number} id 
-         * @param {UserCreate} userCreate 
+         * @param {UserUpdate} userUpdate 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateUserApiUpdateUserPut(id: number, userCreate: UserCreate, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserCreateResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserApiUpdateUserPut(id, userCreate, options);
+        async updateUserApiUpdateUserPut(id: number, userUpdate: UserUpdate, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserUpdateResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserApiUpdateUserPut(id, userUpdate, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.updateUserApiUpdateUserPut']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -721,21 +922,23 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * 
          * @summary Delete Lottery
          * @param {number} id 
+         * @param {LotteryDelete} lotteryDelete 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteLotteryApiDeleteLotteryDelete(id: number, options?: any): AxiosPromise<any> {
-            return localVarFp.deleteLotteryApiDeleteLotteryDelete(id, options).then((request) => request(axios, basePath));
+        deleteLotteryApiDeleteLotteryDelete(id: number, lotteryDelete: LotteryDelete, options?: any): AxiosPromise<any> {
+            return localVarFp.deleteLotteryApiDeleteLotteryDelete(id, lotteryDelete, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Delete User
          * @param {number} id 
+         * @param {UserDelete} userDelete 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteUserApiDeleteUserDelete(id: number, options?: any): AxiosPromise<any> {
-            return localVarFp.deleteUserApiDeleteUserDelete(id, options).then((request) => request(axios, basePath));
+        deleteUserApiDeleteUserDelete(id: number, userDelete: UserDelete, options?: any): AxiosPromise<any> {
+            return localVarFp.deleteUserApiDeleteUserDelete(id, userDelete, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -748,13 +951,13 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
-         * @summary Read Lotteries By User Id
-         * @param {number} userId 
+         * @summary Read My Lotteries
+         * @param {string} accessToken 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        readLotteriesByUserIdApiReadLotteriesByUserIdGet(userId: number, options?: any): AxiosPromise<Array<Lotteries>> {
-            return localVarFp.readLotteriesByUserIdApiReadLotteriesByUserIdGet(userId, options).then((request) => request(axios, basePath));
+        readMyLotteriesApiReadMyLotteriesGet(accessToken: string, options?: any): AxiosPromise<Array<Lotteries>> {
+            return localVarFp.readMyLotteriesApiReadMyLotteriesGet(accessToken, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -764,6 +967,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         readUsersApiReadUsersGet(options?: any): AxiosPromise<Array<Users>> {
             return localVarFp.readUsersApiReadUsersGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Signin
+         * @param {UserSignin} userSignin 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        signinApiSigninPost(userSignin: UserSignin, options?: any): AxiosPromise<UserSigninResponse> {
+            return localVarFp.signinApiSigninPost(userSignin, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -780,12 +993,12 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * 
          * @summary Update User
          * @param {number} id 
-         * @param {UserCreate} userCreate 
+         * @param {UserUpdate} userUpdate 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateUserApiUpdateUserPut(id: number, userCreate: UserCreate, options?: any): AxiosPromise<UserCreateResponse> {
-            return localVarFp.updateUserApiUpdateUserPut(id, userCreate, options).then((request) => request(axios, basePath));
+        updateUserApiUpdateUserPut(id: number, userUpdate: UserUpdate, options?: any): AxiosPromise<UserUpdateResponse> {
+            return localVarFp.updateUserApiUpdateUserPut(id, userUpdate, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -825,24 +1038,26 @@ export class DefaultApi extends BaseAPI {
      * 
      * @summary Delete Lottery
      * @param {number} id 
+     * @param {LotteryDelete} lotteryDelete 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public deleteLotteryApiDeleteLotteryDelete(id: number, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).deleteLotteryApiDeleteLotteryDelete(id, options).then((request) => request(this.axios, this.basePath));
+    public deleteLotteryApiDeleteLotteryDelete(id: number, lotteryDelete: LotteryDelete, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).deleteLotteryApiDeleteLotteryDelete(id, lotteryDelete, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @summary Delete User
      * @param {number} id 
+     * @param {UserDelete} userDelete 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public deleteUserApiDeleteUserDelete(id: number, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).deleteUserApiDeleteUserDelete(id, options).then((request) => request(this.axios, this.basePath));
+    public deleteUserApiDeleteUserDelete(id: number, userDelete: UserDelete, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).deleteUserApiDeleteUserDelete(id, userDelete, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -858,14 +1073,14 @@ export class DefaultApi extends BaseAPI {
 
     /**
      * 
-     * @summary Read Lotteries By User Id
-     * @param {number} userId 
+     * @summary Read My Lotteries
+     * @param {string} accessToken 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public readLotteriesByUserIdApiReadLotteriesByUserIdGet(userId: number, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).readLotteriesByUserIdApiReadLotteriesByUserIdGet(userId, options).then((request) => request(this.axios, this.basePath));
+    public readMyLotteriesApiReadMyLotteriesGet(accessToken: string, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).readMyLotteriesApiReadMyLotteriesGet(accessToken, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -877,6 +1092,18 @@ export class DefaultApi extends BaseAPI {
      */
     public readUsersApiReadUsersGet(options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).readUsersApiReadUsersGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Signin
+     * @param {UserSignin} userSignin 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public signinApiSigninPost(userSignin: UserSignin, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).signinApiSigninPost(userSignin, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -896,13 +1123,13 @@ export class DefaultApi extends BaseAPI {
      * 
      * @summary Update User
      * @param {number} id 
-     * @param {UserCreate} userCreate 
+     * @param {UserUpdate} userUpdate 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public updateUserApiUpdateUserPut(id: number, userCreate: UserCreate, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).updateUserApiUpdateUserPut(id, userCreate, options).then((request) => request(this.axios, this.basePath));
+    public updateUserApiUpdateUserPut(id: number, userUpdate: UserUpdate, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).updateUserApiUpdateUserPut(id, userUpdate, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
