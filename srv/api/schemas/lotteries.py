@@ -2,12 +2,12 @@ from pydantic import BaseModel, ConfigDict, Field
 from datetime import datetime
 
 class LotteriesBase(BaseModel):
-    user_id: int = Field(desciption="このくじ引きの所有者ID")
     text: str = Field("", desciption="くじ引きの抽選対象")
     title: str = Field("", desciption="くじ引き名")
 
 class Lotteries(LotteriesBase):
     id: int
+    user_id: int = Field(desciption="このくじ引きの所有者ID")
     created_at: datetime = Field(desciption="作成日時")
     updated_at: datetime | None = Field(desciption="更新日時")
 

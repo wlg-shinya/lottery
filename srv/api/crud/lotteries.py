@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 from api.models import Lotteries as Model
 import api.schemas.lotteries as schema
+import api.crud.tokens as tokens
 
 async def create_lottery(
     db: AsyncSession, body: schema.LotteryCreate
@@ -19,12 +20,14 @@ async def read_lotteries(
     result = await db.execute(select(Model.id, Model.user_id, Model.text, Model.title, Model.created_at, Model.updated_at))
     return result.all()
 
-async def read_lotteries_by_user_id(
-    db: AsyncSession, user_id: int
+async def read_my_lotteries(
+    db: AsyncSession, access_token: str
 ) -> List[schema.Lotteries]:
+    # トークンからユーザIDを取得して自分が所有しているくじ引きデータをすべて返す
+    tokens_model = await tokens.read_token(db, access_token)
     result = await db.execute(
         select(Model.id, Model.user_id, Model.text, Model.title, Model.created_at, Model.updated_at)
-        .filter(Model.user_id == user_id)
+        .filter(Model.user_id == tokens_model.user_id)
         )
     return result.all()
 
@@ -36,7 +39,6 @@ async def read_lottery(
 async def update_lottery(
     db: AsyncSession, body: schema.LotteryCreate, original: Model
 ) -> Model:
-    original.user_id = body.user_id
     original.text = body.text
     original.title = body.title
     db.add(original)
@@ -45,7 +47,7 @@ async def update_lottery(
     return original
 
 async def delete_lottery(
-    db: AsyncSession, body: schema.LotteryDelete, original: Model
+    db: AsyncSession, original: Model
 ) -> None:
     await db.delete(original)
     await db.commit()

@@ -18,9 +18,10 @@ async def create_lottery(body: schema.LotteryCreate, db: AsyncSession = Depends(
 async def read_lotteries(db: AsyncSession = Depends(db)):
     return await crud.read_lotteries(db)
 
-@router.get("/api/read_lotteries_by_user_id", response_model=List[schema.Lotteries])
-async def read_lotteries_by_user_id(user_id: int, db: AsyncSession = Depends(db)):
-    return await crud.read_lotteries_by_user_id(db, user_id=user_id)
+@router.get("/api/read_my_lotteries", response_model=List[schema.Lotteries])
+async def read_my_lotteries(access_token: str, db: AsyncSession = Depends(db)):
+    await validate_token(db, access_token)
+    return await crud.read_my_lotteries(db, access_token)
 
 @router.put("/api/update_lottery", response_model=schema.LotteryCreateResponse)
 async def update_lottery(id: int, body: schema.LotteryCreate, db: AsyncSession = Depends(db)):
@@ -32,7 +33,7 @@ async def update_lottery(id: int, body: schema.LotteryCreate, db: AsyncSession =
 async def delete_lottery(id: int, body: schema.LotteryDelete, db: AsyncSession = Depends(db)):
     await validate_token(db, body.access_token)
     model = await read_lottery_with_errorcheck(id, db)
-    await crud.delete_lottery(db, body, original=model)
+    await crud.delete_lottery(db, original=model)
 
 async def read_lottery_with_errorcheck(id: int, db: AsyncSession = Depends(db)) -> Model:
     model = await crud.read_lottery(db, id)
