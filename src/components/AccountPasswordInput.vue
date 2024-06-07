@@ -3,7 +3,7 @@ import { ref } from "vue";
 import Message from "./Message.vue";
 
 defineProps<{
-  showPassword: boolean;
+  showPassword: boolean; // TODO:このフラグの廃止をしてパスワード表示切り替え機能に対応する
   buttonClass: string;
   buttonText: string;
 }>();
