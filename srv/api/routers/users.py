@@ -3,6 +3,7 @@ from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.db import db
 from api.models import Users as Model
+from api.crud.tokens import validate_token
 import api.schemas.users as schema
 import api.crud.users as crud
 
@@ -16,13 +17,15 @@ async def create_user(body: schema.UserCreate, db: AsyncSession = Depends(db)):
 async def read_users(db: AsyncSession = Depends(db)):
     return await crud.read_users(db)
 
-@router.put("/api/update_user", response_model=schema.UserCreateResponse)
-async def update_user(id: int, body: schema.UserCreate, db: AsyncSession = Depends(db)):
+@router.put("/api/update_user", response_model=schema.UserUpdateResponse)
+async def update_user(id: int, body: schema.UserUpdate, db: AsyncSession = Depends(db)):
+    await validate_token(db, body.access_token)
     model = await read_user_with_errorcheck(id, db)
     return await crud.update_user(db, body, original=model)
 
 @router.delete("/api/delete_user", response_model=None)
-async def delete_user(id: int, db: AsyncSession = Depends(db)):
+async def delete_user(id: int, body: schema.UserDelete, db: AsyncSession = Depends(db)):
+    await validate_token(db, body.access_token)
     model = await read_user_with_errorcheck(id, db)
     await crud.delete_user(db, original=model)
 

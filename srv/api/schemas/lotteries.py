@@ -14,9 +14,12 @@ class Lotteries(LotteriesBase):
     model_config = ConfigDict(from_attributes=True)
 
 class LotteryCreate(LotteriesBase):
-    pass
+    access_token: str
 
 class LotteryCreateResponse(LotteryCreate):
     id: int
 
     model_config = ConfigDict(from_attributes=True)
+
+class LotteryDelete(BaseModel):
+    access_token: str

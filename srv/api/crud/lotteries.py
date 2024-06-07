@@ -45,7 +45,7 @@ async def update_lottery(
     return original
 
 async def delete_lottery(
-    db: AsyncSession, original: Model
+    db: AsyncSession, body: schema.LotteryDelete, original: Model
 ) -> None:
     await db.delete(original)
     await db.commit()

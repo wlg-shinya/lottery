@@ -15,10 +15,21 @@ class Users(UsersBase):
 class UserCreate(UsersBase):
     pass
 
-class UserCreateResponse(UsersBase):
+class UserCreateResponse(UserCreate):
     id: int
 
     model_config = ConfigDict(from_attributes=True)
+
+class UserUpdate(UsersBase):
+    access_token: str
+
+class UserUpdateResponse(UserUpdate):
+    id: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+class UserDelete(BaseModel):
+    access_token: str
 
 class UserSignin(UsersBase):
     pass
