@@ -28,6 +28,6 @@ class Users(BaseModel):
 class Tokens(BaseModel):
     __tablename__ = "tokens"
 
-    access_token = Column(VARCHAR(64), nullable=False)
+    access_token = Column(VARCHAR(64), nullable=False, unique=True)
     user_id = Column(INTEGER, nullable=False)
     expire_at = Column(TIMESTAMP(timezone=True), nullable=False)
