@@ -124,16 +124,16 @@ export interface LotteryCreateResponse {
     'title'?: string;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof LotteryCreateResponse
      */
-    'access_token': string;
+    'id': number;
     /**
      * 
      * @type {number}
      * @memberof LotteryCreateResponse
      */
-    'id': number;
+    'user_id': number;
 }
 /**
  * 
@@ -147,50 +147,6 @@ export interface LotteryDelete {
      * @memberof LotteryDelete
      */
     'access_token': string;
-}
-/**
- * 
- * @export
- * @interface UserCreate
- */
-export interface UserCreate {
-    /**
-     * 
-     * @type {string}
-     * @memberof UserCreate
-     */
-    'account_name': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserCreate
-     */
-    'identification': string;
-}
-/**
- * 
- * @export
- * @interface UserCreateResponse
- */
-export interface UserCreateResponse {
-    /**
-     * 
-     * @type {string}
-     * @memberof UserCreateResponse
-     */
-    'account_name': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserCreateResponse
-     */
-    'identification': string;
-    /**
-     * 
-     * @type {number}
-     * @memberof UserCreateResponse
-     */
-    'id': number;
 }
 /**
  * 
@@ -399,42 +355,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(lotteryCreate, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary Create User
-         * @param {UserCreate} userCreate 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        createUserApiCreateUserPost: async (userCreate: UserCreate, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userCreate' is not null or undefined
-            assertParamExists('createUserApiCreateUserPost', 'userCreate', userCreate)
-            const localVarPath = `/api/create_user`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(userCreate, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -662,6 +582,42 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
+         * @summary Signup
+         * @param {UserSignin} userSignin 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        signupApiSignupPost: async (userSignin: UserSignin, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userSignin' is not null or undefined
+            assertParamExists('signupApiSignupPost', 'userSignin', userSignin)
+            const localVarPath = `/api/signup`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(userSignin, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Update Lottery
          * @param {number} id 
          * @param {LotteryCreate} lotteryCreate 
@@ -771,19 +727,6 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Create User
-         * @param {UserCreate} userCreate 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async createUserApiCreateUserPost(userCreate: UserCreate, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserCreateResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createUserApiCreateUserPost(userCreate, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DefaultApi.createUserApiCreateUserPost']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
          * @summary Delete Lottery
          * @param {number} id 
          * @param {LotteryDelete} lotteryDelete 
@@ -862,6 +805,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Signup
+         * @param {UserSignin} userSignin 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async signupApiSignupPost(userSignin: UserSignin, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.signupApiSignupPost(userSignin, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.signupApiSignupPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Update Lottery
          * @param {number} id 
          * @param {LotteryCreate} lotteryCreate 
@@ -907,16 +863,6 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         createLotteryApiCreateLotteryPost(lotteryCreate: LotteryCreate, options?: any): AxiosPromise<LotteryCreateResponse> {
             return localVarFp.createLotteryApiCreateLotteryPost(lotteryCreate, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary Create User
-         * @param {UserCreate} userCreate 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        createUserApiCreateUserPost(userCreate: UserCreate, options?: any): AxiosPromise<UserCreateResponse> {
-            return localVarFp.createUserApiCreateUserPost(userCreate, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -980,6 +926,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
+         * @summary Signup
+         * @param {UserSignin} userSignin 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        signupApiSignupPost(userSignin: UserSignin, options?: any): AxiosPromise<any> {
+            return localVarFp.signupApiSignupPost(userSignin, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Update Lottery
          * @param {number} id 
          * @param {LotteryCreate} lotteryCreate 
@@ -1020,18 +976,6 @@ export class DefaultApi extends BaseAPI {
      */
     public createLotteryApiCreateLotteryPost(lotteryCreate: LotteryCreate, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).createLotteryApiCreateLotteryPost(lotteryCreate, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary Create User
-     * @param {UserCreate} userCreate 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    public createUserApiCreateUserPost(userCreate: UserCreate, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).createUserApiCreateUserPost(userCreate, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1104,6 +1048,18 @@ export class DefaultApi extends BaseAPI {
      */
     public signinApiSigninPost(userSignin: UserSignin, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).signinApiSigninPost(userSignin, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Signup
+     * @param {UserSignin} userSignin 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public signupApiSignupPost(userSignin: UserSignin, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).signupApiSignupPost(userSignin, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
