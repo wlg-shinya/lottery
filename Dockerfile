@@ -16,8 +16,9 @@
 FROM python:3.12-alpine as srv
 WORKDIR /usr/src/app
 COPY ./srv /usr/src/app
-RUN pip install poetry
+RUN pip install poetry alembic
 RUN poetry install
+RUN alembic upgrade head
 
 FROM openjdk:11 as openapi-generate
 RUN apt update
