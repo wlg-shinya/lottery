@@ -102,27 +102,39 @@ async function uploadData(accessToken: string) {
       }
 
       // ローカル側をサーバー側にすべてアップロード
+      let uploaded = false;
       for (const list of lotteryTopData.value.listData.list) {
-        const data: LotteryCreate = {
-          access_token: accessToken,
-          text: list.inputData.text,
-          title: list.inputData.title,
-        };
-        if (list.inputData.id < 0) {
-          // IDが未定なら新規追加
-          await DefaultApiClient.createLotteryApiCreateLotteryPost(data).catch((error) => {
-            throw error;
-          });
-        } else {
-          // IDが設定済みなら更新
-          await DefaultApiClient.updateLotteryApiUpdateLotteryPut(list.inputData.id, data).catch((error) => {
-            throw error;
-          });
+        if (list.inputData.text) {
+          // 抽選対象が入力されていたら保存する
+          const data: LotteryCreate = {
+            access_token: accessToken,
+            text: list.inputData.text,
+            title: list.inputData.title,
+          };
+          if (list.inputData.id < 0) {
+            // IDが未定なら新規追加
+            await DefaultApiClient.createLotteryApiCreateLotteryPost(data)
+              .then(() => (uploaded = true))
+              .catch((error) => {
+                throw error;
+              });
+          } else {
+            // IDが設定済みなら更新
+            await DefaultApiClient.updateLotteryApiUpdateLotteryPut(list.inputData.id, data)
+              .then(() => (uploaded = true))
+              .catch((error) => {
+                throw error;
+              });
+          }
         }
       }
 
       // 正常終了
-      uploadDownload.value.setMessage("サーバーに保存しました", "text-success");
+      if (uploaded) {
+        uploadDownload.value.setMessage("サーバーに保存しました", "text-success");
+      } else {
+        uploadDownload.value.setMessage("保存するデータがありません", "text-warning");
+      }
     })
     .catch((error) => {
       uploadDownload.value.setMessage(getErrorMessage(error), "text-danger");
@@ -149,6 +161,8 @@ async function downloadData(accessToken: string) {
 
         // 正常終了
         uploadDownload.value.setMessage("サーバーから読み込みました", "text-success");
+      } else {
+        uploadDownload.value.setMessage("サーバーにデータがありませんでした", "text-warning");
       }
     })
     .catch((error) => {
