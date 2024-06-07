@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict, Field
-import datetime
+from datetime import datetime
 
 class UsersBase(BaseModel):
     account_name: str = Field(desciption="アカウント名")
@@ -7,8 +7,8 @@ class UsersBase(BaseModel):
 
 class Users(UsersBase):
     id: int
-    created_at: datetime.datetime = Field(desciption="作成日時")
-    updated_at: datetime.datetime | None = Field(desciption="更新日時")
+    created_at: datetime = Field(desciption="作成日時")
+    updated_at: datetime | None = Field(desciption="更新日時")
 
     model_config = ConfigDict(from_attributes=True)
 
