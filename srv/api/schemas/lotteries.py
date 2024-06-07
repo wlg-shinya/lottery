@@ -14,7 +14,7 @@ class Lotteries(LotteriesBase):
     model_config = ConfigDict(from_attributes=True)
 
 class LotteryCreate(LotteriesBase):
-    access_token: str
+    access_token: str = Field(desciption="アクセストークン")
 
 class LotteryCreateResponse(LotteryCreate):
     id: int
@@ -22,4 +22,4 @@ class LotteryCreateResponse(LotteryCreate):
     model_config = ConfigDict(from_attributes=True)
 
 class LotteryDelete(BaseModel):
-    access_token: str
+    access_token: str = Field(desciption="アクセストークン")

@@ -21,7 +21,7 @@ class UserCreateResponse(UserCreate):
     model_config = ConfigDict(from_attributes=True)
 
 class UserUpdate(UsersBase):
-    access_token: str
+    access_token: str = Field(desciption="アクセストークン")
 
 class UserUpdateResponse(UserUpdate):
     id: int
@@ -29,11 +29,11 @@ class UserUpdateResponse(UserUpdate):
     model_config = ConfigDict(from_attributes=True)
 
 class UserDelete(BaseModel):
-    access_token: str
+    access_token: str = Field(desciption="アクセストークン")
 
 class UserSignin(UsersBase):
     pass
 
 class UserSigninResponse(BaseModel):
-    access_token: str
+    access_token: str = Field(desciption="アクセストークン")
 
