@@ -16,8 +16,9 @@ class Lotteries(LotteriesBase):
 class LotteryCreate(LotteriesBase):
     access_token: str = Field(desciption="アクセストークン")
 
-class LotteryCreateResponse(LotteryCreate):
+class LotteryCreateResponse(LotteriesBase):
     id: int
+    user_id: int = Field(desciption="このくじ引きの所有者ID")
 
     model_config = ConfigDict(from_attributes=True)
 

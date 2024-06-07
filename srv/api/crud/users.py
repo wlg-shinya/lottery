@@ -56,8 +56,8 @@ async def signin(
     # トークン新規作成/更新
     token_src = body.account_name + body.identification # TODO:salt/pepperの検討
     access_token = sha256(token_src.encode("utf-8")).hexdigest()
-    tokens_model = await tokens.read_token(db, access_token)
     tokens_body = TokenCreate(access_token=access_token, user_id=users.id)
+    tokens_model = await tokens.read_token(db, access_token)
     if tokens_model != None:
         # すでに存在しているならトークン有効期限を更新
         await tokens.update_token(db, tokens_body, tokens_model)

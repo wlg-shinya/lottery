@@ -8,7 +8,8 @@ import api.crud.tokens as tokens
 async def create_lottery(
     db: AsyncSession, body: schema.LotteryCreate
 ) -> Model:
-    model = Model(**body.model_dump())
+    tokens_model = await tokens.read_token(db, body.access_token)
+    model = Model(user_id=tokens_model.user_id, text=body.text, title=body.title)
     db.add(model)
     await db.commit()
     await db.refresh(model)

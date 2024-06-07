@@ -2,7 +2,9 @@ from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.models import Tokens as Model
-import datetime
+from datetime import datetime
+from zoneinfo import ZoneInfo
+from api.schemas.tokens import default_timezone
 import api.schemas.tokens as schema
 
 async def create_token(
@@ -19,8 +21,9 @@ async def read_token(
 ) -> Model | None:
     row = (await db.execute(select(Model).filter(Model.access_token == access_token))).first()
     if row is None or row.count == 0:
-        raise HTTPException(status_code=404, detail=f"Not found access_token({access_token}) in {Model.__tablename__}")
-    return row.tuple()[0]
+        return None
+    else:
+        return row.tuple()[0]
 
 async def validate_token(
     db: AsyncSession, access_token: str
@@ -30,7 +33,7 @@ async def validate_token(
     if tokens == None:
         raise HTTPException(status_code=401, detail=f"Unauthorized access token invalid. Retry signin.")
     # 期限切れ
-    if datetime.datetime.now() > tokens.expire_at:
+    if datetime.now(default_timezone()) > tokens.expire_at:
         raise HTTPException(status_code=401, detail=f"Unauthorized access token expired. Retry signin.")
     # 検証正常通過
     pass
