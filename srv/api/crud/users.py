@@ -48,7 +48,7 @@ async def signup(
     db: AsyncSession, body: schema.UserSignin
 ) -> None:
     result = (await db.execute(select(Model).filter(Model.account_name == body.account_name)))
-    if result.all().count > 0:
+    if len(result.all()) > 0:
         raise HTTPException(status_code=400, detail=f"Bad Request already exists account_name({body.account_name})")
     await create_user(db, body=schema.UserCreate(account_name=body.account_name, identification=body.identification))
 
@@ -57,7 +57,7 @@ async def signin(
 ) -> schema.UserSigninResponse:
     # アカウント・パスワードマッチング
     row = (await db.execute(select(Model).filter(Model.account_name == body.account_name, Model.identification == body.identification))).first()
-    if row is None or row.count == 0:
+    if row is None or len(row) == 0:
         raise HTTPException(status_code=404, detail="Not found account or password")
     users = row.tuple()[0]
     
