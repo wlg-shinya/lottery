@@ -28,8 +28,8 @@ export interface LotteryData {
 }
 
 export const defaultLotteryData: LotteryData = {
-  inputData: defaultLotteryUserInputData,
-  resultData: defaultLotteryResultData,
+  inputData: structuredClone(defaultLotteryUserInputData),
+  resultData: structuredClone(defaultLotteryResultData),
 };
 
 export interface LotteryListData {
@@ -38,7 +38,7 @@ export interface LotteryListData {
 }
 
 export const defaultLotteryListData: LotteryListData = {
-  list: [defaultLotteryData],
+  list: [structuredClone(defaultLotteryData)],
   selectedIndex: 0,
 };
 
@@ -49,5 +49,5 @@ export interface LotteryTopData {
 
 export const defaultLotteryTopData: LotteryTopData = {
   accessToken: "",
-  listData: defaultLotteryListData,
+  listData: structuredClone(defaultLotteryListData),
 };

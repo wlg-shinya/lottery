@@ -154,7 +154,7 @@ async function downloadData(accessToken: string) {
               text: lottery.text ?? "",
               title: lottery.title ?? "",
             },
-            resultData: defaultLotteryResultData,
+            resultData: structuredClone(defaultLotteryResultData),
           });
         }
         lotteryTopData.value.listData.selectedIndex = 0;

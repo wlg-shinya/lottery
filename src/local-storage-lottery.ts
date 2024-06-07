@@ -3,7 +3,7 @@ import { type LotteryTopData, defaultLotteryTopData } from "./lottery-data";
 
 class LocalStorageLottery extends LocalStorage<LotteryTopData> {
   constructor() {
-    super(LocalStorageLottery.name, defaultLotteryTopData);
+    super(LocalStorageLottery.name, structuredClone(defaultLotteryTopData));
   }
 }
 
