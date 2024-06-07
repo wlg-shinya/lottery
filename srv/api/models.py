@@ -22,7 +22,7 @@ class Lotteries(BaseModel):
 class Users(BaseModel):
     __tablename__ = "users"
 
-    account_name = Column(VARCHAR(128), nullable=False)
+    account_name = Column(VARCHAR(128), nullable=False, unique=True)
     identification = Column(VARCHAR(128), nullable=False)
 
 class Tokens(BaseModel):
