@@ -43,8 +43,7 @@ $ alembic upgrade head
 After edit below 'srv/api/'
 
 ```
-$ npm run openapi:download
-$ docker-compose -f docker-compose-openapi-generate.yml up --build
+$ npm run openapi:update
 ```
 
 ## Deploy
