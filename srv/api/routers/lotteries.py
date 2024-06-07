@@ -40,3 +40,8 @@ async def read_lottery_with_errorcheck(id: int, db: AsyncSession = Depends(db)) 
     if model is None:
         raise HTTPException(status_code=404, detail=f"Not found id({id}) in {Model.__tablename__}")
     return model
+
+@router.delete("/api/admin/delete_lottery", response_model=None)
+async def delete_lottery(id: int, db: AsyncSession = Depends(db)):
+    model = await read_lottery_with_errorcheck(id, db)
+    await crud.delete_lottery(db, original=model)

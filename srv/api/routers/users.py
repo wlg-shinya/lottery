@@ -40,3 +40,8 @@ async def read_user_with_errorcheck(id: int, db: AsyncSession = Depends(db)) -> 
     if model is None:
         raise HTTPException(status_code=404, detail=f"Not found id({id}) in users")
     return model
+
+@router.delete("/api/admin/delete_user", response_model=None)
+async def delete_user(id: int, db: AsyncSession = Depends(db)):
+    model = await read_user_with_errorcheck(id, db)
+    await crud.delete_user(db, original=model)
