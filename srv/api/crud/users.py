@@ -11,7 +11,7 @@ import api.crud.tokens as tokens
 async def create_user(
     db: AsyncSession, body: schema.UserCreate
 ) -> Model:
-    model = Model(**body.model_dump())
+    model = Model(account_name=body.account_name, identification=hash(body.account_name, body.identification))
     db.add(model)
     await db.commit()
     await db.refresh(model)
@@ -32,8 +32,7 @@ async def update_user(
     db: AsyncSession, body: schema.UserCreate, original: Model
 ) -> Model:
     original.account_name = body.account_name
-    # TODO: identification をそのまま保存するのではなくハッシュ化したものを保存する形に変更する
-    original.identification = body.identification
+    original.identification = hash(body.account_name, body.identification)
     db.add(original)
     await db.commit()
     await db.refresh(original)
@@ -56,15 +55,14 @@ async def signup(
 async def signin(
     db: AsyncSession, body: schema.UserSignin
 ) -> schema.UserSigninResponse:
-    # アカウント・パスワードマッチング
-    row = (await db.execute(select(Model).filter(Model.account_name == body.account_name, Model.identification == body.identification))).first()
+    # アカウントマッチング
+    access_token = hash(body.account_name, body.identification)
+    row = (await db.execute(select(Model).filter(Model.account_name == body.account_name, Model.identification == access_token))).first()
     if row is None or len(row) == 0:
         raise HTTPException(status_code=404, detail="Not found account or password")
     users = row.tuple()[0]
     
     # トークン新規作成/更新
-    token_src = body.account_name + body.identification # TODO:salt/pepperの検討
-    access_token = sha256(token_src.encode("utf-8")).hexdigest()
     tokens_body = TokenCreate(access_token=access_token, user_id=users.id)
     tokens_model = await tokens.read_token(db, access_token)
     if tokens_model != None:
@@ -75,3 +73,7 @@ async def signin(
         await tokens.create_token(db, tokens_body)
 
     return schema.UserSigninResponse(access_token=access_token)
+
+def hash(account_name: str, identification: str):
+    src = account_name + identification # TODO:salt/pepperの検討
+    return sha256(src.encode("utf-8")).hexdigest()
