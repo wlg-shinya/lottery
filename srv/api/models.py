@@ -23,7 +23,7 @@ class Users(BaseModel):
     __tablename__ = "users"
 
     account_name = Column(VARCHAR(128), nullable=False, unique=True)
-    identification = Column(VARCHAR(128), nullable=False)
+    identification = Column(VARCHAR(64), nullable=False)
 
 class Tokens(BaseModel):
     __tablename__ = "tokens"
