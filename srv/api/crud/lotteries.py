@@ -1,7 +1,8 @@
+from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
-from api.models import Lotteries as Model
+from api.models import Lotteries as Model, Tokens as TokensModel
 import api.schemas.lotteries as schema
 import api.crud.tokens as tokens
 
@@ -37,6 +38,25 @@ async def read_lottery(
 ) -> Model | None:
     return await db.get(Model, id)
 
+async def read_lottery_with_errorcheck(
+    db: AsyncSession, id: int, access_token: str
+) -> Model:
+    model = await read_lottery(db, id)
+    _read_lottery_not_found(model)
+    tokens_model = await tokens.read_token(db, access_token)
+    _read_lottery_not_match_user_id(model, tokens_model)
+    return model
+
+def _read_lottery_not_found(model: Model | None):
+    # データが見つからない
+    if model is None:
+        raise HTTPException(status_code=404, detail=f"Not found id({id}) in {Model.__tablename__}")
+
+def _read_lottery_not_match_user_id(model: Model, tokens_model: TokensModel):
+    # アクセストークンと今回扱うデータの所有者が一致しない
+    if tokens_model.user_id != model.user_id:
+        raise HTTPException(status_code=400, detail=f"Bad Request not match user_id in {Model.__tablename__}")
+
 async def update_lottery(
     db: AsyncSession, body: schema.LotteryCreate, original: Model
 ) -> Model:
@@ -52,3 +72,11 @@ async def delete_lottery(
 ) -> None:
     await db.delete(original)
     await db.commit()
+
+async def is_lottery_id_mine(
+    db: AsyncSession, id: int, access_token: str
+) -> bool:
+    model = await read_lottery(db, id)
+    _read_lottery_not_found(model)
+    tokens_model = await tokens.read_token(db, access_token)
+    return tokens_model.user_id == model.user_id
