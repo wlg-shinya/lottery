@@ -41,6 +41,7 @@ async function onSignin(accessToken: string) {
 }
 
 function onSignout() {
+  _signin.value.clear();
   signout();
 }
 
@@ -119,7 +120,11 @@ async function uploadData(accessToken: string) {
           if (list.inputData.id < 0) {
             // IDが未定なら新規追加
             await DefaultApiClient.createLotteryApiCreateLotteryPost(data)
-              .then(() => (uploaded = true))
+              .then((response) => {
+                // サーバー保存の結果得られたIDで更新することで、ローカル作成状態でないことにする
+                list.inputData.id = response.data.id;
+                uploaded = true;
+              })
               .catch((error) => {
                 throw error;
               });
@@ -169,8 +174,6 @@ function signout() {
     // ローカルデータが全くなかったらデフォルトデータを置いておく
     lotteryTopData.value.listData = structuredClone(defaultLotteryListData);
   }
-  // サインイン情報をクリア
-  _signin.value.clear();
 }
 
 async function downloadData(accessToken: string, showWarning: boolean) {
