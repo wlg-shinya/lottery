@@ -1,11 +1,12 @@
 services:
   db:
     image: postgres:16-alpine
-    hostname: lottery-db
+    container_name: lottery-db
     restart: always
     ports:
       - "8502:5432"
     volumes:
+      - ./initdb.d:/docker-entrypoint-initdb.d
       - ./pgdata:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=postgres
@@ -14,6 +15,7 @@ services:
       - PGTZ=Asia/Tokyo
   backend:
     image: lottery
+    container_name: lottery-backend
     restart: always
     build:
       context: .
@@ -22,7 +24,7 @@ services:
     ports:
       - "8501:8501"
     command: poetry run uvicorn api.main:app --host 0.0.0.0 --port 8501 --reload
-    # environment:
-    #   - DB_URL=
+    environment:
+      - DB_URL=postgres:postgres@lottery-db:5432/lottery
     depends_on:
       - db
