@@ -32,3 +32,4 @@ services:
       - DB_URL=postgres:postgres@lottery-db:5432/lottery
     depends_on:
       - db
+      # TODO: ヘルスチェック
