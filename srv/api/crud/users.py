@@ -32,6 +32,7 @@ async def update_user(
     db: AsyncSession, body: schema.UserCreate, original: Model
 ) -> Model:
     original.account_name = body.account_name
+    # TODO: identification をそのまま保存するのではなくハッシュ化したものを保存する形に変更する
     original.identification = body.identification
     db.add(original)
     await db.commit()
