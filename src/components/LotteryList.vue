@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { type LotteryListData, defaultLotteryData, defaultLotteryListData } from "../lottery-data";
 import Modal from "./Modal.vue";
 
@@ -20,13 +20,15 @@ watch(
   () => (listData.value = props.initData)
 );
 
+const existsDefaultLotteryData = computed(() => listData.value.list.some((x) => JSON.stringify(x) === JSON.stringify(defaultLotteryData)));
+
 function onClickData(index: number) {
   emit("select", index);
 }
 
 function onClickAddButton() {
   // デフォルトデータが存在する場合は新規追加しない
-  if (listData.value.list.some((x) => JSON.stringify(x) === JSON.stringify(defaultLotteryData))) return;
+  if (existsDefaultLotteryData.value) return;
   // チェックに通過したので新規追加
   addNewData();
 }
@@ -82,7 +84,9 @@ function doDelete(index: number) {
         </tr>
         <tr>
           <td colspan="3">
-            <button @click="onClickAddButton" class="btn btn-primary w-100"><span class="mdi mdi-plus" /></button>
+            <button @click="onClickAddButton" class="btn btn-primary w-100" :disabled="existsDefaultLotteryData">
+              <span class="mdi mdi-plus" />
+            </button>
           </td>
         </tr>
       </tbody>
