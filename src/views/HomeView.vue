@@ -11,8 +11,6 @@ import LotteryList from "../components/LotteryList.vue";
 import LotteryHistoryList from "../components/LotteryHistoryList.vue";
 import UploadDownload from "../components/UploadDownload.vue";
 
-// TODO:サインアウト処理
-
 const modal = ref();
 const uploadDownload = ref();
 
@@ -25,7 +23,8 @@ watch(
 );
 
 const selectedLotteryData = computed(() => lotteryTopData.value.listData.list[lotteryTopData.value.listData.selectedIndex]);
-const isDefaultLotteryListData = computed(() => JSON.stringify(lotteryTopData.value.listData) === JSON.stringify(defaultLotteryListData));
+const localLotteryDataArray = computed(() => lotteryTopData.value.listData.list.filter((x) => x.inputData.id === -1));
+const existsLocalLotteryData = computed(() => localLotteryDataArray.value.length > 0);
 
 async function onStart() {
   await LocalStorageLottery.setup();
@@ -35,12 +34,7 @@ async function onStart() {
 }
 
 async function onSignin(accessToken: string) {
-  // サインインで取得したアクセストークンをローカルに保存
-  lotteryTopData.value.accessToken = accessToken;
-  // ローカルに作成したデータがない場合はダウンロードしてくる
-  if (isDefaultLotteryListData.value) {
-    await downloadData(accessToken, false);
-  }
+  signin(accessToken);
 }
 
 function onSelectLotteryList(index: number) {
@@ -64,7 +58,9 @@ async function onUpload() {
 }
 
 async function onDownload() {
-  downloadData(lotteryTopData.value.accessToken, true);
+  modal.value.show("注意", "手元で編集中のデータはすべて消えます。よろしいですか？", "OK", () =>
+    downloadData(lotteryTopData.value.accessToken, true)
+  );
 }
 
 function showLotteryList(): boolean {
@@ -141,6 +137,31 @@ async function uploadData(accessToken: string) {
     .catch((error) => {
       uploadDownload.value.setMessage(getErrorMessage(error), "text-danger");
     });
+}
+
+async function signin(accessToken: string) {
+  // まずサインアウトする
+  signout();
+  // サインインで取得したアクセストークンをローカルに保存
+  lotteryTopData.value.accessToken = accessToken;
+  // ローカルに作成したデータがない場合はダウンロードしてくる
+  if (!existsLocalLotteryData.value) {
+    await downloadData(accessToken, false);
+  }
+}
+
+function signout() {
+  // サインインで取得したアクセストークンを削除
+  lotteryTopData.value.accessToken = "";
+  // サーバー上に保存されているデータはローカルから削除
+  const localData = localLotteryDataArray.value;
+  if (localData.length > 0) {
+    lotteryTopData.value.listData.list = localData;
+    lotteryTopData.value.listData.selectedIndex = 0;
+  } else {
+    // ローカルデータが全くなかったらデフォルトデータを置いておく
+    lotteryTopData.value.listData = structuredClone(defaultLotteryListData);
+  }
 }
 
 async function downloadData(accessToken: string, showWarning: boolean) {
