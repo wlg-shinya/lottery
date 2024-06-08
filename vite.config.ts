@@ -13,5 +13,11 @@ export default ({ mode }) => {
     esbuild: {
       keepNames: true,
     },
+    server: {
+      port: 5173,
+    },
+    preview: {
+      port: 5173,
+    },
   });
 };
