@@ -516,6 +516,50 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
+         * @summary Is Lottery Id Mine
+         * @param {number} id 
+         * @param {string} accessToken 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        isLotteryIdMineApiIsLotteryIdMineGet: async (id: number, accessToken: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('isLotteryIdMineApiIsLotteryIdMineGet', 'id', id)
+            // verify required parameter 'accessToken' is not null or undefined
+            assertParamExists('isLotteryIdMineApiIsLotteryIdMineGet', 'accessToken', accessToken)
+            const localVarPath = `/api/is_lottery_id_mine`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+            if (accessToken !== undefined) {
+                localVarQueryParameter['access_token'] = accessToken;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Read Lotteries
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -840,6 +884,20 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Is Lottery Id Mine
+         * @param {number} id 
+         * @param {string} accessToken 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async isLotteryIdMineApiIsLotteryIdMineGet(id: number, accessToken: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<boolean>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.isLotteryIdMineApiIsLotteryIdMineGet(id, accessToken, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.isLotteryIdMineApiIsLotteryIdMineGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Read Lotteries
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -991,6 +1049,17 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
+         * @summary Is Lottery Id Mine
+         * @param {number} id 
+         * @param {string} accessToken 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        isLotteryIdMineApiIsLotteryIdMineGet(id: number, accessToken: string, options?: any): AxiosPromise<boolean> {
+            return localVarFp.isLotteryIdMineApiIsLotteryIdMineGet(id, accessToken, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Read Lotteries
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1127,6 +1196,19 @@ export class DefaultApi extends BaseAPI {
      */
     public deleteUserApiDeleteUserDelete(userDelete: UserDelete, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).deleteUserApiDeleteUserDelete(userDelete, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Is Lottery Id Mine
+     * @param {number} id 
+     * @param {string} accessToken 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public isLotteryIdMineApiIsLotteryIdMineGet(id: number, accessToken: string, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).isLotteryIdMineApiIsLotteryIdMineGet(id, accessToken, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
