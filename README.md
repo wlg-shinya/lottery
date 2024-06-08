@@ -10,22 +10,34 @@ $ poetry install
 
 ## Development
 
-### DB startup
+### DB's docker startup
 
 ```
 $ docker-compose up db
 ```
 
-### Build and run
+### Backend build and run
 
 ```
-$ npm run dev && npm run srv
+$ npm run srv
 ```
 
-### Build and run for production
+### Frontend build and run
 
 ```
-$ npm run build && npm run preview && npm run srv
+$ npm run dev
+```
+
+### Backend's docker startup
+
+```
+$ docker-compose up backend --build
+```
+
+### Frontend build and run for production
+
+```
+$ npm run build && npm run preview
 ```
 
 ### DB migration
