@@ -151,31 +151,6 @@ async function uploadData(accessToken: string) {
     });
 }
 
-async function signin(accessToken: string) {
-  // まずサインアウトする
-  signout();
-  // サインインで取得したアクセストークンをローカルに保存
-  lotteryTopData.value.accessToken = accessToken;
-  // ローカルに作成したデータがない場合はダウンロードしてくる
-  if (!existsLocalLotteryData.value) {
-    await downloadData(accessToken, false);
-  }
-}
-
-function signout() {
-  // サインインで取得したアクセストークンを削除
-  lotteryTopData.value.accessToken = "";
-  // サーバー上に保存されているデータはローカルから削除
-  const localData = localLotteryDataArray.value;
-  if (localData.length > 0) {
-    lotteryTopData.value.listData.list = localData;
-    lotteryTopData.value.listData.selectedIndex = 0;
-  } else {
-    // ローカルデータが全くなかったらデフォルトデータを置いておく
-    lotteryTopData.value.listData = structuredClone(defaultLotteryListData);
-  }
-}
-
 async function downloadData(accessToken: string, showWarning: boolean) {
   await DefaultApiClient.readMyLotteriesApiReadMyLotteriesGet(accessToken)
     .then((response) => {
@@ -203,6 +178,31 @@ async function downloadData(accessToken: string, showWarning: boolean) {
     .catch((error) => {
       _uploadDownload.value.setMessage(getErrorMessage(error), "text-danger");
     });
+}
+
+async function signin(accessToken: string) {
+  // まずサインアウトする
+  signout();
+  // サインインで取得したアクセストークンをローカルに保存
+  lotteryTopData.value.accessToken = accessToken;
+  // ローカルに作成したデータがない場合はダウンロードしてくる
+  if (!existsLocalLotteryData.value) {
+    await downloadData(accessToken, false);
+  }
+}
+
+function signout() {
+  // サインインで取得したアクセストークンを削除
+  lotteryTopData.value.accessToken = "";
+  // サーバー上に保存されているデータはローカルから削除
+  const localData = localLotteryDataArray.value;
+  if (localData.length > 0) {
+    lotteryTopData.value.listData.list = localData;
+    lotteryTopData.value.listData.selectedIndex = 0;
+  } else {
+    // ローカルデータが全くなかったらデフォルトデータを置いておく
+    lotteryTopData.value.listData = structuredClone(defaultLotteryListData);
+  }
 }
 
 onStart();
