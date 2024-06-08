@@ -10,7 +10,8 @@
     "clean": "rm -rf ./dist",
     "srv": "cd ./srv && poetry run uvicorn api.main:app --host localhost --port 8501 --reload",
     "openapi:generate": "openapi-generator-cli generate -g typescript-axios -i ./src/openapi/openapi.json -o ./src/openapi/generated",
-    "openapi:update": "curl http://localhost:8501/openapi.json > ./src/openapi/openapi.json && docker-compose -f docker-compose-openapi-generate.yml up --build"
+    "openapi:update": "curl http://localhost:8501/openapi.json > ./src/openapi/openapi.json && docker-compose -f docker-compose-openapi-generate.yml up --build",
+    "db:migration": "cd ./srv && poetry run alembic revision --autogenerate && poetry run alembic upgrade head"
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",

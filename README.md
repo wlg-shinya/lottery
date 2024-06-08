@@ -33,9 +33,7 @@ $ npm run build && npm run preview && npm run srv
 After edit 'srv/api/models.py'
 
 ```
-$ cd ./srv
-$ alembic revision --autogenerate
-$ alembic upgrade head
+$ npm run db:migration
 ```
 
 ### OpenAPI update
