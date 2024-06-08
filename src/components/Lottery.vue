@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
 import { type LotteryData, defaultLotteryData } from "../lottery-data";
+import { DefaultApiClient } from "../openapi";
 import FlexTextarea from "./FlexTextarea.vue";
 import RotateSlot from "./RotateSlot.vue";
 
@@ -9,14 +10,14 @@ const LOTTERY_TARGETS_SHOW_CLASS = "fs-1 fw-bold";
 
 const props = defineProps<{
   initData: LotteryData;
+  accessToken: string;
 }>();
 
 const emit = defineEmits<{
   change: [data: LotteryData];
 }>();
 
-// TODO:認証情報をもとに編集可能かどうかを判断するように。DB書き込みも同様にする必要がある
-const editable = ref(true);
+const editable = ref(false);
 
 const data = ref<LotteryData>(structuredClone(defaultLotteryData));
 // 入力されたデータに変化あったらイベント発火
@@ -25,12 +26,34 @@ watch(data, () => emit("change", data.value), { deep: true });
 // 初期データはローカルストレージ読込による遅延が起きるので watch で検出する
 watch(
   () => props.initData,
-  () => (data.value = props.initData)
+  () => onUpdateInitData()
 );
 
 // 抽選対象群
 // INPUT_TEXT_PLACEHOLDER_TEXT の条件をここで表現
 const lotteryTargets = computed(() => data.value.inputData.text.split("\n").filter((x) => x));
+
+async function onUpdateInitData() {
+  // 編集データに初期データを反映させる
+  data.value = props.initData;
+
+  // 編集可能かどうか判断する
+  if (props.initData.inputData.id !== -1) {
+    await DefaultApiClient.isLotteryIdMineApiIsLotteryIdMineGet(props.initData.inputData.id, props.accessToken)
+      .then((response) => {
+        if (response.data) {
+          // サーバーに問い合わせたうえで自分の作成したデータだと判明したら編集可能
+          editable.value = true;
+        }
+      })
+      .catch((_error) => {
+        // ここで発生したエラーは結局編集不可になるだけなので特に何もしない
+      });
+  } else {
+    // ローカルで作成したデータは編集可能
+    editable.value = true;
+  }
+}
 
 function onClickLotteryButton() {
   // 抽選対象がなければ何もしない
