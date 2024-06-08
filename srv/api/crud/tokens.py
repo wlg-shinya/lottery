@@ -20,7 +20,7 @@ async def read_token(
     db: AsyncSession, access_token: str
 ) -> Model | None:
     row = (await db.execute(select(Model).filter(Model.access_token == access_token))).first()
-    if row is None or row.count == 0:
+    if row is None or len(row) == 0:
         return None
     else:
         return row.tuple()[0]

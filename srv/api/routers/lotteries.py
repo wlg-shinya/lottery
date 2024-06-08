@@ -48,5 +48,5 @@ async def read_lottery_with_errorcheck(id: int, access_token: str, db: AsyncSess
 
 @router.delete("/api/admin/delete_lottery", response_model=None)
 async def delete_lottery(id: int, db: AsyncSession = Depends(db)):
-    model = await read_lottery_with_errorcheck(id, db)
+    model = await crud.read_lottery(db, id)
     await crud.delete_lottery(db, original=model)

@@ -42,5 +42,5 @@ async def read_user_with_errorcheck(access_token: str, db: AsyncSession = Depend
 
 @router.delete("/api/admin/delete_user", response_model=None)
 async def delete_user(id: int, db: AsyncSession = Depends(db)):
-    model = await read_user_with_errorcheck(id, db)
+    model = await crud.read_user(db, id)
     await crud.delete_user(db, original=model)
