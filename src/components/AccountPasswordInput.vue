@@ -11,7 +11,7 @@ const emit = defineEmits<{
   click: [account: string, password: string];
 }>();
 
-defineExpose({ setMessage });
+defineExpose({ setMessage, clear });
 
 const message = ref();
 const account = ref("");
@@ -32,6 +32,11 @@ function canClick(): boolean {
 
 function setMessage(body: string, color: string) {
   message.value.set(body, color);
+}
+
+function clear() {
+  account.value = "";
+  password.value = "";
 }
 </script>
 

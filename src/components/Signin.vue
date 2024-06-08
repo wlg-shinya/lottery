@@ -9,6 +9,8 @@ const emit = defineEmits<{
   signin: [accessToken: string];
 }>();
 
+defineExpose({ clear });
+
 const accountPasswordInput = ref();
 
 async function onClickSigninButton(account: string, password: string) {
@@ -26,6 +28,10 @@ async function onClickSigninButton(account: string, password: string) {
 
 function onClickSignupButton() {
   router.push("/signup");
+}
+
+function clear() {
+  accountPasswordInput.value.clear();
 }
 </script>
 

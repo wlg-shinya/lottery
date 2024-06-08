@@ -11,8 +11,9 @@ import LotteryList from "../components/LotteryList.vue";
 import LotteryHistoryList from "../components/LotteryHistoryList.vue";
 import UploadDownload from "../components/UploadDownload.vue";
 
-const modal = ref();
-const uploadDownload = ref();
+const _modal = ref();
+const _uploadDownload = ref();
+const _signin = ref();
 
 const lotteryTopData = ref(structuredClone(defaultLotteryTopData));
 // データに変化あり次第ローカルストレージに保存
@@ -52,7 +53,7 @@ function onChangeLottery(data: LotteryData) {
 }
 
 function onClearHistoryLotteryHistoryList() {
-  modal.value.show("注意", "履歴を本当にクリアしますか？この操作は取り消せません", "クリア", () => doClearHistory());
+  _modal.value.show("注意", "履歴を本当にクリアしますか？この操作は取り消せません", "クリア", () => doClearHistory());
 }
 
 function onChangeShowCountLotteryHistoryList(value: number) {
@@ -64,7 +65,7 @@ async function onUpload() {
 }
 
 async function onDownload() {
-  modal.value.show("注意", "手元で編集中のデータはすべて消えます。よろしいですか？", "OK", () =>
+  _modal.value.show("注意", "手元で編集中のデータはすべて消えます。よろしいですか？", "OK", () =>
     downloadData(lotteryTopData.value.accessToken, true)
   );
 }
@@ -135,13 +136,13 @@ async function uploadData(accessToken: string) {
 
       // 正常終了
       if (uploaded) {
-        uploadDownload.value.setMessage("サーバーに保存しました", "text-success");
+        _uploadDownload.value.setMessage("サーバーに保存しました", "text-success");
       } else {
-        uploadDownload.value.setMessage("保存するデータがありません", "text-warning");
+        _uploadDownload.value.setMessage("保存するデータがありません", "text-warning");
       }
     })
     .catch((error) => {
-      uploadDownload.value.setMessage(getErrorMessage(error), "text-danger");
+      _uploadDownload.value.setMessage(getErrorMessage(error), "text-danger");
     });
 }
 
@@ -168,6 +169,8 @@ function signout() {
     // ローカルデータが全くなかったらデフォルトデータを置いておく
     lotteryTopData.value.listData = structuredClone(defaultLotteryListData);
   }
+  // サインイン情報をクリア
+  _signin.value.clear();
 }
 
 async function downloadData(accessToken: string, showWarning: boolean) {
@@ -189,13 +192,13 @@ async function downloadData(accessToken: string, showWarning: boolean) {
         lotteryTopData.value.listData.selectedIndex = 0;
 
         // 正常終了
-        uploadDownload.value.setMessage("サーバーから読み込みました", "text-success");
+        _uploadDownload.value.setMessage("サーバーから読み込みました", "text-success");
       } else if (showWarning) {
-        uploadDownload.value.setMessage("サーバーにデータがありませんでした", "text-warning");
+        _uploadDownload.value.setMessage("サーバーにデータがありませんでした", "text-warning");
       }
     })
     .catch((error) => {
-      uploadDownload.value.setMessage(getErrorMessage(error), "text-danger");
+      _uploadDownload.value.setMessage(getErrorMessage(error), "text-danger");
     });
 }
 
@@ -204,9 +207,9 @@ onStart();
 
 <template>
   <div>
-    <Modal ref="modal" />
+    <Modal ref="_modal" />
     <div class="d-flex flex-column align-items-center">
-      <Signin @signin="onSignin" />
+      <Signin ref="_signin" @signin="onSignin" />
       <button @click="onSignout" class="btn btn-link p-0">サインアウト</button>
     </div>
     <hr />
@@ -233,7 +236,7 @@ onStart();
     </table>
     <div v-show="showUploadDownload()">
       <hr />
-      <UploadDownload ref="uploadDownload" @upload="onUpload" @download="onDownload" />
+      <UploadDownload ref="_uploadDownload" @upload="onUpload" @download="onDownload" />
     </div>
   </div>
 </template>
