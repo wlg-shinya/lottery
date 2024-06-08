@@ -24,7 +24,9 @@ watch(
 
 const selectedLotteryData = computed(() => lotteryTopData.value.listData.list[lotteryTopData.value.listData.selectedIndex]);
 const localLotteryDataArray = computed(() => lotteryTopData.value.listData.list.filter((x) => x.inputData.id === -1));
-const existsLocalLotteryData = computed(() => localLotteryDataArray.value.length > 0);
+const existsLocalLotteryData = computed(
+  () => localLotteryDataArray.value.length > 0 && JSON.stringify(lotteryTopData.value.listData) !== JSON.stringify(defaultLotteryListData)
+);
 
 async function onStart() {
   await LocalStorageLottery.setup();
@@ -34,7 +36,11 @@ async function onStart() {
 }
 
 async function onSignin(accessToken: string) {
-  signin(accessToken);
+  await signin(accessToken);
+}
+
+function onSignout() {
+  signout();
 }
 
 function onSelectLotteryList(index: number) {
@@ -199,7 +205,10 @@ onStart();
 <template>
   <div>
     <Modal ref="modal" />
-    <Signin @signin="onSignin" />
+    <div class="d-flex flex-column align-items-center">
+      <Signin @signin="onSignin" />
+      <button @click="onSignout" class="btn btn-link p-0">サインアウト</button>
+    </div>
     <hr />
     <table class="table table-borderless">
       <tbody>
