@@ -39,7 +39,7 @@ async function onSignin(accessToken: string) {
   lotteryTopData.value.accessToken = accessToken;
   // ローカルに作成したデータがない場合はダウンロードしてくる
   if (isDefaultLotteryListData.value) {
-    await downloadData(accessToken);
+    await downloadData(accessToken, false);
   }
 }
 
@@ -64,7 +64,7 @@ async function onUpload() {
 }
 
 async function onDownload() {
-  downloadData(lotteryTopData.value.accessToken);
+  downloadData(lotteryTopData.value.accessToken, true);
 }
 
 function showLotteryList(): boolean {
@@ -143,7 +143,7 @@ async function uploadData(accessToken: string) {
     });
 }
 
-async function downloadData(accessToken: string) {
+async function downloadData(accessToken: string, showWarning: boolean) {
   await DefaultApiClient.readMyLotteriesApiReadMyLotteriesGet(accessToken)
     .then((response) => {
       // サーバー上にデータがあるときのみローカルと差し替える
@@ -163,7 +163,7 @@ async function downloadData(accessToken: string) {
 
         // 正常終了
         uploadDownload.value.setMessage("サーバーから読み込みました", "text-success");
-      } else {
+      } else if (showWarning) {
         uploadDownload.value.setMessage("サーバーにデータがありませんでした", "text-warning");
       }
     })
