@@ -3,7 +3,6 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.models import Tokens as Model
 from datetime import datetime
-from zoneinfo import ZoneInfo
 from api.schemas.tokens import default_timezone
 import api.schemas.tokens as schema
 

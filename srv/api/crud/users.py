@@ -28,6 +28,15 @@ async def read_user(
 ) -> Model | None:
     return await db.get(Model, id)
 
+async def read_user_with_errorcheck(
+    db: AsyncSession, access_token: str
+) -> Model:
+    tokens_model = await tokens.read_token(db, access_token)
+    model = await read_user(db, tokens_model.user_id)
+    if model is None:
+        raise HTTPException(status_code=404, detail=f"Not found id({id}) in {Model.__tablename__}")
+    return model
+
 async def update_user(
     db: AsyncSession, body: schema.UserCreate, original: Model
 ) -> Model:
