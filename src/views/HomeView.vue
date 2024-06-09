@@ -66,7 +66,7 @@ async function onUpload() {
 }
 
 async function onDownload() {
-  _modal.value.show("注意", "手元で編集中のデータはすべて消えます。よろしいですか？", "OK", () =>
+  _modal.value.show("注意", "サーバーに保存していないデータはすべて消えます。よろしいですか？", "OK", () =>
     downloadData(lotteryTopData.value.accessToken, true)
   );
 }
