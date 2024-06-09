@@ -5,6 +5,10 @@ import { DefaultApiClient } from "../openapi";
 import FlexTextarea from "./FlexTextarea.vue";
 import RotateSlot from "./RotateSlot.vue";
 
+// TODO:"くじ引きの詳細"仕様追加
+// TODO:ほかのユーザが作成したくじ引きを閲覧および利用可能（＝お気に入り）にする
+// TODO:ほかのユーザが作成したくじ引きを抽選した回数をDB保存＆集計表示する
+
 const INPUT_TEXT_PLACEHOLDER_TEXT = "一行がひとつのくじとなります\n空白行は無視されます";
 const LOTTERY_TARGETS_SHOW_CLASS = "fs-1 fw-bold";
 
