@@ -1,12 +1,11 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from core.config import env
-from api.routers import users, lotteries, tokens
+from api.routers import users, lotteries
 
 app = FastAPI()
 app.include_router(users.router)
 app.include_router(lotteries.router)
-app.include_router(tokens.router)
 
 # CORS対応
 origins = [env().frontend_url]
