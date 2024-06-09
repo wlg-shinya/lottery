@@ -62,7 +62,6 @@ function doDelete(index: number) {
     <table class="table table-hover border text-center align-middle">
       <thead>
         <tr>
-          <th class="col-1">#</th>
           <th class="col-auto">
             <span>くじ引き名</span>
           </th>
@@ -76,14 +75,13 @@ function doDelete(index: number) {
           @click="onClickData(index)"
           :class="listData.selectedIndex === index ? 'table-active' : ''"
         >
-          <td>{{ index }}</td>
           <td>{{ d.inputData.title }}</td>
           <td>
             <button @click.stop="onClickDeleteButton(index)" class="btn btn-danger"><span class="mdi mdi-trash-can" /></button>
           </td>
         </tr>
         <tr>
-          <td colspan="3">
+          <td colspan="2">
             <button @click="onClickAddButton" class="btn btn-primary w-100" :disabled="existsDefaultLotteryData">
               <span class="mdi mdi-plus" />
             </button>
