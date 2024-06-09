@@ -1,7 +1,6 @@
 FROM node:20.9.0 as frontend-build
 WORKDIR /usr/src/app
 COPY . /usr/src/app
-RUN rm -rf srv pgdata initdb.d
 ENV NODE_ENV=development
 RUN npm install
 RUN npm run build
