@@ -50,6 +50,6 @@ services:
       target: frontend
     ports:
       - "8500:5173"
-    command: sh -c "cd ./dist && http-server -p 5173"
+    command: http-server -p 5173
     depends_on:
       - backend

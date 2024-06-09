@@ -8,7 +8,7 @@ RUN npm run build
 
 FROM node:20.9.0-alpine as frontend
 WORKDIR /usr/src/app
-COPY --from=frontend-build /usr/src/app /usr/src/app
+COPY --from=frontend-build /usr/src/app/dist/ /usr/src/app/package.json /usr/src/app/
 ENV NODE_ENV=production
 RUN npm install
 RUN npm install -g http-server
