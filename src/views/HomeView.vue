@@ -158,19 +158,21 @@ function doClearHistory() {
 async function uploadData(accessToken: string) {
   await DefaultApiClient.readMyLotteriesApiReadMyLotteriesGet(accessToken)
     .then(async (response) => {
+      let uploaded = false;
+
       // ローカル側で削除されたデータがあればサーバー側も削除する
       const serverIds = response.data.map((x) => x.id);
       const localIds = lotteryTopData.value.listData.list.map((x) => x.inputData.id);
       const deletedIds = serverIds.filter((id) => !localIds.some((x) => x === id));
       for (const id of deletedIds) {
-        // 削除命令は一気に発行して問題ないので await しない
-        DefaultApiClient.deleteLotteryApiDeleteLotteryDelete(id, { access_token: accessToken }).catch((error) => {
-          throw error;
-        });
+        await DefaultApiClient.deleteLotteryApiDeleteLotteryDelete(id, { access_token: accessToken })
+          .then(() => (uploaded = true))
+          .catch((error) => {
+            throw error;
+          });
       }
 
       // ローカル側をサーバー側にすべてアップロード
-      let uploaded = false;
       for (const list of lotteryTopData.value.listData.list) {
         if (list.inputData.text) {
           // 抽選対象が入力されていたら保存する
