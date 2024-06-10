@@ -40,18 +40,6 @@ function onClickAddButton() {
 function onClickDeleteButton(data: LotteryData) {
   modal.value.show("注意", "本当に削除しますか？この操作は取り消せません", "削除", () => emit("delete", data));
 }
-
-// function addNewData() {
-//   listData.value.list.push(structuredClone(defaultLotteryData));
-// }
-
-// function doDelete(index: number) {
-//   listData.value.list = listData.value.list.filter((_x, i) => index !== i);
-//   // 最後の一つを削除した場合は初期状態を復元する
-//   if (listData.value.list.length === 0) {
-//     addNewData();
-//   }
-// }
 </script>
 
 <template>

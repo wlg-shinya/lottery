@@ -37,7 +37,7 @@ async function onStart() {
   await LocalStorageLottery.load().then((result) => {
     lotteryTopData.value = result;
     // ローカルストレージからデータを得られたら先頭要素を選択するようにする
-    selectedLotteryData.value = lotteryTopData.value.listData.list[0];
+    resetSelectedTopLotteryData();
   });
 }
 
@@ -106,8 +106,12 @@ async function onDownload() {
 }
 
 function showLocalLotteryList(): boolean {
-  // ローカルデータにタイトルを入力したか、データが一つよりも多くある場合は表示ON
-  return (localLotteryData.value.length > 0 && localLotteryData.value[0].inputData.title !== "") || localLotteryData.value.length > 1;
+  // ローカルデータにタイトルを入力したか、ローカルデータが一つよりも多くある場合は表示ON
+  return (
+    (localLotteryData.value.length > 0 && localLotteryData.value[0].inputData.title !== "") ||
+    localLotteryData.value.length > 1 ||
+    showServerSavedLotteryList()
+  );
 }
 
 function showServerSavedLotteryList(): boolean {
@@ -260,6 +264,12 @@ function signout() {
   lotteryTopData.value.accessToken = "";
   // ローカルデータを初期化
   lotteryTopData.value.listData = structuredClone(defaultLotteryListData);
+  // 選択状態をリセット
+  resetSelectedTopLotteryData();
+}
+
+function resetSelectedTopLotteryData() {
+  selectedLotteryData.value = lotteryTopData.value.listData.list[0];
 }
 
 onStart();
