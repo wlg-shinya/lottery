@@ -5,6 +5,7 @@ import { LotteryPublicData } from "../lottery-data";
 import { getErrorMessage } from "../error";
 import Message from "../components/Message.vue";
 import BackButton from "../components/BackButton.vue";
+import SimpleShowText from "../components/OmitText.vue";
 
 const _message = ref();
 const allData = ref<LotteryPublicData[]>([]);
@@ -54,16 +55,18 @@ onStart();
       <table class="table table-striped">
         <thead>
           <tr>
-            <th class="col-4">くじ引き名</th>
+            <th class="col-5">くじ引き名</th>
             <th class="col-2">作成者</th>
-            <th class="col-4">説明</th>
+            <th class="col-5">説明</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="data in allData" :key="JSON.stringify(data)">
             <td>{{ data.title }}</td>
             <td>{{ data.user_name }}</td>
-            <td style="white-space: pre-wrap">{{ data.description }}</td>
+            <td style="white-space: pre-wrap">
+              <SimpleShowText :text="data.description" :length="32" :allowLineFeed="false" :initOmit="true" />
+            </td>
           </tr>
         </tbody>
       </table>
