@@ -53,3 +53,12 @@ export const defaultLotteryTopData: LotteryTopData = {
   accessToken: "",
   listData: structuredClone(defaultLotteryListData),
 };
+
+export interface LotteryPublicData {
+  text: string;
+  title: string;
+  description: string;
+  user_name: string;
+  // TODO: お気に入り数
+  // TODO: ほかのユーザーに抽選された回数
+}

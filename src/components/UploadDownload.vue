@@ -17,10 +17,10 @@ function onClickDownloadButton() {
   emit("download");
 }
 
-const message = ref();
+const _message = ref();
 
 function setMessage(body: string, color: string) {
-  message.value.set(body, color);
+  _message.value.set(body, color);
 }
 </script>
 
@@ -30,6 +30,6 @@ function setMessage(body: string, color: string) {
       <button @click="onClickUploadButton()" class="btn btn-success"><span class="mdi mdi-upload" />サーバーに保存</button>
       <button @click="onClickDownloadButton()" class="btn btn-outline-success"><span class="mdi mdi-download" />サーバーから読込</button>
     </div>
-    <Message ref="message" />
+    <Message ref="_message" />
   </div>
 </template>
