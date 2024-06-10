@@ -37,6 +37,9 @@ watch(
 const lotteryTargets = computed(() => data.value.inputData.text.split("\n").filter((x) => x));
 
 async function onUpdateInitData() {
+  // まず編集不可にしておく
+  editable.value = false;
+
   // 編集データに初期データを反映させる
   data.value = props.initData;
 
