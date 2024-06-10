@@ -75,7 +75,22 @@ function onAddNewLotteryList() {
 }
 
 function onDeleteLotteryList(data: LotteryData) {
-  lotteryTopData.value.listData.list = lotteryTopData.value.listData.list.filter((x) => x !== data);
+  // MEMO:選択状態リセットを2段階にする理由
+  // 削除結果を反映すると選択している参照オブジェクトがいつ参照できなくなるかは不定なので削除前に比較する必要がある
+  // しかし選択状態のリセットは削除結果を反映した後のデータで行いたい。このジレンマの解消のため
+  const requierdResetSelectedLotteryData = selectedLotteryData.value === data;
+  // 指定されたデータを厳密な参照値比較によって特定して削除後の一覧を作成する
+  const deletedList = lotteryTopData.value.listData.list.filter((x) => x !== data);
+  // 削除の結果、データが空になるならデフォルトデータを入れておく
+  if (deletedList.length === 0) {
+    deletedList.push(structuredClone(defaultLotteryData));
+  }
+  // 削除結果を反映
+  lotteryTopData.value.listData.list = deletedList;
+  // 削除結果反映後のデータで選択状態をリセット
+  if (requierdResetSelectedLotteryData) {
+    resetSelectedLotteryData();
+  }
 }
 
 function onChangeLottery(data: LotteryData) {
