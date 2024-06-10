@@ -46,7 +46,7 @@ onStart();
 </script>
 
 <template>
-  <div class="d-flex justify-content-center">
+  <div class="d-flex flex-column justify-content-center">
     <Message ref="_message" />
     <table class="table table-striped text-center">
       <thead>
