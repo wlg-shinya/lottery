@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
+import router from "../router";
 import { type LotteryData, defaultLotteryTopData, defaultLotteryListData, defaultLotteryResultData } from "../lottery-data";
 import LocalStorageLottery from "../local-storage-lottery";
 import { DefaultApiClient, LotteryCreate } from "../openapi";
@@ -69,6 +70,10 @@ async function onDownload() {
   _modal.value.show("注意", "サーバーに保存していないデータはすべて消えます。よろしいですか？", "OK", () =>
     downloadData(lotteryTopData.value.accessToken, true)
   );
+}
+
+function onMovePublicView() {
+  router.push("/public");
 }
 
 function showLotteryList(): boolean {
@@ -242,6 +247,10 @@ onStart();
     <div v-show="showUploadDownload()">
       <hr />
       <UploadDownload ref="_uploadDownload" @upload="onUpload" @download="onDownload" />
+    </div>
+    <hr />
+    <div class="d-flex justify-content-center">
+      <button @click="onMovePublicView" class="btn btn-lg btn-link">みんなの作ったくじ引きを見る</button>
     </div>
   </div>
 </template>
