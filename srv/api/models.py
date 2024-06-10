@@ -16,13 +16,14 @@ class Lotteries(BaseModel):
     __tablename__ = "lotteries"
 
     user_id = Column(INTEGER, nullable=False)
-    text = Column(VARCHAR(4096), nullable=False)
-    title = Column(VARCHAR(256), nullable=False)
+    text = Column(VARCHAR(256), nullable=False)
+    title = Column(VARCHAR(32), nullable=False)
+    description = Column(VARCHAR(256), nullable=False)
 
 class Users(BaseModel):
     __tablename__ = "users"
 
-    account_name = Column(VARCHAR(128), nullable=False, unique=True)
+    account_name = Column(VARCHAR(24), nullable=False, unique=True)
     identification = Column(VARCHAR(64), nullable=False)
 
 class Tokens(BaseModel):
