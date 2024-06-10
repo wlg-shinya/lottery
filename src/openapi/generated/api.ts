@@ -56,6 +56,12 @@ export interface Lotteries {
     'title'?: string;
     /**
      * 
+     * @type {string}
+     * @memberof Lotteries
+     */
+    'description'?: string;
+    /**
+     * 
      * @type {number}
      * @memberof Lotteries
      */
@@ -102,6 +108,12 @@ export interface LotteryCreate {
      * @type {string}
      * @memberof LotteryCreate
      */
+    'description'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LotteryCreate
+     */
     'access_token': string;
 }
 /**
@@ -122,6 +134,12 @@ export interface LotteryCreateResponse {
      * @memberof LotteryCreateResponse
      */
     'title'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LotteryCreateResponse
+     */
+    'description'?: string;
     /**
      * 
      * @type {number}
