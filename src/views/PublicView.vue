@@ -39,7 +39,6 @@ async function onClickData(data: LotteryPublicData) {
     }
 
     // 選択したデータを更新 or 新規追加する
-    let pullFirst = false;
     const pullData = lotteryTopData.listData.list.find((x) => x.inputData.id === data.id);
     if (pullData) {
       pullData.inputData = data as LotteryUserInputData;
@@ -48,7 +47,6 @@ async function onClickData(data: LotteryPublicData) {
         inputData: data as LotteryUserInputData,
         resultData: structuredClone(defaultLotteryResultData),
       });
-      pullFirst = true;
     }
 
     // 選択したデータをローカルストレージに保存してHomeに戻る
