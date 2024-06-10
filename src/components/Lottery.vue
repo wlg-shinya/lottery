@@ -114,6 +114,7 @@ function showInputDescription(): boolean {
         :initText="data.inputData.text"
         :placeholder="INPUT_TEXT_PLACEHOLDER_TEXT"
         :disabled="!editable"
+        :minHeightPx="120"
       />
       <div class="w-100">
         <button @click="onClickLotteryButton()" class="btn btn-primary btn-lg w-100">抽選</button>
@@ -142,8 +143,9 @@ function showInputDescription(): boolean {
           class="w-100"
           @input="onInputDescription"
           :initText="data.inputData.description"
-          placeholder="説明をつけるとこのくじ引きをよりわかりやすくできます。未入力でも問題ありません"
+          :placeholder="`説明をつけるとこのくじ引きをよりわかりやすくできます\n未入力でも問題ありません`"
           :disabled="!editable"
+          :minHeightPx="90"
         />
       </div>
     </div>

@@ -8,6 +8,7 @@ const props = defineProps<{
   initText: string;
   placeholder: string;
   disabled: boolean;
+  minHeightPx: number;
 }>();
 
 const emit = defineEmits<{
@@ -36,7 +37,7 @@ function onInputFlexTextarea() {
 
 <template>
   <div class="FlexTextarea">
-    <div ref="flexTextareaDummy" class="FlexTextarea__dummy" aria-hidden="true" />
+    <div ref="flexTextareaDummy" class="FlexTextarea__dummy" :style="`min-height:${minHeightPx}px`" aria-hidden="true" />
     <textarea
       id="FlexTextarea"
       class="FlexTextarea__textarea input-body form-control"
@@ -58,7 +59,6 @@ function onInputFlexTextarea() {
   visibility: hidden;
   box-sizing: border-box;
   padding: 5px 15px;
-  min-height: 120px;
   white-space: pre-wrap;
   word-wrap: break-word;
   overflow-wrap: break-word;
