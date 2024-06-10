@@ -29,8 +29,7 @@ watch(data, () => emit("change", data.value), { deep: true });
 // 初期データはローカルストレージ読込による遅延が起きるので watch で検出する
 watch(
   () => props.initData,
-  () => onUpdateInitData(),
-  { deep: true }
+  () => onUpdateInitData()
 );
 
 // 抽選対象群

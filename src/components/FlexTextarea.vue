@@ -39,7 +39,6 @@ function onInputFlexTextarea() {
   <div class="FlexTextarea">
     <div ref="flexTextareaDummy" class="FlexTextarea__dummy" :style="`min-height:${minHeightPx}px`" aria-hidden="true" />
     <textarea
-      id="FlexTextarea"
       class="FlexTextarea__textarea input-body form-control"
       @input="onInputFlexTextarea"
       v-model="inputText"
