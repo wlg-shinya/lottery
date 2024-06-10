@@ -4,6 +4,7 @@ from datetime import datetime
 class LotteriesBase(BaseModel):
     text: str = Field("", desciption="くじ引きの抽選対象")
     title: str = Field("", desciption="くじ引き名")
+    description: str = Field("", desciption="このくじ引きの説明")
 
 class Lotteries(LotteriesBase):
     id: int

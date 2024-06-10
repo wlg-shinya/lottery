@@ -10,7 +10,7 @@ async def create_lottery(
     db: AsyncSession, body: schema.LotteryCreate
 ) -> Model:
     tokens_model = await tokens.read_token(db, body.access_token)
-    model = Model(user_id=tokens_model.user_id, text=body.text, title=body.title)
+    model = Model(user_id=tokens_model.user_id, text=body.text, title=body.title, description=body.description)
     db.add(model)
     await db.commit()
     await db.refresh(model)
@@ -19,7 +19,7 @@ async def create_lottery(
 async def read_lotteries(
     db: AsyncSession
 ) -> List[schema.Lotteries]:
-    result = await db.execute(select(Model.id, Model.user_id, Model.text, Model.title, Model.created_at, Model.updated_at))
+    result = await db.execute(select(Model.id, Model.user_id, Model.text, Model.title, Model.description, Model.created_at, Model.updated_at))
     return result.all()
 
 async def read_my_lotteries(
@@ -28,7 +28,7 @@ async def read_my_lotteries(
     # トークンからユーザIDを取得して自分が所有しているくじ引きデータをすべて返す
     tokens_model = await tokens.read_token(db, access_token)
     result = await db.execute(
-        select(Model.id, Model.user_id, Model.text, Model.title, Model.created_at, Model.updated_at)
+        select(Model.id, Model.user_id, Model.text, Model.title, Model.description, Model.created_at, Model.updated_at)
         .filter(Model.user_id == tokens_model.user_id)
         )
     return result.all()
@@ -62,6 +62,7 @@ async def update_lottery(
 ) -> Model:
     original.text = body.text
     original.title = body.title
+    original.description = body.description
     db.add(original)
     await db.commit()
     await db.refresh(original)
