@@ -37,26 +37,21 @@ async function onClickData(data: LotteryPublicData) {
     }
 
     // 選択したデータを更新 or 新規追加する
-    let favoriteFirst = false;
-    const favoritedData = lotteryTopData.listData.list.find((x) => x.inputData.id === data.id);
-    if (favoritedData) {
-      favoritedData.inputData = data as LotteryUserInputData;
+    let pullFirst = false;
+    const pullData = lotteryTopData.listData.list.find((x) => x.inputData.id === data.id);
+    if (pullData) {
+      pullData.inputData = data as LotteryUserInputData;
     } else {
       lotteryTopData.listData.list.push({
         inputData: data as LotteryUserInputData,
         resultData: structuredClone(defaultLotteryResultData),
       });
-      favoriteFirst = true;
+      pullFirst = true;
     }
 
     // 選択したデータをローカルストレージに保存してHomeに戻る
     await LocalStorageLottery.save(lotteryTopData)
       .then(() => {
-        // TODO:サインインしていたら今回選択したデータをお気に入りにしたと宣言する
-        if (lotteryTopData.accessToken && favoriteFirst) {
-        }
-
-        // Homeに戻る
         router.push("/");
       })
       .catch((error) => {
