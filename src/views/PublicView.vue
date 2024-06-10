@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { DefaultApiClient } from "../openapi";
 import { LotteryPublicData } from "../lottery-data";
 import { getErrorMessage } from "../error";
@@ -12,6 +12,8 @@ import SimpleShowText from "../components/OmitText.vue";
 
 const _message = ref();
 const allData = ref<LotteryPublicData[]>([]);
+
+const showData = computed(() => allData.value.filter((x) => x.title));
 
 async function onStart() {
   await updateAllData();
@@ -110,7 +112,7 @@ onStart();
           </tr>
         </thead>
         <tbody>
-          <tr v-for="data in allData" @click="onClickData(data)" :key="JSON.stringify(data)">
+          <tr v-for="data in showData" @click="onClickData(data)" :key="JSON.stringify(data)">
             <td>{{ data.title }}</td>
             <td>{{ data.user_name }}</td>
             <td style="white-space: pre-wrap">
