@@ -26,10 +26,6 @@ watch(
 );
 
 const selectedLotteryData = computed(() => lotteryTopData.value.listData.list[lotteryTopData.value.listData.selectedIndex]);
-const localLotteryDataArray = computed(() => lotteryTopData.value.listData.list.filter((x) => x.inputData.id === -1));
-const existsLocalLotteryData = computed(
-  () => localLotteryDataArray.value.length > 0 && JSON.stringify(lotteryTopData.value.listData) !== JSON.stringify(defaultLotteryListData)
-);
 
 async function onStart() {
   await LocalStorageLottery.setup();
@@ -39,12 +35,26 @@ async function onStart() {
 }
 
 async function onSignin(accessToken: string) {
-  await signin(accessToken);
+  // サインイン済みの場合はユーザー確認の上でサインアウトしてからサインインする
+  // 新規サインインの時は普通にサインイン
+  if (lotteryTopData.value.accessToken) {
+    _modal.value.show("注意", "サーバーに保存していないデータはすべて消えます。よろしいですか？", "OK", async () => {
+      signout();
+      await signin(accessToken);
+    });
+  } else {
+    await signin(accessToken);
+  }
 }
 
 function onSignout() {
-  _signin.value.clear();
-  signout();
+  // ローカルデータが消えるのでユーザー確認してからサインアウト
+  if (lotteryTopData.value.accessToken) {
+    _modal.value.show("注意", "サーバーに保存していないデータはすべて消えます。よろしいですか？", "OK", async () => {
+      _signin.value.clear();
+      signout();
+    });
+  }
 }
 
 function onSelectLotteryList(index: number) {
@@ -166,19 +176,34 @@ async function uploadData(accessToken: string) {
 async function downloadData(accessToken: string, showWarning: boolean) {
   await DefaultApiClient.readMyLotteriesApiReadMyLotteriesGet(accessToken)
     .then((response) => {
-      // サーバー上にデータがあるときのみローカルと差し替える
       if (response.data.length > 0) {
-        lotteryTopData.value.listData.list = [];
         for (const lottery of response.data) {
-          lotteryTopData.value.listData.list.push({
-            inputData: {
+          // ローカルにデフォルトデータしかない場合はそれを捨てる
+          if (JSON.stringify(lotteryTopData.value.listData) === JSON.stringify(defaultLotteryListData)) {
+            lotteryTopData.value.listData.list = [];
+          }
+
+          const oneListData = lotteryTopData.value.listData.list.find((x) => x.inputData.id === lottery.id);
+          if (oneListData) {
+            // ローカルにデータがすでにある場合は内容を最新に置き換え
+            oneListData.inputData = {
               id: lottery.id,
               text: lottery.text ?? "",
               title: lottery.title ?? "",
               description: lottery.description ?? "",
-            },
-            resultData: structuredClone(defaultLotteryResultData),
-          });
+            };
+          } else {
+            // ローカルにデータがない場合は新規追加
+            lotteryTopData.value.listData.list.push({
+              inputData: {
+                id: lottery.id,
+                text: lottery.text ?? "",
+                title: lottery.title ?? "",
+                description: lottery.description ?? "",
+              },
+              resultData: structuredClone(defaultLotteryResultData),
+            });
+          }
         }
         lotteryTopData.value.listData.selectedIndex = 0;
 
@@ -194,28 +219,17 @@ async function downloadData(accessToken: string, showWarning: boolean) {
 }
 
 async function signin(accessToken: string) {
-  // まずサインアウトする
-  signout();
   // サインインで取得したアクセストークンをローカルに保存
   lotteryTopData.value.accessToken = accessToken;
-  // ローカルに作成したデータがない場合はダウンロードしてくる
-  if (!existsLocalLotteryData.value) {
-    await downloadData(accessToken, false);
-  }
+  // データをダウンロードしてくる
+  await downloadData(accessToken, false);
 }
 
 function signout() {
   // サインインで取得したアクセストークンを削除
   lotteryTopData.value.accessToken = "";
-  // サーバー上に保存されているデータはローカルから削除
-  const localData = localLotteryDataArray.value;
-  if (localData.length > 0) {
-    lotteryTopData.value.listData.list = localData;
-    lotteryTopData.value.listData.selectedIndex = 0;
-  } else {
-    // ローカルデータが全くなかったらデフォルトデータを置いておく
-    lotteryTopData.value.listData = structuredClone(defaultLotteryListData);
-  }
+  // ローカルデータを初期化
+  lotteryTopData.value.listData = structuredClone(defaultLotteryListData);
 }
 
 onStart();
