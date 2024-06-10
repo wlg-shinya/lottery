@@ -132,12 +132,21 @@ async function uploadData(accessToken: string) {
                 throw error;
               });
           } else {
-            // IDが設定済みなら更新
-            await DefaultApiClient.updateLotteryApiUpdateLotteryPut(list.inputData.id, data)
-              .then(() => (uploaded = true))
+            const mine = await DefaultApiClient.isLotteryIdMineApiIsLotteryIdMineGet(list.inputData.id, accessToken)
+              .then((response) => response.data)
               .catch((error) => {
                 throw error;
               });
+            if (mine) {
+              // IDが設定済みなら更新
+              await DefaultApiClient.updateLotteryApiUpdateLotteryPut(list.inputData.id, data)
+                .then(() => (uploaded = true))
+                .catch((error) => {
+                  throw error;
+                });
+            } else {
+              // 自分の作成したデータではないので何もしない
+            }
           }
         }
       }
