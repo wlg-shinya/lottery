@@ -10,7 +10,7 @@ import Message from "../components/Message.vue";
 import BackButton from "../components/BackButton.vue";
 import SimpleShowText from "../components/OmitText.vue";
 
-const _message = ref();
+const message = ref();
 const allData = ref<LotteryPublicData[]>([]);
 
 const showData = computed(() => allData.value.filter((x) => x.title));
@@ -58,7 +58,7 @@ async function onClickData(data: LotteryPublicData) {
         throw error;
       });
   } catch (error) {
-    _message.value.set(getErrorMessage(error), "text-danger");
+    message.value.set(getErrorMessage(error), "text-danger");
   }
 }
 
@@ -89,7 +89,7 @@ async function updateAllData() {
       }
     })
     .catch((error) => {
-      _message.value.set(getErrorMessage(error), "text-danger");
+      message.value.set(getErrorMessage(error), "text-danger");
     });
 }
 
@@ -100,7 +100,7 @@ onStart();
   <div>
     <BackButton />
     <div class="d-flex flex-column justify-content-center">
-      <Message ref="_message" />
+      <Message ref="message" />
       <table class="table table-striped table-hover">
         <thead>
           <tr>
