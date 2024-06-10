@@ -138,7 +138,12 @@ function showInputDescription(): boolean {
       <div v-show="showInputTitle()" class="w-100">
         <div class="input-group">
           <span class="input-group-text">くじ引き名</span>
-          <input v-model="data.inputData.title" class="form-control" placeholder="名前をつけると別のくじ引きも作成できます" :disabled="!editable" />
+          <input
+            v-model="data.inputData.title"
+            class="form-control"
+            :placeholder="editable ? '名前をつけると別のくじ引きも作成できます' : ''"
+            :disabled="!editable"
+          />
         </div>
       </div>
       <div v-show="showInputDescription()" class="w-100">
@@ -146,7 +151,7 @@ function showInputDescription(): boolean {
           class="w-100"
           @input="onInputDescription"
           :initText="data.inputData.description"
-          :placeholder="`説明をつけるとこのくじ引きをよりわかりやすくできます\n未入力でも問題ありません`"
+          :placeholder="editable ? `説明をつけるとこのくじ引きをよりわかりやすくできます\n未入力でも問題ありません` : ''"
           :disabled="!editable"
           :minHeightPx="90"
         />
