@@ -25,3 +25,6 @@ dist-ssr
 
 # DB
 pgdata
+
+# python
+__pycache__/
