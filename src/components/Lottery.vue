@@ -45,16 +45,20 @@ async function onUpdateInitData() {
 
   // 編集可能かどうか判断する
   if (props.initData.inputData.id !== -1) {
-    await DefaultApiClient.isLotteryIdMineApiIsLotteryIdMineGet(props.initData.inputData.id, props.accessToken)
-      .then((response) => {
-        if (response.data) {
-          // サーバーに問い合わせたうえで自分の作成したデータだと判明したら編集可能
-          editable.value = true;
-        }
-      })
-      .catch((_error) => {
-        // ここで発生したエラーは結局編集不可になるだけなので特に何もしない
-      });
+    if (props.accessToken) {
+      await DefaultApiClient.isLotteryIdMineApiIsLotteryIdMineGet(props.initData.inputData.id, props.accessToken)
+        .then((response) => {
+          if (response.data) {
+            // サーバーに問い合わせたうえで自分の作成したデータだと判明したら編集可能
+            editable.value = true;
+          }
+        })
+        .catch((_error) => {
+          // エラーが発生したら編集不可。エラー自体は特にハンドリング不要
+        });
+    } else {
+      // 他の人が作ったデータは編集不可
+    }
   } else {
     // ローカルで作成したデータは編集可能
     editable.value = true;
