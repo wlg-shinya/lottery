@@ -51,7 +51,7 @@ onStart();
     <BackButton />
     <div class="d-flex flex-column justify-content-center">
       <Message ref="_message" />
-      <table class="table table-striped text-center">
+      <table class="table table-striped">
         <thead>
           <tr>
             <th class="col-4">くじ引き名</th>
@@ -63,7 +63,7 @@ onStart();
           <tr v-for="data in allData" :key="JSON.stringify(data)">
             <td>{{ data.title }}</td>
             <td>{{ data.user_name }}</td>
-            <td>{{ data.description }}</td>
+            <td style="white-space: pre-wrap">{{ data.description }}</td>
           </tr>
         </tbody>
       </table>
