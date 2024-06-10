@@ -13,9 +13,9 @@ import LotteryHistoryList from "../components/LotteryHistoryList.vue";
 import UploadDownload from "../components/UploadDownload.vue";
 import GoPublicView from "../components/GoPublicView.vue";
 
-const _modal = ref();
-const _uploadDownload = ref();
-const _signin = ref();
+const modal = ref();
+const uploadDownload = ref();
+const signin = ref();
 
 const lotteryTopData = ref(structuredClone(defaultLotteryTopData));
 // データに変化あり次第ローカルストレージに保存
@@ -55,21 +55,21 @@ async function onSignin(accessToken: string) {
   // サインイン済みの場合はユーザー確認の上でサインアウトしてからサインインする
   // 新規サインインの時は普通にサインイン
   if (lotteryTopData.value.accessToken) {
-    _modal.value.show("注意", "サーバーに保存していないデータはすべて消えます。よろしいですか？", "OK", async () => {
-      signout();
-      await signin(accessToken);
+    modal.value.show("注意", "サーバーに保存していないデータはすべて消えます。よろしいですか？", "OK", async () => {
+      doSignout();
+      await doSignin(accessToken);
     });
   } else {
-    await signin(accessToken);
+    await doSignin(accessToken);
   }
 }
 
 function onSignout() {
   // ローカルデータが消えるのでユーザー確認してからサインアウト
   if (lotteryTopData.value.accessToken) {
-    _modal.value.show("注意", "サーバーに保存していないデータはすべて消えます。よろしいですか？", "OK", async () => {
-      _signin.value.clear();
-      signout();
+    modal.value.show("注意", "サーバーに保存していないデータはすべて消えます。よろしいですか？", "OK", async () => {
+      signin.value.clear();
+      doSignout();
     });
   }
 }
@@ -111,7 +111,7 @@ function onChangeLottery(data: LotteryData) {
 }
 
 function onClearHistoryLotteryHistoryList() {
-  _modal.value.show("注意", "履歴を本当にクリアしますか？この操作は取り消せません", "クリア", () => doClearHistory());
+  modal.value.show("注意", "履歴を本当にクリアしますか？この操作は取り消せません", "クリア", () => doClearHistory());
 }
 
 function onChangeShowCountLotteryHistoryList(value: number) {
@@ -125,7 +125,7 @@ async function onUpload() {
 }
 
 async function onDownload() {
-  _modal.value.show("注意", "サーバーに保存していないデータはすべて消えます。よろしいですか？", "OK", () =>
+  modal.value.show("注意", "サーバーに保存していないデータはすべて消えます。よろしいですか？", "OK", () =>
     downloadData(lotteryTopData.value.accessToken, true)
   );
 }
@@ -225,13 +225,13 @@ async function uploadData(accessToken: string) {
 
       // 正常終了
       if (uploaded) {
-        _uploadDownload.value.setMessage("サーバーに保存しました", "text-success");
+        uploadDownload.value.setMessage("サーバーに保存しました", "text-success");
       } else {
-        _uploadDownload.value.setMessage("保存するデータがありません", "text-warning");
+        uploadDownload.value.setMessage("保存するデータがありません", "text-warning");
       }
     })
     .catch((error) => {
-      _uploadDownload.value.setMessage(getErrorMessage(error), "text-danger");
+      uploadDownload.value.setMessage(getErrorMessage(error), "text-danger");
     });
 }
 
@@ -272,24 +272,24 @@ async function downloadData(accessToken: string, showWarning: boolean) {
         resetSelectedLotteryData();
 
         // 正常終了
-        _uploadDownload.value.setMessage("サーバーから読み込みました", "text-success");
+        uploadDownload.value.setMessage("サーバーから読み込みました", "text-success");
       } else if (showWarning) {
-        _uploadDownload.value.setMessage("サーバーにデータがありませんでした", "text-warning");
+        uploadDownload.value.setMessage("サーバーにデータがありませんでした", "text-warning");
       }
     })
     .catch((error) => {
-      _uploadDownload.value.setMessage(getErrorMessage(error), "text-danger");
+      uploadDownload.value.setMessage(getErrorMessage(error), "text-danger");
     });
 }
 
-async function signin(accessToken: string) {
+async function doSignin(accessToken: string) {
   // サインインで取得したアクセストークンをローカルに保存
   lotteryTopData.value.accessToken = accessToken;
   // データをダウンロードしてくる
   await downloadData(accessToken, false);
 }
 
-function signout() {
+function doSignout() {
   // サインインで取得したアクセストークンを削除
   lotteryTopData.value.accessToken = "";
   // ローカルデータを初期化
@@ -307,9 +307,9 @@ onStart();
 
 <template>
   <div>
-    <Modal ref="_modal" />
+    <Modal ref="modal" />
     <div class="d-flex flex-column align-items-center">
-      <Signin ref="_signin" @signin="onSignin" />
+      <Signin ref="signin" @signin="onSignin" />
       <Signout @signout="onSignout" />
     </div>
     <hr />
@@ -353,7 +353,7 @@ onStart();
     </table>
     <div v-show="showUploadDownload()">
       <hr />
-      <UploadDownload ref="_uploadDownload" @upload="onUpload" @download="onDownload" />
+      <UploadDownload ref="uploadDownload" @upload="onUpload" @download="onDownload" />
     </div>
     <hr />
     <div class="d-flex justify-content-center">
