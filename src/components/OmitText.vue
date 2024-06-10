@@ -38,7 +38,7 @@ function showText(): string {
   <div>
     <span>{{ showText() }}</span>
     <span v-if="needOmit">
-      <button @click="onClickSwitchButton" class="btn btn-link p-0">{{ omit ? "...もっと見る" : "一部を表示" }}</button>
+      <button @click.stop="onClickSwitchButton" class="btn btn-link p-0">{{ omit ? "...もっと見る" : "一部を表示" }}</button>
     </span>
   </div>
 </template>
