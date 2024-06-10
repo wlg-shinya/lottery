@@ -54,10 +54,7 @@ export const defaultLotteryTopData: LotteryTopData = {
   listData: structuredClone(defaultLotteryListData),
 };
 
-export interface LotteryPublicData {
-  text: string;
-  title: string;
-  description: string;
+export interface LotteryPublicData extends LotteryUserInputData {
   user_name: string;
   // TODO: お気に入り数
   // TODO: ほかのユーザーに抽選された回数

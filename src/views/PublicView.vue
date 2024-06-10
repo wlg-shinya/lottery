@@ -3,6 +3,9 @@ import { ref } from "vue";
 import { DefaultApiClient } from "../openapi";
 import { LotteryPublicData } from "../lottery-data";
 import { getErrorMessage } from "../error";
+import LocalStorageLottery from "../local-storage-lottery";
+import { type LotteryUserInputData, defaultLotteryResultData } from "../lottery-data";
+import router from "../router";
 import Message from "../components/Message.vue";
 import BackButton from "../components/BackButton.vue";
 import SimpleShowText from "../components/OmitText.vue";
@@ -12,6 +15,43 @@ const allData = ref<LotteryPublicData[]>([]);
 
 async function onStart() {
   await updateAllData();
+}
+
+async function onClickData(data: LotteryPublicData) {
+  try {
+    // ローカルストレージからデータを得る
+    const lotteryTopData = await LocalStorageLottery.load()
+      .then(async (result) => result)
+      .catch((error) => {
+        throw error;
+      });
+
+    // 自分自身のデータなら特に何もしない
+    const mine = await DefaultApiClient.isLotteryIdMineApiIsLotteryIdMineGet(data.id, lotteryTopData.accessToken)
+      .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
+    if (mine) return;
+
+    // 今回選択したデータをローカルストレージに保存してHomeに戻る
+    lotteryTopData.listData.list.push({
+      inputData: data as LotteryUserInputData,
+      resultData: structuredClone(defaultLotteryResultData),
+    });
+    await LocalStorageLottery.save(lotteryTopData)
+      .then(() => {
+        // TODO:サインインしていたら今回選択したデータをお気に入りにしたと宣言する
+
+        // Homeに戻る
+        router.push("/");
+      })
+      .catch((error) => {
+        throw error;
+      });
+  } catch (error) {
+    _message.value.set(getErrorMessage(error), "text-danger");
+  }
 }
 
 async function updateAllData() {
@@ -32,6 +72,7 @@ async function updateAllData() {
 
         // これまでの情報で公開用データを構築
         allData.value.push({
+          id: lottery.id,
           text: lottery.text ?? "",
           title: lottery.title ?? "",
           description: lottery.description ?? "",
@@ -52,7 +93,7 @@ onStart();
     <BackButton />
     <div class="d-flex flex-column justify-content-center">
       <Message ref="_message" />
-      <table class="table table-striped">
+      <table class="table table-striped table-hover">
         <thead>
           <tr>
             <th class="col-5">くじ引き名</th>
@@ -61,7 +102,7 @@ onStart();
           </tr>
         </thead>
         <tbody>
-          <tr v-for="data in allData" :key="JSON.stringify(data)">
+          <tr v-for="data in allData" @click="onClickData(data)" :key="JSON.stringify(data)">
             <td>{{ data.title }}</td>
             <td>{{ data.user_name }}</td>
             <td style="white-space: pre-wrap">
