@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
-import { type LotteryListData, defaultLotteryData, defaultLotteryListData } from "../lottery-data";
+import { type LotteryData, defaultLotteryData, defaultLotteryListData } from "../lottery-data";
 import Modal from "./Modal.vue";
 
 const props = defineProps<{
-  initData: LotteryListData;
+  list: LotteryData[];
+  header: string;
+  addable: boolean;
 }>();
 
 const emit = defineEmits<{
-  select: [index: number];
+  select: [data: LotteryData];
+  add_new: [];
+  delete: [data: LotteryData];
 }>();
 
 const modal = ref();
@@ -16,44 +20,38 @@ const listData = ref(structuredClone(defaultLotteryListData));
 
 // 初期データはローカルストレージ読込による遅延が起きるので watch で検出する
 watch(
-  () => props.initData,
-  () => (listData.value = props.initData)
+  () => props.list,
+  () => (listData.value.list = props.list)
 );
 
 const existsDefaultLotteryData = computed(() => listData.value.list.some((x) => JSON.stringify(x) === JSON.stringify(defaultLotteryData)));
 
-function onClickData(index: number) {
-  emit("select", index);
+function onClickData(data: LotteryData) {
+  emit("select", data);
 }
 
 function onClickAddButton() {
   // デフォルトデータが存在する場合は新規追加しない
   if (existsDefaultLotteryData.value) return;
   // チェックに通過したので新規追加
-  addNewData();
+  emit("add_new");
 }
 
-function onClickDeleteButton(index: number) {
-  modal.value.show("注意", "本当に削除しますか？この操作は取り消せません", "削除", () => doDelete(index));
+function onClickDeleteButton(data: LotteryData) {
+  modal.value.show("注意", "本当に削除しますか？この操作は取り消せません", "削除", () => emit("delete", data));
 }
 
-function addNewData() {
-  listData.value.list.push(structuredClone(defaultLotteryData));
-  // 今回追加した要素を選択する
-  listData.value.selectedIndex = listData.value.list.length - 1;
-}
+// function addNewData() {
+//   listData.value.list.push(structuredClone(defaultLotteryData));
+// }
 
-function doDelete(index: number) {
-  listData.value.list = listData.value.list.filter((_x, i) => index !== i);
-  // 最後の一つを削除した場合は初期状態を復元する
-  if (listData.value.list.length === 0) {
-    addNewData();
-  }
-  // 選択インデックスの更新
-  if (listData.value.selectedIndex >= index && listData.value.selectedIndex > 0) {
-    listData.value.selectedIndex--;
-  }
-}
+// function doDelete(index: number) {
+//   listData.value.list = listData.value.list.filter((_x, i) => index !== i);
+//   // 最後の一つを削除した場合は初期状態を復元する
+//   if (listData.value.list.length === 0) {
+//     addNewData();
+//   }
+// }
 </script>
 
 <template>
@@ -63,24 +61,19 @@ function doDelete(index: number) {
       <thead>
         <tr>
           <th class="col-auto">
-            <span>くじ引き名</span>
+            <span>{{ header }}</span>
           </th>
           <th class="col-1"></th>
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="(d, index) in listData.list"
-          :key="index"
-          @click="onClickData(index)"
-          :class="listData.selectedIndex === index ? 'table-active' : ''"
-        >
+        <tr v-for="(d, index) in listData.list" :key="index" @click="onClickData(d)">
           <td>{{ d.inputData.title }}</td>
           <td>
-            <button @click.stop="onClickDeleteButton(index)" class="btn btn-danger"><span class="mdi mdi-trash-can" /></button>
+            <button @click.stop="onClickDeleteButton(d)" class="btn btn-danger"><span class="mdi mdi-trash-can" /></button>
           </td>
         </tr>
-        <tr>
+        <tr v-if="addable">
           <td colspan="2">
             <button @click="onClickAddButton" class="btn btn-primary w-100" :disabled="existsDefaultLotteryData">
               <span class="mdi mdi-plus" />

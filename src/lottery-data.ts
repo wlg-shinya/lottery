@@ -36,12 +36,10 @@ export const defaultLotteryData: LotteryData = {
 
 export interface LotteryListData {
   list: LotteryData[];
-  selectedIndex: number;
 }
 
 export const defaultLotteryListData: LotteryListData = {
   list: [structuredClone(defaultLotteryData)],
-  selectedIndex: 0,
 };
 
 export interface LotteryTopData {

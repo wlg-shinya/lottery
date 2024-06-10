@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
-import { type LotteryData, defaultLotteryTopData, defaultLotteryListData, defaultLotteryResultData } from "../lottery-data";
+import { type LotteryData, defaultLotteryTopData, defaultLotteryListData, defaultLotteryData, defaultLotteryResultData } from "../lottery-data";
 import LocalStorageLottery from "../local-storage-lottery";
 import { DefaultApiClient, LotteryCreate } from "../openapi";
 import { getErrorMessage } from "../error";
@@ -25,12 +25,19 @@ watch(
   { deep: true }
 );
 
-const selectedLotteryData = computed(() => lotteryTopData.value.listData.list[lotteryTopData.value.listData.selectedIndex]);
+// 現在選択中のデータ
+// selectedLotteryData.value への直代入は参照先の変更（＝選択変更）であり値は変更されない点に注意
+const selectedLotteryData = ref<LotteryData | null>(null);
+
+const localLotteryData = computed((): LotteryData[] => lotteryTopData.value.listData.list.filter((x) => x.inputData.id === -1));
+const serverSavedLotteryData = computed((): LotteryData[] => lotteryTopData.value.listData.list.filter((x) => x.inputData.id !== -1));
 
 async function onStart() {
   await LocalStorageLottery.setup();
   await LocalStorageLottery.load().then((result) => {
     lotteryTopData.value = result;
+    // ローカルストレージからデータを得られたら先頭要素を選択するようにする
+    selectedLotteryData.value = lotteryTopData.value.listData.list[0];
   });
 }
 
@@ -57,12 +64,25 @@ function onSignout() {
   }
 }
 
-function onSelectLotteryList(index: number) {
-  lotteryTopData.value.listData.selectedIndex = index;
+function onSelectLotteryList(data: LotteryData) {
+  selectedLotteryData.value = data;
+}
+
+function onAddNewLotteryList() {
+  lotteryTopData.value.listData.list.push(structuredClone(defaultLotteryData));
+  // 今回追加したデータを選択する
+  selectedLotteryData.value = lotteryTopData.value.listData.list[lotteryTopData.value.listData.list.length - 1];
+}
+
+function onDeleteLotteryList(data: LotteryData) {
+  lotteryTopData.value.listData.list = lotteryTopData.value.listData.list.filter((x) => x !== data);
 }
 
 function onChangeLottery(data: LotteryData) {
-  lotteryTopData.value.listData.list[lotteryTopData.value.listData.selectedIndex] = data;
+  if (selectedLotteryData.value) {
+    selectedLotteryData.value.inputData = data.inputData;
+    selectedLotteryData.value.resultData = data.resultData;
+  }
 }
 
 function onClearHistoryLotteryHistoryList() {
@@ -70,7 +90,9 @@ function onClearHistoryLotteryHistoryList() {
 }
 
 function onChangeShowCountLotteryHistoryList(value: number) {
-  selectedLotteryData.value.resultData.historyShowCount = value;
+  if (selectedLotteryData.value) {
+    selectedLotteryData.value.resultData.historyShowCount = value;
+  }
 }
 
 async function onUpload() {
@@ -83,17 +105,24 @@ async function onDownload() {
   );
 }
 
-function showLotteryList(): boolean {
-  // 最初のデータでタイトルを入力したか、データが一つよりも多くある場合は表示ON
-  return (
-    (lotteryTopData.value.listData.list.length > 0 && lotteryTopData.value.listData.list[0].inputData.title !== "") ||
-    lotteryTopData.value.listData.list.length > 1
-  );
+function showLocalLotteryList(): boolean {
+  // ローカルデータにタイトルを入力したか、データが一つよりも多くある場合は表示ON
+  return (localLotteryData.value.length > 0 && localLotteryData.value[0].inputData.title !== "") || localLotteryData.value.length > 1;
+}
+
+function showServerSavedLotteryList(): boolean {
+  // サーバー保存済みデータが一つでもあれば表示ON
+  return serverSavedLotteryData.value.length > 0;
 }
 
 function showLotteryHistoryList(): boolean {
-  // 履歴がひとつでもあれば表示ON
-  return selectedLotteryData.value.resultData.histories.length > 0;
+  if (selectedLotteryData.value) {
+    // 履歴がひとつでもあれば表示ON
+    return selectedLotteryData.value.resultData.histories.length > 0;
+  } else {
+    // データ未選択なら表示できるものはない
+    return false;
+  }
 }
 
 function showUploadDownload(): boolean {
@@ -102,7 +131,9 @@ function showUploadDownload(): boolean {
 }
 
 function doClearHistory() {
-  selectedLotteryData.value.resultData.histories = [];
+  if (selectedLotteryData.value) {
+    selectedLotteryData.value.resultData.histories = [];
+  }
 }
 
 async function uploadData(accessToken: string) {
@@ -205,7 +236,6 @@ async function downloadData(accessToken: string, showWarning: boolean) {
             });
           }
         }
-        lotteryTopData.value.listData.selectedIndex = 0;
 
         // 正常終了
         _uploadDownload.value.setMessage("サーバーから読み込みました", "text-success");
@@ -247,13 +277,30 @@ onStart();
       <tbody>
         <tr>
           <td class="col-4">
-            <LotteryList v-show="showLotteryList()" @select="onSelectLotteryList" :initData="lotteryTopData.listData" />
+            <LotteryList
+              v-show="showLocalLotteryList()"
+              @select="onSelectLotteryList"
+              @delete="onDeleteLotteryList"
+              :list="localLotteryData"
+              header="ローカルで作成中"
+              :addable="true"
+              @add_new="onAddNewLotteryList"
+            />
+            <LotteryList
+              v-show="showServerSavedLotteryList()"
+              @select="onSelectLotteryList"
+              @delete="onDeleteLotteryList"
+              :list="serverSavedLotteryData"
+              header="サーバーに保存済み"
+              :addable="false"
+            />
           </td>
           <td class="col-4">
             <Lottery @change="onChangeLottery" :initData="selectedLotteryData" :accessToken="lotteryTopData.accessToken" />
           </td>
           <td class="col-4">
             <LotteryHistoryList
+              v-if="selectedLotteryData"
               v-show="showLotteryHistoryList()"
               @clearHistory="onClearHistoryLotteryHistoryList"
               @changeShowCount="onChangeShowCountLotteryHistoryList"

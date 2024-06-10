@@ -12,7 +12,7 @@ const INPUT_TEXT_PLACEHOLDER_TEXT = "一行がひとつのくじとなります\
 const LOTTERY_TARGETS_SHOW_CLASS = "fs-1 fw-bold";
 
 const props = defineProps<{
-  initData: LotteryData;
+  initData: LotteryData | null;
   accessToken: string;
 }>();
 
@@ -29,7 +29,8 @@ watch(data, () => emit("change", data.value), { deep: true });
 // 初期データはローカルストレージ読込による遅延が起きるので watch で検出する
 watch(
   () => props.initData,
-  () => onUpdateInitData()
+  () => onUpdateInitData(),
+  { deep: true }
 );
 
 // 抽選対象群
@@ -41,27 +42,29 @@ async function onUpdateInitData() {
   editable.value = false;
 
   // 編集データに初期データを反映させる
-  data.value = props.initData;
+  if (props.initData) {
+    data.value = props.initData;
 
-  // 編集可能かどうか判断する
-  if (props.initData.inputData.id !== -1) {
-    if (props.accessToken) {
-      await DefaultApiClient.isLotteryIdMineApiIsLotteryIdMineGet(props.initData.inputData.id, props.accessToken)
-        .then((response) => {
-          if (response.data) {
-            // サーバーに問い合わせたうえで自分の作成したデータだと判明したら編集可能
-            editable.value = true;
-          }
-        })
-        .catch((_error) => {
-          // エラーが発生したら編集不可。エラー自体は特にハンドリング不要
-        });
+    // 編集可能かどうか判断する
+    if (props.initData.inputData.id !== -1) {
+      if (props.accessToken) {
+        await DefaultApiClient.isLotteryIdMineApiIsLotteryIdMineGet(props.initData.inputData.id, props.accessToken)
+          .then((response) => {
+            if (response.data) {
+              // サーバーに問い合わせたうえで自分の作成したデータだと判明したら編集可能
+              editable.value = true;
+            }
+          })
+          .catch((_error) => {
+            // エラーが発生したら編集不可。エラー自体は特にハンドリング不要
+          });
+      } else {
+        // 他の人が作ったデータは編集不可
+      }
     } else {
-      // 他の人が作ったデータは編集不可
+      // ローカルで作成したデータは編集可能
+      editable.value = true;
     }
-  } else {
-    // ローカルで作成したデータは編集可能
-    editable.value = true;
   }
 }
 
