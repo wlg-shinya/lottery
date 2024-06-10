@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
-import router from "../router";
 import { type LotteryData, defaultLotteryTopData, defaultLotteryListData, defaultLotteryResultData } from "../lottery-data";
 import LocalStorageLottery from "../local-storage-lottery";
 import { DefaultApiClient, LotteryCreate } from "../openapi";
 import { getErrorMessage } from "../error";
 import Modal from "../components/Modal.vue";
 import Signin from "../components/Signin.vue";
+import Signout from "../components/Signout.vue";
 import Lottery from "../components/Lottery.vue";
 import LotteryList from "../components/LotteryList.vue";
 import LotteryHistoryList from "../components/LotteryHistoryList.vue";
 import UploadDownload from "../components/UploadDownload.vue";
+import GoPublicView from "../components/GoPublicView.vue";
 
 const _modal = ref();
 const _uploadDownload = ref();
@@ -70,10 +71,6 @@ async function onDownload() {
   _modal.value.show("注意", "サーバーに保存していないデータはすべて消えます。よろしいですか？", "OK", () =>
     downloadData(lotteryTopData.value.accessToken, true)
   );
-}
-
-function onMovePublicView() {
-  router.push("/public");
 }
 
 function showLotteryList(): boolean {
@@ -220,7 +217,7 @@ onStart();
     <Modal ref="_modal" />
     <div class="d-flex flex-column align-items-center">
       <Signin ref="_signin" @signin="onSignin" />
-      <button @click="onSignout" class="btn btn-link p-0">サインアウト</button>
+      <Signout @signout="onSignout" />
     </div>
     <hr />
     <table class="table table-borderless">
@@ -250,7 +247,7 @@ onStart();
     </div>
     <hr />
     <div class="d-flex justify-content-center">
-      <button @click="onMovePublicView" class="btn btn-lg btn-link">みんなの作ったくじ引きを見る</button>
+      <GoPublicView />
     </div>
   </div>
 </template>
