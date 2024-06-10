@@ -1,12 +1,14 @@
 export interface LotteryUserInputData {
   text: string;
   title: string;
+  description: string;
   id: number;
 }
 
 export const defaultLotteryUserInputData: LotteryUserInputData = {
   text: "",
   title: "",
+  description: "",
   id: -1,
 };
 

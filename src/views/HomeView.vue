@@ -116,6 +116,7 @@ async function uploadData(accessToken: string) {
             access_token: accessToken,
             text: list.inputData.text,
             title: list.inputData.title,
+            description: list.inputData.description,
           };
           if (list.inputData.id < 0) {
             // IDが未定なら新規追加
@@ -163,6 +164,7 @@ async function downloadData(accessToken: string, showWarning: boolean) {
               id: lottery.id,
               text: lottery.text ?? "",
               title: lottery.title ?? "",
+              description: lottery.description ?? "",
             },
             resultData: structuredClone(defaultLotteryResultData),
           });
