@@ -29,7 +29,7 @@ function set(body: string, color: string) {
 </script>
 
 <template>
-  <div>
+  <div class="d-flex justify-content-center">
     <div v-show="showMessage()">
       <pre :class="`${message.color} fw-bold fs-6`">{{ message.body }}</pre>
     </div>
