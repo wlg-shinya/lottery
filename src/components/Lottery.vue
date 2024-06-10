@@ -5,7 +5,7 @@ import { DefaultApiClient } from "../openapi";
 import FlexTextarea from "./FlexTextarea.vue";
 import RotateSlot from "./RotateSlot.vue";
 
-// TODO:ほかのユーザが作成したくじ引きを閲覧および利用可能（＝お気に入り）にする
+// TODO:ほかのユーザが作成したくじ引きを利用可能（＝お気に入り）にする
 // TODO:ほかのユーザが作成したくじ引きを抽選した回数をDB保存＆集計表示する
 
 const INPUT_TEXT_PLACEHOLDER_TEXT = "一行がひとつのくじとなります\n空白行は無視されます";
