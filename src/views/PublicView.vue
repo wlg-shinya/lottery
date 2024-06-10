@@ -27,12 +27,14 @@ async function onClickData(data: LotteryPublicData) {
       });
 
     // 自分自身のデータなら特に何もしない
-    const mine = await DefaultApiClient.isLotteryIdMineApiIsLotteryIdMineGet(data.id, lotteryTopData.accessToken)
-      .then((response) => response.data)
-      .catch((error) => {
-        throw error;
-      });
-    if (mine) return;
+    if (lotteryTopData.accessToken) {
+      const mine = await DefaultApiClient.isLotteryIdMineApiIsLotteryIdMineGet(data.id, lotteryTopData.accessToken)
+        .then((response) => response.data)
+        .catch((error) => {
+          throw error;
+        });
+      if (mine) return;
+    }
 
     // 選択したデータを更新 or 新規追加する
     let favoriteFirst = false;
@@ -51,7 +53,7 @@ async function onClickData(data: LotteryPublicData) {
     await LocalStorageLottery.save(lotteryTopData)
       .then(() => {
         // TODO:サインインしていたら今回選択したデータをお気に入りにしたと宣言する
-        if (favoriteFirst) {
+        if (lotteryTopData.accessToken && favoriteFirst) {
         }
 
         // Homeに戻る
