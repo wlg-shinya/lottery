@@ -4,6 +4,7 @@ import { DefaultApiClient } from "../openapi";
 import { LotteryPublicData } from "../lottery-data";
 import { getErrorMessage } from "../error";
 import Message from "../components/Message.vue";
+import BackButton from "../components/BackButton.vue";
 
 const _message = ref();
 const allData = ref<LotteryPublicData[]>([]);
@@ -46,23 +47,26 @@ onStart();
 </script>
 
 <template>
-  <div class="d-flex flex-column justify-content-center">
-    <Message ref="_message" />
-    <table class="table table-striped text-center">
-      <thead>
-        <tr>
-          <th class="col-4">くじ引き名</th>
-          <th class="col-2">作成者</th>
-          <th class="col-4">説明</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="data in allData" :key="JSON.stringify(data)">
-          <td>{{ data.title }}</td>
-          <td>{{ data.user_name }}</td>
-          <td>{{ data.description }}</td>
-        </tr>
-      </tbody>
-    </table>
+  <div>
+    <BackButton />
+    <div class="d-flex flex-column justify-content-center">
+      <Message ref="_message" />
+      <table class="table table-striped text-center">
+        <thead>
+          <tr>
+            <th class="col-4">くじ引き名</th>
+            <th class="col-2">作成者</th>
+            <th class="col-4">説明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="data in allData" :key="JSON.stringify(data)">
+            <td>{{ data.title }}</td>
+            <td>{{ data.user_name }}</td>
+            <td>{{ data.description }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
