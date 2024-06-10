@@ -29,8 +29,18 @@ watch(
 // selectedLotteryData.value への直代入は参照先の変更（＝選択変更）であり値は変更されない点に注意
 const selectedLotteryData = ref<LotteryData | null>(null);
 
-const localLotteryData = computed((): LotteryData[] => lotteryTopData.value.listData.list.filter((x) => x.inputData.id === -1));
-const serverSavedLotteryData = computed((): LotteryData[] => lotteryTopData.value.listData.list.filter((x) => x.inputData.id !== -1));
+const localLotteryData = computed((): LotteryData[] =>
+  lotteryTopData.value.listData.list
+    .filter((x) => x.inputData.id === -1)
+    .slice()
+    .reverse()
+);
+const serverSavedLotteryData = computed((): LotteryData[] =>
+  lotteryTopData.value.listData.list
+    .filter((x) => x.inputData.id !== -1)
+    .slice()
+    .reverse()
+);
 
 async function onStart() {
   await LocalStorageLottery.setup();

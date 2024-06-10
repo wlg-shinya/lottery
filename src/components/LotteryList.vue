@@ -54,17 +54,17 @@ function onClickDeleteButton(data: LotteryData) {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(d, index) in listData.list" :key="index" @click="onClickData(d)">
-          <td class="col-auto">{{ d.inputData.title }}</td>
-          <td class="col-1">
-            <button @click.stop="onClickDeleteButton(d)" class="btn btn-danger"><span class="mdi mdi-trash-can" /></button>
-          </td>
-        </tr>
         <tr v-if="addable">
           <td colspan="2">
             <button @click="onClickAddButton" class="btn btn-primary w-100" :disabled="existsDefaultLotteryData">
               <span class="mdi mdi-plus" />
             </button>
+          </td>
+        </tr>
+        <tr v-for="(d, index) in listData.list" :key="index" @click="onClickData(d)">
+          <td class="col-auto">{{ d.inputData.title }}</td>
+          <td class="col-1">
+            <button @click.stop="onClickDeleteButton(d)" class="btn btn-danger"><span class="mdi mdi-trash-can" /></button>
           </td>
         </tr>
       </tbody>
