@@ -37,7 +37,7 @@ async function onStart() {
   await LocalStorageLottery.load().then((result) => {
     lotteryTopData.value = result;
     // ローカルストレージからデータを得られたら先頭要素を選択するようにする
-    resetSelectedTopLotteryData();
+    resetSelectedLotteryData();
   });
 }
 
@@ -241,6 +241,9 @@ async function downloadData(accessToken: string, showWarning: boolean) {
           }
         }
 
+        // 選択状態をリセット
+        resetSelectedLotteryData();
+
         // 正常終了
         _uploadDownload.value.setMessage("サーバーから読み込みました", "text-success");
       } else if (showWarning) {
@@ -265,10 +268,10 @@ function signout() {
   // ローカルデータを初期化
   lotteryTopData.value.listData = structuredClone(defaultLotteryListData);
   // 選択状態をリセット
-  resetSelectedTopLotteryData();
+  resetSelectedLotteryData();
 }
 
-function resetSelectedTopLotteryData() {
+function resetSelectedLotteryData() {
   selectedLotteryData.value = lotteryTopData.value.listData.list[0];
 }
 
