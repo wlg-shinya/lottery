@@ -72,8 +72,12 @@ function onClickResultClearButton() {
   data.value.resultData.result = "";
 }
 
-function onInputFlexTextarea(inputText: string) {
+function onInputText(inputText: string) {
   data.value.inputData.text = inputText;
+}
+
+function onInputDescription(inputText: string) {
+  data.value.inputData.description = inputText;
 }
 
 function random(max: number) {
@@ -94,6 +98,11 @@ function showInputTitle(): boolean {
   // 抽選対象が入力されていれば表示ON
   return data.value.inputData.text !== "";
 }
+
+function showInputDescription(): boolean {
+  // タイトルが入力されていれば表示ON
+  return data.value.inputData.title !== "";
+}
 </script>
 
 <template>
@@ -101,7 +110,7 @@ function showInputTitle(): boolean {
     <div class="d-flex flex-column align-items-center w-100">
       <FlexTextarea
         class="w-100"
-        @input="onInputFlexTextarea"
+        @input="onInputText"
         :initText="data.inputData.text"
         :placeholder="INPUT_TEXT_PLACEHOLDER_TEXT"
         :disabled="!editable"
@@ -127,6 +136,15 @@ function showInputTitle(): boolean {
           <span class="input-group-text">くじ引き名</span>
           <input v-model="data.inputData.title" class="form-control" placeholder="名前をつけると別のくじ引きも作成できます" :disabled="!editable" />
         </div>
+      </div>
+      <div v-show="showInputDescription()" class="w-100">
+        <FlexTextarea
+          class="w-100"
+          @input="onInputDescription"
+          :initText="data.inputData.description"
+          placeholder="説明をつけるとこのくじ引きをよりわかりやすくできます。未入力でも問題ありません"
+          :disabled="!editable"
+        />
       </div>
     </div>
   </div>
