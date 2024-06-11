@@ -68,12 +68,6 @@ export interface Lotteries {
     'id': number;
     /**
      * 
-     * @type {number}
-     * @memberof Lotteries
-     */
-    'user_id': number;
-    /**
-     * 
      * @type {string}
      * @memberof Lotteries
      */
@@ -84,6 +78,18 @@ export interface Lotteries {
      * @memberof Lotteries
      */
     'updated_at': string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof Lotteries
+     */
+    'user_id': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Lotteries
+     */
+    'used_count'?: number;
 }
 /**
  * 
@@ -256,30 +262,6 @@ export interface UserUpdate {
 export interface UserUpdateResponse {
     /**
      * 
-     * @type {string}
-     * @memberof UserUpdateResponse
-     */
-    'account_name': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserUpdateResponse
-     */
-    'identification': string;
-    /**
-     * 
-     * @type {Array<number>}
-     * @memberof UserUpdateResponse
-     */
-    'pull_lottery_ids'?: Array<number>;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserUpdateResponse
-     */
-    'access_token': string;
-    /**
-     * 
      * @type {number}
      * @memberof UserUpdateResponse
      */
@@ -397,6 +379,50 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(lotteryCreate, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Create Lottery
+         * @param {number} id 
+         * @param {string} accessToken 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createLotteryApiIncrementLotteryUsedCountPost: async (id: number, accessToken: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('createLotteryApiIncrementLotteryUsedCountPost', 'id', id)
+            // verify required parameter 'accessToken' is not null or undefined
+            assertParamExists('createLotteryApiIncrementLotteryUsedCountPost', 'accessToken', accessToken)
+            const localVarPath = `/api/increment_lottery_used_count`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+            if (accessToken !== undefined) {
+                localVarQueryParameter['access_token'] = accessToken;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1027,6 +1053,20 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Create Lottery
+         * @param {number} id 
+         * @param {string} accessToken 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createLotteryApiIncrementLotteryUsedCountPost(id: number, accessToken: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LotteryCreateResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createLotteryApiIncrementLotteryUsedCountPost(id, accessToken, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.createLotteryApiIncrementLotteryUsedCountPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Delete Lottery
          * @param {number} id 
          * @param {*} [options] Override http request option.
@@ -1257,6 +1297,17 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
+         * @summary Create Lottery
+         * @param {number} id 
+         * @param {string} accessToken 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createLotteryApiIncrementLotteryUsedCountPost(id: number, accessToken: string, options?: any): AxiosPromise<LotteryCreateResponse> {
+            return localVarFp.createLotteryApiIncrementLotteryUsedCountPost(id, accessToken, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Delete Lottery
          * @param {number} id 
          * @param {*} [options] Override http request option.
@@ -1437,6 +1488,19 @@ export class DefaultApi extends BaseAPI {
      */
     public createLotteryApiCreateLotteryPost(lotteryCreate: LotteryCreate, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).createLotteryApiCreateLotteryPost(lotteryCreate, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Create Lottery
+     * @param {number} id 
+     * @param {string} accessToken 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public createLotteryApiIncrementLotteryUsedCountPost(id: number, accessToken: string, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).createLotteryApiIncrementLotteryUsedCountPost(id, accessToken, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
