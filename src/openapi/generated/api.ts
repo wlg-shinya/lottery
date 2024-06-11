@@ -1068,7 +1068,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async readLotteryApiReadLotteryGet(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Lotteries>>> {
+        async readLotteryApiReadLotteryGet(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Lotteries>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.readLotteryApiReadLotteryGet(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.readLotteryApiReadLotteryGet']?.[localVarOperationServerIndex]?.url;
@@ -1266,7 +1266,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        readLotteryApiReadLotteryGet(id: number, options?: any): AxiosPromise<Array<Lotteries>> {
+        readLotteryApiReadLotteryGet(id: number, options?: any): AxiosPromise<Lotteries> {
             return localVarFp.readLotteryApiReadLotteryGet(id, options).then((request) => request(axios, basePath));
         },
         /**
