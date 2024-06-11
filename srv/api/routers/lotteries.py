@@ -44,7 +44,7 @@ async def is_lottery_id_mine(id: int, access_token: str, db: AsyncSession = Depe
     return await crud.is_lottery_id_mine(db=db, id=id, access_token=access_token)
 
 @router.post("/api/increment_lottery_used_count", response_model=schema.LotteryCreateResponse)
-async def create_lottery(id: int, access_token: str, db: AsyncSession = Depends(db)):
+async def increment_lottery_used_count(id: int, access_token: str, db: AsyncSession = Depends(db)):
     await tokens.validate_token(db=db, access_token=access_token)
     return await crud.increment_lottery_used_count(db=db, id=id)
 
