@@ -9,6 +9,9 @@ import Message from "../components/Message.vue";
 import BackButton from "../components/BackButton.vue";
 import SimpleShowText from "../components/OmitText.vue";
 
+// TODO:pulledCount/usedCountによる降順ソート（＝ランキング表示）
+// TODO:絞り込み機能
+
 const message = ref();
 const allData = ref<LotteryPublicData[]>([]);
 
@@ -95,9 +98,9 @@ async function updateAllData() {
         title: lottery.title ?? "",
         description: lottery.description ?? "",
         mine: false, // 公開情報を見ている時点ではサインインしていないユーザーとして考える
-        used_count: lottery.used_count ?? 0,
-        user_name: user_name,
-        pulled_count: pulledCount,
+        usedCount: lottery.used_count ?? 0,
+        username: user_name,
+        pulledCount: pulledCount,
       });
     }
   } catch (error) {
@@ -130,11 +133,11 @@ onStart();
             <td>
               {{ data.title }}<br />
               <span class="mdi mdi-counter mdi-24px pe-2" style="vertical-align: middle" />
-              <span class="fw-light pe-4">{{ numberToShowString(data.used_count) }}</span>
+              <span class="fw-light pe-4">{{ numberToShowString(data.usedCount) }}</span>
               <span class="mdi mdi-content-copy mdi-18px pe-2" />
-              <span class="fw-light pe-4">{{ numberToShowString(data.pulled_count) }}</span>
+              <span class="fw-light pe-4">{{ numberToShowString(data.pulledCount) }}</span>
             </td>
-            <td>{{ data.user_name }}</td>
+            <td>{{ data.username }}</td>
             <td style="white-space: pre-wrap">
               <SimpleShowText :text="data.description" :length="32" :allowLineFeed="false" :initOmit="true" />
             </td>

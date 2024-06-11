@@ -282,7 +282,7 @@ async function downloadData(accessToken: string, showWarning: boolean) {
               title: lottery.title ?? "",
               description: lottery.description ?? "",
               mine: true, // 自分のデータだけ取得してきているので true 固定
-              used_count: lottery.used_count ?? 0,
+              usedCount: lottery.used_count ?? 0,
             };
             createOrUpdateLotteryContentsData(newData);
           }
@@ -310,7 +310,7 @@ async function downloadData(accessToken: string, showWarning: boolean) {
               title: pullLottery.title ?? "",
               description: pullLottery.description ?? "",
               mine: false, // 自分のものではないので false 固定
-              used_count: pullLottery.used_count ?? 0,
+              usedCount: pullLottery.used_count ?? 0,
             };
             createOrUpdateLotteryContentsData(newData);
           }
@@ -363,17 +363,17 @@ onStart();
               v-show="showLocalLotteryList()"
               @select="onSelectLotteryList"
               @delete="onDeleteLotteryList"
-              :list="localLotteryData"
-              header="ローカルで作成中"
-              :addable="true"
               @add_new="onAddNewLotteryList"
+              :list="localLotteryData"
+              :header="'ローカルで作成中'"
+              :addable="true"
             />
             <LotteryList
               v-show="showServerSavedMyLotteryList()"
               @select="onSelectLotteryList"
               @delete="onDeleteLotteryList"
               :list="serverSavedMyLotteryData"
-              header="サーバーに保存済み"
+              :header="'サーバーに保存済み'"
               :addable="false"
             />
             <LotteryList
@@ -381,7 +381,7 @@ onStart();
               @select="onSelectLotteryList"
               @delete="onDeleteLotteryList"
               :list="pullLotteryData"
-              header="ほかの人が作成"
+              :header="'ほかの人が作成'"
               :addable="false"
             />
           </td>
