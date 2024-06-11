@@ -83,6 +83,7 @@ async function updateAllData() {
 
       // このくじ引きがほかの人にどれだけ取得されているか集計する
       const pulledCount = allUsers.reduce((acc, current) => {
+        // あるユーザがこのくじ引きIDを取得していたら1、そうでなければ0としてその累計を算出
         const count = current.pull_lottery_ids?.some((id) => id === lottery.id) ? 1 : 0;
         return acc + count;
       }, 0);
