@@ -35,14 +35,15 @@ async def read_my_lotteries(
 
 async def read_lottery(
     db: AsyncSession, id: int
-) -> Model | None:
-    return await db.get(Model, id)
-
-async def read_lottery_with_errorcheck(
-    db: AsyncSession, id: int, access_token: str
 ) -> Model:
     model = await read_lottery(db, id)
     _read_lottery_not_found(model)
+    return await db.get(Model, id)
+
+async def read_my_lottery(
+    db: AsyncSession, id: int, access_token: str
+) -> Model:
+    model = await read_lottery(db, id)
     tokens_model = await tokens.read_token(db, access_token)
     _read_lottery_not_match_user_id(model, tokens_model)
     return model
@@ -78,6 +79,5 @@ async def is_lottery_id_mine(
     db: AsyncSession, id: int, access_token: str
 ) -> bool:
     model = await read_lottery(db, id)
-    _read_lottery_not_found(model)
     tokens_model = await tokens.read_token(db, access_token)
     return tokens_model.user_id == model.user_id
