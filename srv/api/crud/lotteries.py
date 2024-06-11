@@ -6,15 +6,18 @@ from api.models import Lotteries as Model, Tokens as TokensModel
 import api.schemas.lotteries as schema
 import api.crud.tokens as tokens
 
+async def _update_model(db: AsyncSession, model: Model) -> Model:
+    db.add(model)
+    await db.commit()
+    await db.refresh(model)
+    return model
+
 async def create_lottery(
     db: AsyncSession, body: schema.LotteryCreate
 ) -> Model:
     tokens_model = await tokens.read_token(db, body.access_token)
     model = Model(user_id=tokens_model.user_id, text=body.text, title=body.title, description=body.description)
-    db.add(model)
-    await db.commit()
-    await db.refresh(model)
-    return model
+    return await _update_model(db=db, model=model)
 
 async def read_lotteries(
     db: AsyncSession
@@ -64,10 +67,8 @@ async def update_lottery(
     original.text = body.text
     original.title = body.title
     original.description = body.description
-    db.add(original)
-    await db.commit()
-    await db.refresh(original)
-    return original
+    return await _update_model(db=db, model=original)
+
 
 async def delete_lottery(
     db: AsyncSession, original: Model
