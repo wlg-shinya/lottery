@@ -59,5 +59,4 @@ export const defaultLotteryTopData: LotteryTopData = {
 export interface LotteryPublicData extends LotteryContentsData {
   user_name: string;
   pulled_count: number;
-  // TODO: ほかのユーザーに抽選された回数
 }
