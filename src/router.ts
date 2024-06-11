@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "./views/HomeView.vue";
 import SignupView from "./views/SignupView.vue";
 import PublicView from "./views/PublicView.vue";
+import ProfileView from "./views/ProfileView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -15,6 +16,10 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/public",
     component: PublicView,
+  },
+  {
+    path: "/profile",
+    component: ProfileView,
   },
 ];
 

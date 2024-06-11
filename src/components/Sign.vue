@@ -53,6 +53,10 @@ function onClickSignupButton() {
   router.push("/signup");
 }
 
+function onClickGoProfileButton() {
+  router.push("/profile");
+}
+
 async function onSignout() {
   emit("signout");
 }
@@ -60,18 +64,21 @@ async function onSignout() {
 
 <template>
   <div class="d-flex flex-column justify-content-center">
-    <div v-if="!props.accessToken">
+    <template v-if="!props.accessToken">
       <AccountPasswordInput @click="onClickSigninButton" buttonClass="btn-outline-primary" buttonText="サインイン" />
-      <button @click="onClickSignupButton" class="btn btn-link">作ったくじ引きをサーバーに保存したい？ではアカウントを作りましょう</button>
-    </div>
-    <div v-else>
-      <div v-show="username">
-        <span>ようこそ</span>
-        <span class="fs-2 p-2">{{ username }}</span>
-        <span>さん</span>
+      <button @click="onClickSignupButton" class="btn btn-link p-0">作ったくじ引きをサーバーに保存したい？ではアカウントを作りましょう</button>
+    </template>
+    <template v-else>
+      <div v-if="username">
+        <div class="text-center">
+          <span>ようこそ</span>
+          <span class="fs-2 p-2">{{ username }}</span>
+          <span>さん</span>
+        </div>
+        <button @click="onClickGoProfileButton" class="btn btn-link p-0">プロファイルの編集</button>
       </div>
       <Signout @signout="onSignout" />
-    </div>
+    </template>
     <Message ref="message" />
   </div>
 </template>
