@@ -90,6 +90,30 @@ async def signin(
 
     return schema.UserSigninResponse(access_token=access_token)
 
+async def change_password(
+    db: AsyncSession, body: schema.UserChangePassword
+) -> schema.UserChangePasswordResponse:
+    # 現在のパスワードの検証
+    old_model = await read_user_by_access_token(db, body.access_token)
+    old_access_token = hash(old_model.account_name, body.old_password)
+    if old_access_token != old_model.identification:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    # 検証を通過したので新しいパスワードでユーザーを更新
+    new_model = await update_user(
+        db, 
+        schema.UserUpdate(
+            account_name=old_model.account_name,
+            identification=body.new_password,
+            pull_lottery_ids=old_model.pull_lottery_ids,
+            ), 
+        old_model
+        )
+    # トークン新規作成
+    tokens_body = TokenCreate(access_token=new_model.identification, user_id=new_model.id)
+    await tokens.create_token(db, tokens_body)
+    
+    return schema.UserChangePasswordResponse(access_token=new_model.identification)
+
 def hash(account_name: str, identification: str):
     src = account_name + identification # TODO:salt/pepperの検討
     return sha256(src.encode("utf-8")).hexdigest()

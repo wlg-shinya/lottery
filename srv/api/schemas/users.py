@@ -38,3 +38,11 @@ class UserSignin(UsersBase):
 class UserSigninResponse(BaseModel):
     access_token: str = Field(desciption="アクセストークン")
 
+class UserChangePassword(BaseModel):
+    access_token: str = Field(desciption="アクセストークン")
+    old_password: str = Field(desciption="現在のパスワード")
+    new_password: str = Field(desciption="新しいパスワード")
+
+class UserChangePasswordResponse(BaseModel):
+    access_token: str = Field(desciption="アクセストークン")
+
