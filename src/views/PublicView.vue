@@ -129,8 +129,10 @@ onStart();
           <tr v-for="data in showData" @click="onClickData(data)" :key="JSON.stringify(data)">
             <td>
               {{ data.title }}<br />
-              <span class="mdi mdi-counter mdi-24px pe-2"></span><span class="fw-light pe-4">{{ numberToShowString(data.used_count) }}</span>
-              <span class="mdi mdi-content-copy mdi-24px pe-2"></span><span class="fw-light pe-4">{{ numberToShowString(data.pulled_count) }}</span>
+              <span class="mdi mdi-counter mdi-24px pe-2" style="vertical-align: middle" />
+              <span class="fw-light pe-4">{{ numberToShowString(data.used_count) }}</span>
+              <span class="mdi mdi-content-copy mdi-18px pe-2" />
+              <span class="fw-light pe-4">{{ numberToShowString(data.pulled_count) }}</span>
             </td>
             <td>{{ data.user_name }}</td>
             <td style="white-space: pre-wrap">
