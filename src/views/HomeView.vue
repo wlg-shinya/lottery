@@ -235,45 +235,78 @@ async function uploadData(accessToken: string) {
 }
 
 async function downloadData(accessToken: string, showWarning: boolean) {
-  await DefaultApiClient.readMyLotteriesApiReadMyLotteriesGet(accessToken)
-    .then((response) => {
-      if (response.data.length > 0) {
-        for (const lottery of response.data) {
-          // ローカルにデフォルトデータしかない場合はそれを捨てる
-          if (JSON.stringify(lotteryTopData.value.listData) === JSON.stringify(defaultLotteryListData)) {
-            lotteryTopData.value.listData.list = [];
+  const createOrUpdateLotteryUserInputData = (newInputData: LotteryUserInputData) => {
+    const oldData = lotteryTopData.value.listData.list.find((x) => x.inputData.id === newInputData.id);
+    if (oldData) {
+      // ローカルにデータがすでにある場合は内容を置き換え
+      oldData.inputData = newInputData;
+    } else {
+      // ローカルにデータがない場合は新規追加
+      lotteryTopData.value.listData.list.push({
+        inputData: newInputData,
+        resultData: structuredClone(defaultLotteryResultData),
+      });
+    }
+  };
+
+  try {
+    // ローカルにデフォルトデータしかない場合はそれを捨てる
+    if (JSON.stringify(lotteryTopData.value.listData) === JSON.stringify(defaultLotteryListData)) {
+      lotteryTopData.value.listData.list = [];
+    }
+
+    // 自分が作成してサーバーに保存したデータをダウンロードしてローカルに反映させる
+    await DefaultApiClient.readMyLotteriesApiReadMyLotteriesGet(accessToken)
+      .then((response) => {
+        if (response.data.length > 0) {
+          for (const lottery of response.data) {
+            const newInputData: LotteryUserInputData = {
+              id: lottery.id,
+              text: lottery.text ?? "",
+              title: lottery.title ?? "",
+              description: lottery.description ?? "",
+              mine: true, // 自分のデータだけ取得してきているので true 固定
+            };
+            createOrUpdateLotteryUserInputData(newInputData);
           }
 
-          // ダウンロードしてきたデータをローカルに反映させる
-          const currentInputData: LotteryUserInputData = {
-            id: lottery.id,
-            text: lottery.text ?? "",
-            title: lottery.title ?? "",
-            description: lottery.description ?? "",
-            mine: true, // 自分のデータだけ取得してきているので true 固定
-          };
-          const data = lotteryTopData.value.listData.list.find((x) => x.inputData.id === lottery.id);
-          if (data) {
-            // ローカルにデータがすでにある場合は内容を最新に置き換え
-            data.inputData = currentInputData;
-          } else {
-            // ローカルにデータがない場合は新規追加
-            lotteryTopData.value.listData.list.push({
-              inputData: currentInputData,
-              resultData: structuredClone(defaultLotteryResultData),
-            });
-          }
+          // 正常終了
+          uploadDownload.value.setMessage("サーバーから読み込みました", "text-success");
+        } else if (showWarning) {
+          uploadDownload.value.setMessage("サーバーにデータがありませんでした", "text-warning");
         }
+      })
+      .catch((error) => {
+        throw error;
+      });
 
-        // 正常終了
-        uploadDownload.value.setMessage("サーバーから読み込みました", "text-success");
-      } else if (showWarning) {
-        uploadDownload.value.setMessage("サーバーにデータがありませんでした", "text-warning");
-      }
-    })
-    .catch((error) => {
-      uploadDownload.value.setMessage(getErrorMessage(error), "text-danger");
-    });
+    // ほかの人が作成したデータをダウンロードしてローカルに反映させる
+    await DefaultApiClient.readUserByAccessTokenApiReadUserByAccessTokenGet(accessToken)
+      .then(async (response) => {
+        const pullLotteryIds = response.data.pull_lottery_ids;
+        for (const id of pullLotteryIds) {
+          // 最新データをダウンロードしてくる
+          const pullLottery = await DefaultApiClient.readLotteryApiReadLotteryGet(id)
+            .then((response2) => response2.data)
+            .catch((error) => {
+              throw error;
+            });
+          const newInputData: LotteryUserInputData = {
+            id: pullLottery.id,
+            text: pullLottery.text ?? "",
+            title: pullLottery.title ?? "",
+            description: pullLottery.description ?? "",
+            mine: false, // 自分のものではないので false 固定
+          };
+          createOrUpdateLotteryUserInputData(newInputData);
+        }
+      })
+      .catch((error) => {
+        throw error;
+      });
+  } catch (error) {
+    uploadDownload.value.setMessage(getErrorMessage(error), "text-danger");
+  }
 }
 
 async function doSignin(accessToken: string) {
