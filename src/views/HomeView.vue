@@ -21,6 +21,9 @@ import LotteryHistoryList from "../components/LotteryHistoryList.vue";
 import UploadDownload from "../components/UploadDownload.vue";
 import GoPublicView from "../components/GoPublicView.vue";
 
+// TODO:ユーザー名画面表示
+// TODO:パスワード変更機能
+
 const modal = ref();
 const uploadDownload = ref();
 const signin = ref();
