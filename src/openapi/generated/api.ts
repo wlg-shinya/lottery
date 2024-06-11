@@ -197,6 +197,12 @@ export interface UserSignin {
      * @memberof UserSignin
      */
     'identification': string;
+    /**
+     * 
+     * @type {Array<number>}
+     * @memberof UserSignin
+     */
+    'pull_lottery_ids': Array<number>;
 }
 /**
  * 
@@ -231,6 +237,12 @@ export interface UserUpdate {
     'identification': string;
     /**
      * 
+     * @type {Array<number>}
+     * @memberof UserUpdate
+     */
+    'pull_lottery_ids': Array<number>;
+    /**
+     * 
      * @type {string}
      * @memberof UserUpdate
      */
@@ -254,6 +266,12 @@ export interface UserUpdateResponse {
      * @memberof UserUpdateResponse
      */
     'identification': string;
+    /**
+     * 
+     * @type {Array<number>}
+     * @memberof UserUpdateResponse
+     */
+    'pull_lottery_ids': Array<number>;
     /**
      * 
      * @type {string}
@@ -285,6 +303,12 @@ export interface Users {
      * @memberof Users
      */
     'identification': string;
+    /**
+     * 
+     * @type {Array<number>}
+     * @memberof Users
+     */
+    'pull_lottery_ids': Array<number>;
     /**
      * 
      * @type {number}
@@ -682,6 +706,43 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
+         * @summary Read User By Access Token
+         * @param {string} accessToken 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        readUserByAccessTokenApiReadUserByAccessTokenGet: async (accessToken: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'accessToken' is not null or undefined
+            assertParamExists('readUserByAccessTokenApiReadUserByAccessTokenGet', 'accessToken', accessToken)
+            const localVarPath = `/api/read_user_by_access_token`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (accessToken !== undefined) {
+                localVarQueryParameter['access_token'] = accessToken;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Read Users
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -991,6 +1052,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Read User By Access Token
+         * @param {string} accessToken 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async readUserByAccessTokenApiReadUserByAccessTokenGet(accessToken: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Users>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.readUserByAccessTokenApiReadUserByAccessTokenGet(accessToken, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.readUserByAccessTokenApiReadUserByAccessTokenGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Read Users
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1154,6 +1228,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         readUserApiReadUserGet(id: number, options?: any): AxiosPromise<Users> {
             return localVarFp.readUserApiReadUserGet(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Read User By Access Token
+         * @param {string} accessToken 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        readUserByAccessTokenApiReadUserByAccessTokenGet(accessToken: string, options?: any): AxiosPromise<Users> {
+            return localVarFp.readUserByAccessTokenApiReadUserByAccessTokenGet(accessToken, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1322,6 +1406,18 @@ export class DefaultApi extends BaseAPI {
      */
     public readUserApiReadUserGet(id: number, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).readUserApiReadUserGet(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Read User By Access Token
+     * @param {string} accessToken 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public readUserByAccessTokenApiReadUserByAccessTokenGet(accessToken: string, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).readUserByAccessTokenApiReadUserByAccessTokenGet(accessToken, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
