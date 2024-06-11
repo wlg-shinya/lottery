@@ -3,8 +3,9 @@ import { ref } from "vue";
 import { DefaultApiClient } from "../openapi";
 import { getErrorMessage } from "../error";
 import AccountPasswordInput from "./AccountPasswordInput.vue";
+import Message from "./Message.vue";
 
-const accountPasswordInput = ref();
+const message = ref();
 
 async function onClickSignupButton(account: string, password: string) {
   await DefaultApiClient.signupApiSignupPost({
@@ -12,18 +13,17 @@ async function onClickSignupButton(account: string, password: string) {
     identification: password,
   })
     .then(() => {
-      accountPasswordInput.value.setMessage("ユーザー登録しました。戻ってサインインしてください", "text-success");
+      message.value.set("ユーザー登録しました。戻ってサインインしてください", "text-success");
     })
     .catch((error) => {
-      accountPasswordInput.value.setMessage(getErrorMessage(error), "text-danger");
+      message.value.set(getErrorMessage(error), "text-danger");
     });
 }
 </script>
 
 <template>
-  <div class="d-flex justify-content-center">
-    <div class="d-flex flex-column">
-      <AccountPasswordInput ref="accountPasswordInput" @click="onClickSignupButton" buttonClass="btn-primary" buttonText="新規登録" />
-    </div>
+  <div class="d-flex flex-column justify-content-center">
+    <AccountPasswordInput @click="onClickSignupButton" buttonClass="btn-primary" buttonText="新規登録" />
+    <Message ref="message" />
   </div>
 </template>

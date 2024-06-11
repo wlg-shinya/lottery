@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import Message from "./Message.vue";
 
 defineProps<{
   buttonClass: string;
@@ -11,9 +10,6 @@ const emit = defineEmits<{
   click: [account: string, password: string];
 }>();
 
-defineExpose({ setMessage, clear });
-
-const message = ref();
 const account = ref("");
 const password = ref("");
 const showPassword = ref(false);
@@ -28,15 +24,6 @@ function onClickShowPasswordButton() {
 
 function canClick(): boolean {
   return account.value !== "" && password.value !== "";
-}
-
-function setMessage(body: string, color: string) {
-  message.value.set(body, color);
-}
-
-function clear() {
-  account.value = "";
-  password.value = "";
 }
 </script>
 
@@ -55,7 +42,6 @@ function clear() {
         </button>
       </div>
       <button @click="onClickSubmitButton" :class="`btn ${buttonClass}`" :disabled="!canClick()">{{ buttonText }}</button>
-      <Message ref="message" />
     </div>
   </div>
 </template>
