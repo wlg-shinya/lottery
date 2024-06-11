@@ -134,7 +134,7 @@ onStart();
               {{ data.title }}<br />
               <span class="mdi mdi-counter mdi-24px pe-2" style="vertical-align: middle" />
               <span class="fw-light pe-4">{{ numberToShowString(data.usedCount) }}</span>
-              <span class="mdi mdi-content-copy mdi-18px pe-2" />
+              <span class="mdi mdi-download mdi-24px pe-2" style="vertical-align: middle" />
               <span class="fw-light pe-4">{{ numberToShowString(data.pulledCount) }}</span>
             </td>
             <td>{{ data.username }}</td>
