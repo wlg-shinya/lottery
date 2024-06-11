@@ -5,9 +5,6 @@ import { DefaultApiClient } from "../openapi";
 import FlexTextarea from "./FlexTextarea.vue";
 import RotateSlot from "./RotateSlot.vue";
 
-// TODO:ほかのユーザが作成したくじ引きを利用可能（＝お気に入り）にする
-// TODO:ほかのユーザが作成したくじ引きを抽選した回数をDB保存＆集計表示する
-
 const INPUT_TEXT_PLACEHOLDER_TEXT = "一行がひとつのくじとなります\n空白行は無視されます";
 const LOTTERY_TARGETS_SHOW_CLASS = "fs-1 fw-bold";
 
@@ -45,9 +42,9 @@ async function onUpdateInitData() {
     data.value = props.initData;
 
     // 編集可能かどうか判断する
-    if (props.initData.contentsData.id !== -1) {
+    if (data.value.contentsData.id !== -1) {
       if (props.accessToken) {
-        await DefaultApiClient.isLotteryIdMineApiIsLotteryIdMineGet(props.initData.contentsData.id, props.accessToken)
+        await DefaultApiClient.isLotteryIdMineApiIsLotteryIdMineGet(data.value.contentsData.id, props.accessToken)
           .then((response) => {
             if (response.data) {
               // サーバーに問い合わせたうえで自分の作成したデータだと判明したら編集可能
@@ -75,6 +72,11 @@ function onClickLotteryButton() {
   // 結果の記録と履歴保存
   data.value.resultData.result = result;
   data.value.resultData.histories.push(result);
+  // 抽選した回数を増やすようサーバーに通達
+  if (props.accessToken && data.value.contentsData.id !== -1) {
+    // 特に待つ必要なし。エラーが発生しても抽選回数が増えないだけなのでスルー
+    DefaultApiClient.incrementLotteryUsedCountApiIncrementLotteryUsedCountPost(data.value.contentsData.id, props.accessToken).catch(() => {});
+  }
 }
 
 function onClickResultClearButton() {
