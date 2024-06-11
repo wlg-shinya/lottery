@@ -4,6 +4,7 @@ from datetime import datetime
 class UsersBase(BaseModel):
     account_name: str = Field(desciption="アカウント名")
     identification: str = Field(desciption="識別情報")
+    pull_lottery_ids: list[int] = Field(desciption="ほかの人が作成したくじ引きID")
 
 class Users(UsersBase):
     id: int
