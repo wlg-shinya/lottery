@@ -170,71 +170,85 @@ function doClearHistory() {
 }
 
 async function uploadData(accessToken: string) {
-  await DefaultApiClient.readMyLotteriesApiReadMyLotteriesGet(accessToken)
-    .then(async (response) => {
-      let uploaded = false;
+  let uploaded = false;
 
-      // ローカル側で削除されたデータがあればサーバー側も削除する
-      const serverIds = response.data.map((x) => x.id);
-      const localIds = lotteryTopData.value.listData.list.map((x) => x.inputData.id);
-      const deletedIds = serverIds.filter((id) => !localIds.some((x) => x === id));
-      for (const id of deletedIds) {
-        await DefaultApiClient.deleteLotteryApiDeleteLotteryDelete(id, { access_token: accessToken })
-          .then(() => (uploaded = true))
-          .catch((error) => {
-            throw error;
-          });
-      }
+  try {
+    // ローカル側で削除されたデータがあればサーバー側も削除する
+    await DefaultApiClient.readMyLotteriesApiReadMyLotteriesGet(accessToken)
+      .then(async (response) => {
+        const serverIds = response.data.map((x) => x.id);
+        const localIds = lotteryTopData.value.listData.list.map((x) => x.inputData.id);
+        const deletedIds = serverIds.filter((id) => !localIds.some((x) => x === id));
+        for (const id of deletedIds) {
+          await DefaultApiClient.deleteLotteryApiDeleteLotteryDelete(id, { access_token: accessToken })
+            .then(() => (uploaded = true))
+            .catch((error) => {
+              throw error;
+            });
+        }
+      })
+      .catch((error) => {
+        throw error;
+      });
 
-      // ローカル側をサーバー側にすべてアップロード
-      for (const list of lotteryTopData.value.listData.list) {
-        if (list.inputData.text) {
-          // 抽選対象が入力されていたら保存する
-          const data: LotteryCreate = {
-            access_token: accessToken,
-            text: list.inputData.text,
-            title: list.inputData.title,
-            description: list.inputData.description,
-          };
-          if (list.inputData.id < 0) {
-            // IDが未定なら新規追加
-            await DefaultApiClient.createLotteryApiCreateLotteryPost(data)
-              .then((response) => {
-                // サーバー保存の結果得られたIDで更新することで、ローカル作成状態でないことにする
-                list.inputData.id = response.data.id;
-                uploaded = true;
-              })
+    // ローカル側にあるほかの人が作成したデータのIDリストをアップロード
+    const pullIds = pullLotteryData.value.map((x) => x.inputData.id);
+    if (pullIds.length > 0) {
+      await DefaultApiClient.updateUserPullLotteryIdsApiUpdateUserPullLotteryIdsPut(accessToken, pullIds)
+        .then(() => (uploaded = true))
+        .catch((error) => {
+          throw error;
+        });
+    }
+
+    // ローカル側をサーバー側にすべてアップロード
+    for (const list of lotteryTopData.value.listData.list) {
+      if (list.inputData.text) {
+        // 抽選対象が入力されていたら保存する
+        const data: LotteryCreate = {
+          access_token: accessToken,
+          text: list.inputData.text,
+          title: list.inputData.title,
+          description: list.inputData.description,
+        };
+        if (list.inputData.id < 0) {
+          // IDが未定なら新規追加
+          await DefaultApiClient.createLotteryApiCreateLotteryPost(data)
+            .then((response2) => {
+              // サーバー保存の結果得られたIDで更新することで、ローカル作成状態でないことにする
+              list.inputData.id = response2.data.id;
+              uploaded = true;
+            })
+            .catch((error) => {
+              throw error;
+            });
+        } else {
+          if (list.inputData.mine) {
+            // 自分が作成したデータなので更新
+            await DefaultApiClient.updateLotteryApiUpdateLotteryPut(list.inputData.id, data)
+              .then(() => (uploaded = true))
               .catch((error) => {
                 throw error;
               });
           } else {
-            if (list.inputData.mine) {
-              // 自分が作成したデータなので更新
-              await DefaultApiClient.updateLotteryApiUpdateLotteryPut(list.inputData.id, data)
-                .then(() => (uploaded = true))
-                .catch((error) => {
-                  throw error;
-                });
-            } else {
-              // 自分が作成したデータではないので何もしない
-            }
+            // 自分が作成したデータではないので何もしない
           }
         }
       }
+    }
 
-      // 正常終了
-      if (uploaded) {
-        uploadDownload.value.setMessage("サーバーに保存しました", "text-success");
-      } else {
-        uploadDownload.value.setMessage("保存するデータがありません", "text-warning");
-      }
-    })
-    .catch((error) => {
-      uploadDownload.value.setMessage(getErrorMessage(error), "text-danger");
-    });
+    if (uploaded) {
+      uploadDownload.value.setMessage("サーバーに保存しました", "text-success");
+    } else {
+      uploadDownload.value.setMessage("保存するデータがありません", "text-warning");
+    }
+  } catch (error) {
+    uploadDownload.value.setMessage(getErrorMessage(error), "text-danger");
+  }
 }
 
 async function downloadData(accessToken: string, showWarning: boolean) {
+  let downloaded = false;
   const createOrUpdateLotteryUserInputData = (newInputData: LotteryUserInputData) => {
     const oldData = lotteryTopData.value.listData.list.find((x) => x.inputData.id === newInputData.id);
     if (oldData) {
@@ -247,18 +261,20 @@ async function downloadData(accessToken: string, showWarning: boolean) {
         resultData: structuredClone(defaultLotteryResultData),
       });
     }
+    downloaded = true;
   };
 
   try {
-    // ローカルにデフォルトデータしかない場合はそれを捨てる
-    if (JSON.stringify(lotteryTopData.value.listData) === JSON.stringify(defaultLotteryListData)) {
-      lotteryTopData.value.listData.list = [];
-    }
-
     // 自分が作成してサーバーに保存したデータをダウンロードしてローカルに反映させる
     await DefaultApiClient.readMyLotteriesApiReadMyLotteriesGet(accessToken)
       .then((response) => {
         if (response.data.length > 0) {
+          // ローカルにデフォルトデータしかない場合はそれを捨てる
+          if (JSON.stringify(lotteryTopData.value.listData) === JSON.stringify(defaultLotteryListData)) {
+            lotteryTopData.value.listData.list = [];
+          }
+
+          // データ作成 or 更新
           for (const lottery of response.data) {
             const newInputData: LotteryUserInputData = {
               id: lottery.id,
@@ -269,11 +285,6 @@ async function downloadData(accessToken: string, showWarning: boolean) {
             };
             createOrUpdateLotteryUserInputData(newInputData);
           }
-
-          // 正常終了
-          uploadDownload.value.setMessage("サーバーから読み込みました", "text-success");
-        } else if (showWarning) {
-          uploadDownload.value.setMessage("サーバーにデータがありませんでした", "text-warning");
         }
       })
       .catch((error) => {
@@ -284,26 +295,34 @@ async function downloadData(accessToken: string, showWarning: boolean) {
     await DefaultApiClient.readUserByAccessTokenApiReadUserByAccessTokenGet(accessToken)
       .then(async (response) => {
         const pullLotteryIds = response.data.pull_lottery_ids;
-        for (const id of pullLotteryIds) {
-          // 最新データをダウンロードしてくる
-          const pullLottery = await DefaultApiClient.readLotteryApiReadLotteryGet(id)
-            .then((response2) => response2.data)
-            .catch((error) => {
-              throw error;
-            });
-          const newInputData: LotteryUserInputData = {
-            id: pullLottery.id,
-            text: pullLottery.text ?? "",
-            title: pullLottery.title ?? "",
-            description: pullLottery.description ?? "",
-            mine: false, // 自分のものではないので false 固定
-          };
-          createOrUpdateLotteryUserInputData(newInputData);
+        if (pullLotteryIds) {
+          for (const id of pullLotteryIds) {
+            // 最新データをダウンロードしてくる
+            const pullLottery = await DefaultApiClient.readLotteryApiReadLotteryGet(id)
+              .then((response2) => response2.data)
+              .catch((error) => {
+                throw error;
+              });
+            const newInputData: LotteryUserInputData = {
+              id: pullLottery.id,
+              text: pullLottery.text ?? "",
+              title: pullLottery.title ?? "",
+              description: pullLottery.description ?? "",
+              mine: false, // 自分のものではないので false 固定
+            };
+            createOrUpdateLotteryUserInputData(newInputData);
+          }
         }
       })
       .catch((error) => {
         throw error;
       });
+
+    if (downloaded) {
+      uploadDownload.value.setMessage("サーバーから読み込みました", "text-success");
+    } else if (showWarning) {
+      uploadDownload.value.setMessage("サーバーにデータがありませんでした", "text-warning");
+    }
   } catch (error) {
     uploadDownload.value.setMessage(getErrorMessage(error), "text-danger");
   }
