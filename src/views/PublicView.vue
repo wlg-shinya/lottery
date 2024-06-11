@@ -104,6 +104,10 @@ async function updateAllData() {
   }
 }
 
+function numberToShowString(value: number) {
+  return value.toLocaleString();
+}
+
 onStart();
 </script>
 
@@ -124,7 +128,7 @@ onStart();
           <tr v-for="data in showData" @click="onClickData(data)" :key="JSON.stringify(data)">
             <td>
               {{ data.title }}<br />
-              <span class="mdi mdi-content-copy"></span><span class="fw-light">{{ data.pulled_count.toLocaleString() }}</span>
+              <span class="mdi mdi-content-copy"></span><span class="fw-light">{{ numberToShowString(data.pulled_count) }}</span>
             </td>
             <td>{{ data.user_name }}</td>
             <td style="white-space: pre-wrap">
