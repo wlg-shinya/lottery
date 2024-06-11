@@ -30,13 +30,7 @@ async def update_user(body: schema.UserUpdate, db: AsyncSession = Depends(db)):
 async def update_user_pull_lottery_ids(access_token: str, pull_lottery_ids: list[int], db: AsyncSession = Depends(db)):
     await tokens.validate_token(db=db, access_token=access_token)
     model = await crud.read_user_by_access_token(db=db, access_token=access_token)
-    body = schema.UserUpdate(
-        access_token=access_token,
-        account_name=model.account_name,
-        identification=model.identification,
-        pull_lottery_ids=pull_lottery_ids,
-    )
-    return await crud.update_user(db=db, body=body, original=model)
+    return await crud.update_user_pull_lottery_ids(db=db, pull_lottery_ids=pull_lottery_ids, original=model)
 
 @router.delete("/api/delete_user", response_model=None)
 async def delete_user(body: schema.UserDelete, db: AsyncSession = Depends(db)):

@@ -24,7 +24,7 @@ class UserCreateResponse(UserCreate):
 class UserUpdate(UsersBase):
     access_token: str = Field(desciption="アクセストークン")
 
-class UserUpdateResponse(UserUpdate):
+class UserUpdateResponse(BaseModel):
     id: int
 
     model_config = ConfigDict(from_attributes=True)

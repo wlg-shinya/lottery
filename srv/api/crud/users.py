@@ -8,14 +8,17 @@ from api.schemas.tokens import TokenCreate
 import api.schemas.users as schema
 import api.crud.tokens as tokens
 
-async def create_user(
-    db: AsyncSession, body: schema.UserCreate
-) -> Model:
-    model = Model(account_name=body.account_name, identification=hash(body.account_name, body.identification), pull_lottery_ids=[])
+async def _update_model(db: AsyncSession, model: Model) -> Model:
     db.add(model)
     await db.commit()
     await db.refresh(model)
     return model
+
+async def create_user(
+    db: AsyncSession, body: schema.UserCreate
+) -> Model:
+    model = Model(account_name=body.account_name, identification=hash(body.account_name, body.identification), pull_lottery_ids=[])
+    return await _update_model(db=db, model=model)
 
 async def read_users(
     db: AsyncSession
@@ -43,10 +46,13 @@ async def update_user(
     original.account_name = body.account_name
     original.identification = hash(body.account_name, body.identification)
     original.pull_lottery_ids = body.pull_lottery_ids
-    db.add(original)
-    await db.commit()
-    await db.refresh(original)
-    return original
+    return await _update_model(db=db, model=original)
+
+async def update_user_pull_lottery_ids(
+    db: AsyncSession, pull_lottery_ids: list[int], original: Model
+) -> Model:
+    original.pull_lottery_ids = pull_lottery_ids
+    return await _update_model(db=db, model=original)
 
 async def delete_user(
     db: AsyncSession, original: Model
