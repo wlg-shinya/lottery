@@ -8,9 +8,10 @@ class LotteriesBase(BaseModel):
 
 class Lotteries(LotteriesBase):
     id: int
-    user_id: int = Field(desciption="このくじ引きの所有者ID")
     created_at: datetime = Field(desciption="作成日時")
     updated_at: datetime | None = Field(desciption="更新日時")
+    user_id: int = Field(desciption="このくじ引きの所有者ID")
+    used_count: int = Field(0, desciption="このくじ引きが抽選された回数")
 
     model_config = ConfigDict(from_attributes=True)
 
