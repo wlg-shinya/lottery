@@ -29,14 +29,14 @@ async def read_lotteries(
 ) -> List[schema.Lotteries]:
     result = await db.execute(
         select(
-            Model.id,
-            Model.user_id,
             Model.text,
             Model.title,
             Model.description,
-            Model.used_count,
+            Model.id,
             Model.created_at,
-            Model.updated_at)
+            Model.updated_at,
+            Model.user_id,
+            Model.used_count)
         )
     return result.all()
 
@@ -47,14 +47,14 @@ async def read_my_lotteries(
     tokens_model = await tokens.read_token(db, access_token)
     result = await db.execute(
         select(
-            Model.id,
-            Model.user_id,
             Model.text,
             Model.title,
             Model.description,
-            Model.used_count,
+            Model.id,
             Model.created_at,
-            Model.updated_at)
+            Model.updated_at,
+            Model.user_id,
+            Model.used_count)
         .filter(Model.user_id == tokens_model.user_id)
         )
     return result.all()
@@ -109,5 +109,8 @@ async def increment_lottery_used_count(
     db: AsyncSession, id: int
 ) -> Model:
     model = await read_lottery(db, id)
-    model.used_count += 1
+    if model.used_count is None:
+        model.used_count = 1
+    else:
+        model.used_count += 1
     return await _update_model(db=db, model=model)
