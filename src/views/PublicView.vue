@@ -19,9 +19,6 @@ async function onStart() {
 }
 
 async function onClickData(data: LotteryPublicData) {
-  // 自分自身のデータなら特に何もしない
-  if (data.mine) return;
-
   try {
     // ローカルストレージからデータを得る
     const lotteryTopData = await LocalStorageLottery.load()
@@ -29,6 +26,14 @@ async function onClickData(data: LotteryPublicData) {
       .catch((error) => {
         throw error;
       });
+
+    // 自分自身のデータならここで処理中断
+    const mine = await DefaultApiClient.isLotteryIdMineApiIsLotteryIdMineGet(data.id, lotteryTopData.accessToken)
+      .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
+    if (mine) return;
 
     // 選択したデータを更新 or 新規追加する
     const pullData = lotteryTopData.listData.list.find((x) => x.inputData.id === data.id);
@@ -59,47 +64,45 @@ async function updateAllData() {
 
   // 更新前に古いデータをクリア
   allData.value = [];
-  // 最新くじ引きデータをサーバーから全取得
-  await DefaultApiClient.readLotteriesApiReadLotteriesGet()
-    .then(async (response) => {
-      for (const lottery of response.data) {
-        // ユーザーIDからくじ引きを作成したユーザ名を得る
-        const user_name = await DefaultApiClient.readUserApiReadUserGet(lottery.user_id)
-          .then((response2) => response2.data.account_name)
-          .catch((error) => {
-            throw error;
-          });
 
-        // このくじ引きデータが自分のものかどうか判断する
-        let mine = false; // この時点ではサインインしていないことが前提
-        const lotteryTopData = await LocalStorageLottery.load()
-          .then(async (result) => result)
-          .catch((error) => {
-            throw error;
-          });
-        if (lotteryTopData.accessToken) {
-          mine = await DefaultApiClient.isLotteryIdMineApiIsLotteryIdMineGet(lottery.id, lotteryTopData.accessToken)
-            .then((response2) => response2.data)
-            .catch((error) => {
-              throw error;
-            });
-        }
+  try {
+    // 最新の各種データをサーバーから取得
+    const response = await Promise.all([DefaultApiClient.readLotteriesApiReadLotteriesGet(), DefaultApiClient.readUsersApiReadUsersGet()])
+      .then((response) => response)
+      .catch((error) => {
+        throw error;
+      });
+    const allLotteries = response[0].data;
+    const allUsers = response[1].data;
 
-        // これまでの情報で公開用データを構築
-        allData.value.push({
-          id: lottery.id,
-          text: lottery.text ?? "",
-          title: lottery.title ?? "",
-          description: lottery.description ?? "",
-          mine: mine,
-          user_name: user_name,
-          pulled_count: 100,
-        });
+    // 取得できた各種データから公開するべきデータを構築する
+    for (const lottery of allLotteries) {
+      // ユーザーIDからくじ引きを作成したユーザ名を得る
+      const user_name = allUsers.find((x) => x.id === lottery.user_id)?.account_name;
+      if (!user_name) {
+        throw new Error(`Not found user_id(${lottery.id})`);
       }
-    })
-    .catch((error) => {
-      message.value.set(getErrorMessage(error), "text-danger");
-    });
+
+      // このくじ引きがほかの人にどれだけ取得されているか集計する
+      const pulledCount = allUsers.reduce((acc, current) => {
+        const count = current.pull_lottery_ids?.some((id) => id === lottery.id) ? 1 : 0;
+        return acc + count;
+      }, 0);
+
+      // これまでの情報で公開用データを構築
+      allData.value.push({
+        id: lottery.id,
+        text: lottery.text ?? "",
+        title: lottery.title ?? "",
+        description: lottery.description ?? "",
+        mine: false, // 公開情報を見ている時点ではサインインしていないユーザーとして考える
+        user_name: user_name,
+        pulled_count: pulledCount,
+      });
+    }
+  } catch (error) {
+    message.value.set(getErrorMessage(error), "text-danger");
+  }
 }
 
 onStart();
