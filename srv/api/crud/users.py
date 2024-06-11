@@ -11,7 +11,7 @@ import api.crud.tokens as tokens
 async def create_user(
     db: AsyncSession, body: schema.UserCreate
 ) -> Model:
-    model = Model(account_name=body.account_name, identification=hash(body.account_name, body.identification))
+    model = Model(account_name=body.account_name, identification=hash(body.account_name, body.identification), pull_lottery_ids=[])
     db.add(model)
     await db.commit()
     await db.refresh(model)
@@ -20,7 +20,7 @@ async def create_user(
 async def read_users(
     db: AsyncSession
 ) -> List[schema.Users]:
-    result = await db.execute(select(Model.id, Model.account_name, Model.identification, Model.created_at, Model.updated_at))
+    result = await db.execute(select(Model.id, Model.account_name, Model.identification, Model.pull_lottery_ids, Model.created_at, Model.updated_at))
     return result.all()
 
 async def read_user(
