@@ -20,7 +20,6 @@ import LotteryHistoryList from "../components/LotteryHistoryList.vue";
 import UploadDownload from "../components/UploadDownload.vue";
 import GoPublicView from "../components/GoPublicView.vue";
 
-// TODO:ユーザー名画面表示
 // TODO:パスワード変更機能
 
 const modal = ref();
@@ -351,7 +350,7 @@ onStart();
   <div>
     <Modal ref="modal" />
     <div class="d-flex flex-column align-items-center">
-      <Sign @signin="onSignin" @signout="onSignout" />
+      <Sign @signin="onSignin" @signout="onSignout" :accessToken="lotteryTopData.accessToken" />
     </div>
     <hr />
     <table class="table table-borderless">
