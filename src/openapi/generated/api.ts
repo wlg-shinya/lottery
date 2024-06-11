@@ -202,7 +202,7 @@ export interface UserSignin {
      * @type {Array<number>}
      * @memberof UserSignin
      */
-    'pull_lottery_ids': Array<number>;
+    'pull_lottery_ids'?: Array<number>;
 }
 /**
  * 
@@ -240,7 +240,7 @@ export interface UserUpdate {
      * @type {Array<number>}
      * @memberof UserUpdate
      */
-    'pull_lottery_ids': Array<number>;
+    'pull_lottery_ids'?: Array<number>;
     /**
      * 
      * @type {string}
@@ -271,7 +271,7 @@ export interface UserUpdateResponse {
      * @type {Array<number>}
      * @memberof UserUpdateResponse
      */
-    'pull_lottery_ids': Array<number>;
+    'pull_lottery_ids'?: Array<number>;
     /**
      * 
      * @type {string}
@@ -308,7 +308,7 @@ export interface Users {
      * @type {Array<number>}
      * @memberof Users
      */
-    'pull_lottery_ids': Array<number>;
+    'pull_lottery_ids'?: Array<number>;
     /**
      * 
      * @type {number}
