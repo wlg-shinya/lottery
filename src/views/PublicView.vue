@@ -60,8 +60,6 @@ async function onClickData(data: LotteryPublicData) {
 }
 
 async function updateAllData() {
-  // TODO:読込済みデータをキャッシュとして扱い更新処理負荷軽減を検討する
-
   // 更新前に古いデータをクリア
   allData.value = [];
 
