@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
-import { type LotteryData, defaultLotteryData, defaultLotteryListData } from "../lottery-data";
+import { LotteryData, defaultLotteryData, defaultLotteryListData } from "../lottery-data";
 import Modal from "./Modal.vue";
 
 const props = defineProps<{

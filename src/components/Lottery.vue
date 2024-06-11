@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
-import { type LotteryData, defaultLotteryData } from "../lottery-data";
+import { LotteryData, defaultLotteryData } from "../lottery-data";
 import { DefaultApiClient } from "../openapi";
 import FlexTextarea from "./FlexTextarea.vue";
 import RotateSlot from "./RotateSlot.vue";

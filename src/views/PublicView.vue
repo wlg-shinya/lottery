@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { DefaultApiClient } from "../openapi";
-import { LotteryPublicData } from "../lottery-data";
 import { getErrorMessage } from "../error";
 import LocalStorageLottery from "../local-storage-lottery";
-import { type LotteryUserInputData, defaultLotteryResultData } from "../lottery-data";
+import { LotteryUserInputData, LotteryPublicData, defaultLotteryResultData } from "../lottery-data";
 import router from "../router";
 import Message from "../components/Message.vue";
 import BackButton from "../components/BackButton.vue";
@@ -80,7 +79,7 @@ async function updateAllData() {
           });
         if (lotteryTopData.accessToken) {
           mine = await DefaultApiClient.isLotteryIdMineApiIsLotteryIdMineGet(lottery.id, lotteryTopData.accessToken)
-            .then((response) => response.data)
+            .then((response2) => response2.data)
             .catch((error) => {
               throw error;
             });
@@ -94,6 +93,7 @@ async function updateAllData() {
           description: lottery.description ?? "",
           mine: mine,
           user_name: user_name,
+          pulled_count: 100,
         });
       }
     })
@@ -120,7 +120,10 @@ onStart();
         </thead>
         <tbody>
           <tr v-for="data in showData" @click="onClickData(data)" :key="JSON.stringify(data)">
-            <td>{{ data.title }}</td>
+            <td>
+              {{ data.title }}<br />
+              <span class="mdi mdi-content-copy"></span><span class="fw-light">{{ data.pulled_count }}</span>
+            </td>
             <td>{{ data.user_name }}</td>
             <td style="white-space: pre-wrap">
               <SimpleShowText :text="data.description" :length="32" :allowLineFeed="false" :initOmit="true" />
