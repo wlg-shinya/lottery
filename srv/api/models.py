@@ -19,6 +19,7 @@ class Lotteries(BaseModel):
     text = Column(VARCHAR(256), nullable=False)
     title = Column(VARCHAR(32), nullable=False)
     description = Column(VARCHAR(256), nullable=False)
+    used_count = Column(INTEGER)
 
 class Users(BaseModel):
     __tablename__ = "users"
