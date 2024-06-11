@@ -7,6 +7,7 @@ const props = defineProps<{
   list: LotteryData[];
   header: string;
   addable: boolean;
+  confirmBeforeDelete: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -38,7 +39,11 @@ function onClickAddButton() {
 }
 
 function onClickDeleteButton(data: LotteryData) {
-  modal.value.show("注意", "本当に削除しますか？この操作は取り消せません", "削除", () => emit("delete", data));
+  if (props.confirmBeforeDelete) {
+    modal.value.show("注意", "本当に削除しますか？この操作は取り消せません", "削除", () => emit("delete", data));
+  } else {
+    emit("delete", data);
+  }
 }
 </script>
 

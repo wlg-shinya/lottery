@@ -370,6 +370,7 @@ onStart();
               :list="localLotteryData"
               :header="'ローカルで作成中'"
               :addable="true"
+              :confirmBeforeDelete="true"
             />
             <LotteryList
               v-show="showServerSavedMyLotteryList()"
@@ -378,6 +379,7 @@ onStart();
               :list="serverSavedMyLotteryData"
               :header="'サーバーに保存済み'"
               :addable="false"
+              :confirmBeforeDelete="false"
             />
             <LotteryList
               v-show="showPullLotteryList()"
@@ -386,6 +388,7 @@ onStart();
               :list="pullLotteryData"
               :header="'ほかの人が作成'"
               :addable="false"
+              :confirmBeforeDelete="false"
             />
           </td>
           <td class="col-4">
