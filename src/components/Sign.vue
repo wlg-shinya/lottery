@@ -64,11 +64,11 @@ async function onSignout() {
 
 <template>
   <div class="d-flex flex-column justify-content-center">
-    <template v-if="!props.accessToken">
+    <div v-if="!props.accessToken">
       <AccountPasswordInput @click="onClickSigninButton" buttonClass="btn-outline-primary" buttonText="サインイン" />
       <button @click="onClickSignupButton" class="btn btn-link p-0">作ったくじ引きをサーバーに保存したい？ではアカウントを作りましょう</button>
-    </template>
-    <template v-else>
+    </div>
+    <div v-else>
       <div v-if="username">
         <div class="text-center">
           <span>ようこそ</span>
@@ -78,7 +78,7 @@ async function onSignout() {
         <button @click="onClickGoProfileButton" class="btn btn-link p-0">プロファイルの編集</button>
       </div>
       <Signout @signout="onSignout" />
-    </template>
+    </div>
     <Message ref="message" />
   </div>
 </template>
