@@ -34,7 +34,7 @@ watch(
 
 // 抽選対象群
 // INPUT_TEXT_PLACEHOLDER_TEXT の条件をここで表現
-const lotteryTargets = computed(() => data.value.inputData.text.split("\n").filter((x) => x));
+const lotteryTargets = computed(() => data.value.contentsData.text.split("\n").filter((x) => x));
 
 async function onUpdateInitData() {
   // まず編集不可にしておく
@@ -45,9 +45,9 @@ async function onUpdateInitData() {
     data.value = props.initData;
 
     // 編集可能かどうか判断する
-    if (props.initData.inputData.id !== -1) {
+    if (props.initData.contentsData.id !== -1) {
       if (props.accessToken) {
-        await DefaultApiClient.isLotteryIdMineApiIsLotteryIdMineGet(props.initData.inputData.id, props.accessToken)
+        await DefaultApiClient.isLotteryIdMineApiIsLotteryIdMineGet(props.initData.contentsData.id, props.accessToken)
           .then((response) => {
             if (response.data) {
               // サーバーに問い合わせたうえで自分の作成したデータだと判明したら編集可能
@@ -82,11 +82,11 @@ function onClickResultClearButton() {
 }
 
 function onInputText(inputText: string) {
-  data.value.inputData.text = inputText;
+  data.value.contentsData.text = inputText;
 }
 
 function onInputDescription(inputText: string) {
-  data.value.inputData.description = inputText;
+  data.value.contentsData.description = inputText;
 }
 
 function random(max: number) {
@@ -105,12 +105,12 @@ function showResult(): boolean {
 
 function showInputTitle(): boolean {
   // 抽選対象が入力されていれば表示ON
-  return data.value.inputData.text !== "";
+  return data.value.contentsData.text !== "";
 }
 
 function showInputDescription(): boolean {
   // タイトルが入力されていれば表示ON
-  return data.value.inputData.title !== "";
+  return data.value.contentsData.title !== "";
 }
 </script>
 
@@ -120,7 +120,7 @@ function showInputDescription(): boolean {
       <FlexTextarea
         class="w-100"
         @input="onInputText"
-        :initText="data.inputData.text"
+        :initText="data.contentsData.text"
         :placeholder="INPUT_TEXT_PLACEHOLDER_TEXT"
         :disabled="!editable"
         :minHeightPx="120"
@@ -145,7 +145,7 @@ function showInputDescription(): boolean {
         <div class="input-group">
           <span class="input-group-text">くじ引き名</span>
           <input
-            v-model="data.inputData.title"
+            v-model="data.contentsData.title"
             class="form-control"
             :placeholder="editable ? '名前をつけると別のくじ引きも作成できます' : ''"
             :disabled="!editable"
@@ -156,7 +156,7 @@ function showInputDescription(): boolean {
         <FlexTextarea
           class="w-100"
           @input="onInputDescription"
-          :initText="data.inputData.description"
+          :initText="data.contentsData.description"
           :placeholder="editable ? `説明をつけるとこのくじ引きをよりわかりやすくできます\n未入力でも問題ありません` : ''"
           :disabled="!editable"
           :minHeightPx="90"

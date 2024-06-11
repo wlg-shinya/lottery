@@ -1,4 +1,4 @@
-export interface LotteryUserInputData {
+export interface LotteryContentsData {
   text: string;
   title: string;
   description: string;
@@ -6,7 +6,7 @@ export interface LotteryUserInputData {
   mine: boolean;
 }
 
-export const defaultLotteryUserInputData: LotteryUserInputData = {
+export const defaultLotteryContentsData: LotteryContentsData = {
   text: "",
   title: "",
   description: "",
@@ -27,12 +27,12 @@ export const defaultLotteryResultData: LotteryResultData = {
 };
 
 export interface LotteryData {
-  inputData: LotteryUserInputData;
+  contentsData: LotteryContentsData;
   resultData: LotteryResultData;
 }
 
 export const defaultLotteryData: LotteryData = {
-  inputData: structuredClone(defaultLotteryUserInputData),
+  contentsData: structuredClone(defaultLotteryContentsData),
   resultData: structuredClone(defaultLotteryResultData),
 };
 
@@ -54,7 +54,7 @@ export const defaultLotteryTopData: LotteryTopData = {
   listData: structuredClone(defaultLotteryListData),
 };
 
-export interface LotteryPublicData extends LotteryUserInputData {
+export interface LotteryPublicData extends LotteryContentsData {
   user_name: string;
   pulled_count: number;
   // TODO: ほかのユーザーに抽選された回数

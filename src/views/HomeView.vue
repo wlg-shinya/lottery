@@ -3,7 +3,7 @@ import { ref, watch, computed } from "vue";
 import {
   type LotteryTopData,
   type LotteryData,
-  type LotteryUserInputData,
+  type LotteryContentsData,
   defaultLotteryTopData,
   defaultLotteryListData,
   defaultLotteryData,
@@ -46,10 +46,10 @@ watch(
 const selectedLotteryData = ref<LotteryData | null>(null);
 
 const reverseLotteryData = computed((): LotteryData[] => lotteryTopData.value.listData.list.slice().reverse());
-const localLotteryData = computed((): LotteryData[] => reverseLotteryData.value.filter((x) => x.inputData.id === -1));
-const serverSavedLotteryData = computed((): LotteryData[] => reverseLotteryData.value.filter((x) => x.inputData.id !== -1));
-const serverSavedMyLotteryData = computed((): LotteryData[] => serverSavedLotteryData.value.filter((x) => x.inputData.mine));
-const pullLotteryData = computed((): LotteryData[] => serverSavedLotteryData.value.filter((x) => !x.inputData.mine));
+const localLotteryData = computed((): LotteryData[] => reverseLotteryData.value.filter((x) => x.contentsData.id === -1));
+const serverSavedLotteryData = computed((): LotteryData[] => reverseLotteryData.value.filter((x) => x.contentsData.id !== -1));
+const serverSavedMyLotteryData = computed((): LotteryData[] => serverSavedLotteryData.value.filter((x) => x.contentsData.mine));
+const pullLotteryData = computed((): LotteryData[] => serverSavedLotteryData.value.filter((x) => !x.contentsData.mine));
 
 async function onStart() {
   await LocalStorageLottery.setup();
@@ -104,7 +104,7 @@ function onDeleteLotteryList(data: LotteryData) {
 
 function onChangeLottery(data: LotteryData) {
   if (selectedLotteryData.value) {
-    selectedLotteryData.value.inputData = data.inputData;
+    selectedLotteryData.value.contentsData = data.contentsData;
     selectedLotteryData.value.resultData = data.resultData;
   }
 }
@@ -132,7 +132,7 @@ async function onDownload() {
 function showLocalLotteryList(): boolean {
   // ローカルデータにタイトルを入力したか、ローカルデータが一つよりも多くある場合は表示ON
   return (
-    (localLotteryData.value.length > 0 && localLotteryData.value[0].inputData.title !== "") ||
+    (localLotteryData.value.length > 0 && localLotteryData.value[0].contentsData.title !== "") ||
     localLotteryData.value.length > 1 ||
     showServerSavedMyLotteryList()
   );
@@ -177,7 +177,7 @@ async function uploadData(accessToken: string) {
     await DefaultApiClient.readMyLotteriesApiReadMyLotteriesGet(accessToken)
       .then(async (response) => {
         const serverIds = response.data.map((x) => x.id);
-        const localIds = lotteryTopData.value.listData.list.map((x) => x.inputData.id);
+        const localIds = lotteryTopData.value.listData.list.map((x) => x.contentsData.id);
         const deletedIds = serverIds.filter((id) => !localIds.some((x) => x === id));
         for (const id of deletedIds) {
           await DefaultApiClient.deleteLotteryApiDeleteLotteryDelete(id, { access_token: accessToken })
@@ -192,7 +192,7 @@ async function uploadData(accessToken: string) {
       });
 
     // ローカル側にあるほかの人が作成したデータのIDリストをアップロード
-    const pullIds = pullLotteryData.value.map((x) => x.inputData.id);
+    const pullIds = pullLotteryData.value.map((x) => x.contentsData.id);
     if (pullIds.length > 0) {
       await DefaultApiClient.updateUserPullLotteryIdsApiUpdateUserPullLotteryIdsPut(accessToken, pullIds)
         .then(() => (uploaded = true))
@@ -203,29 +203,29 @@ async function uploadData(accessToken: string) {
 
     // ローカル側をサーバー側にすべてアップロード
     for (const list of lotteryTopData.value.listData.list) {
-      if (list.inputData.text) {
+      if (list.contentsData.text) {
         // 抽選対象が入力されていたら保存する
         const data: LotteryCreate = {
           access_token: accessToken,
-          text: list.inputData.text,
-          title: list.inputData.title,
-          description: list.inputData.description,
+          text: list.contentsData.text,
+          title: list.contentsData.title,
+          description: list.contentsData.description,
         };
-        if (list.inputData.id < 0) {
+        if (list.contentsData.id < 0) {
           // IDが未定なら新規追加
           await DefaultApiClient.createLotteryApiCreateLotteryPost(data)
             .then((response2) => {
               // サーバー保存の結果得られたIDで更新することで、ローカル作成状態でないことにする
-              list.inputData.id = response2.data.id;
+              list.contentsData.id = response2.data.id;
               uploaded = true;
             })
             .catch((error) => {
               throw error;
             });
         } else {
-          if (list.inputData.mine) {
+          if (list.contentsData.mine) {
             // 自分が作成したデータなので更新
-            await DefaultApiClient.updateLotteryApiUpdateLotteryPut(list.inputData.id, data)
+            await DefaultApiClient.updateLotteryApiUpdateLotteryPut(list.contentsData.id, data)
               .then(() => (uploaded = true))
               .catch((error) => {
                 throw error;
@@ -249,15 +249,15 @@ async function uploadData(accessToken: string) {
 
 async function downloadData(accessToken: string, showWarning: boolean) {
   let downloaded = false;
-  const createOrUpdateLotteryUserInputData = (newInputData: LotteryUserInputData) => {
-    const oldData = lotteryTopData.value.listData.list.find((x) => x.inputData.id === newInputData.id);
+  const createOrUpdateLotteryContentsData = (contents: LotteryContentsData) => {
+    const oldData = lotteryTopData.value.listData.list.find((x) => x.contentsData.id === contents.id);
     if (oldData) {
       // ローカルにデータがすでにある場合は内容を置き換え
-      oldData.inputData = newInputData;
+      oldData.contentsData = contents;
     } else {
       // ローカルにデータがない場合は新規追加
       lotteryTopData.value.listData.list.push({
-        inputData: newInputData,
+        contentsData: contents,
         resultData: structuredClone(defaultLotteryResultData),
       });
     }
@@ -276,14 +276,14 @@ async function downloadData(accessToken: string, showWarning: boolean) {
 
           // データ作成 or 更新
           for (const lottery of response.data) {
-            const newInputData: LotteryUserInputData = {
+            const newData: LotteryContentsData = {
               id: lottery.id,
               text: lottery.text ?? "",
               title: lottery.title ?? "",
               description: lottery.description ?? "",
               mine: true, // 自分のデータだけ取得してきているので true 固定
             };
-            createOrUpdateLotteryUserInputData(newInputData);
+            createOrUpdateLotteryContentsData(newData);
           }
         }
       })
@@ -303,14 +303,14 @@ async function downloadData(accessToken: string, showWarning: boolean) {
               .catch((error) => {
                 throw error;
               });
-            const newInputData: LotteryUserInputData = {
+            const newData: LotteryContentsData = {
               id: pullLottery.id,
               text: pullLottery.text ?? "",
               title: pullLottery.title ?? "",
               description: pullLottery.description ?? "",
               mine: false, // 自分のものではないので false 固定
             };
-            createOrUpdateLotteryUserInputData(newInputData);
+            createOrUpdateLotteryContentsData(newData);
           }
         }
       })

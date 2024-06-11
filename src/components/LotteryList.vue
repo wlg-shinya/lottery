@@ -62,7 +62,7 @@ function onClickDeleteButton(data: LotteryData) {
           </td>
         </tr>
         <tr v-for="(d, index) in listData.list" :key="index" @click="onClickData(d)">
-          <td class="col-auto">{{ d.inputData.title }}</td>
+          <td class="col-auto">{{ d.contentsData.title }}</td>
           <td class="col-1">
             <button @click.stop="onClickDeleteButton(d)" class="btn btn-danger"><span class="mdi mdi-trash-can" /></button>
           </td>

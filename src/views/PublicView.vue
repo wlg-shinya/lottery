@@ -3,7 +3,7 @@ import { ref, computed } from "vue";
 import { DefaultApiClient } from "../openapi";
 import { getErrorMessage } from "../error";
 import LocalStorageLottery from "../local-storage-lottery";
-import { LotteryUserInputData, LotteryPublicData, defaultLotteryResultData } from "../lottery-data";
+import { LotteryContentsData, LotteryPublicData, defaultLotteryResultData } from "../lottery-data";
 import router from "../router";
 import Message from "../components/Message.vue";
 import BackButton from "../components/BackButton.vue";
@@ -36,12 +36,12 @@ async function onClickData(data: LotteryPublicData) {
     if (mine) return;
 
     // 選択したデータを更新 or 新規追加する
-    const pullData = lotteryTopData.listData.list.find((x) => x.inputData.id === data.id);
+    const pullData = lotteryTopData.listData.list.find((x) => x.contentsData.id === data.id);
     if (pullData) {
-      pullData.inputData = data as LotteryUserInputData;
+      pullData.contentsData = data as LotteryContentsData;
     } else {
       lotteryTopData.listData.list.push({
-        inputData: data as LotteryUserInputData,
+        contentsData: data as LotteryContentsData,
         resultData: structuredClone(defaultLotteryResultData),
       });
     }
