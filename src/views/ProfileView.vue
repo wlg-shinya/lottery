@@ -1,15 +1,67 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
 import { DefaultApiClient } from "../openapi";
+import LocalStorageLottery from "../local-storage-lottery";
+import { getErrorMessage } from "../error";
 import BackButton from "../components/BackButton.vue";
+import Message from "../components/Message.vue";
 
+const message = ref();
 const oldPassword = ref("");
 const newPassword = ref("");
 const showOldPassword = ref(false);
 const showNewPassword = ref(false);
 
+watchEffect(async () => {
+  if (oldPassword.value && !newPassword.value) {
+    message.value.set("新しいパスワードも入力する必要があります", "text-danger");
+  } else if (!oldPassword.value && newPassword.value) {
+    message.value.set("現在のパスワードも入力する必要があります", "text-danger");
+  } else if (oldPassword.value && newPassword.value) {
+    if (oldPassword.value === newPassword.value) {
+      message.value.set("新しいパスワードは現在のパスワードと異なる必要があります", "text-danger");
+    } else {
+      message.value.set("", "");
+    }
+  }
+});
+
+async function onClickSubmitButton() {
+  try {
+    // ローカルストレージからデータを得る
+    const lotteryTopData = await LocalStorageLottery.load()
+      .then(async (result) => result)
+      .catch((error) => {
+        throw error;
+      });
+    if (!lotteryTopData.accessToken) return;
+
+    // パスワード変更をして成功したら新しいアクセストークンをローカル保存する
+    await DefaultApiClient.changePasswordApiChangePasswordPut({
+      access_token: lotteryTopData.accessToken,
+      old_password: oldPassword.value,
+      new_password: newPassword.value,
+    })
+      .then(async (response) => {
+        lotteryTopData.accessToken = response.data.access_token;
+        await LocalStorageLottery.save(lotteryTopData)
+          .then(() => {
+            message.value.set("パスワードを更新しました", "text-success");
+          })
+          .catch((error) => {
+            throw error;
+          });
+      })
+      .catch((error) => {
+        throw error;
+      });
+  } catch (error) {
+    message.value.set(getErrorMessage(error), "text-danger");
+  }
+}
+
 function disabledSubmitButton(): boolean {
-  return !oldPassword.value || !newPassword.value || oldPassword.value !== newPassword.value;
+  return !oldPassword.value || !newPassword.value || oldPassword.value === newPassword.value;
 }
 </script>
 
@@ -32,7 +84,8 @@ function disabledSubmitButton(): boolean {
             <span class="mdi mdi-eye" />
           </button>
         </div>
-        <button class="btn btn-primary" :disabled="disabledSubmitButton()">変更</button>
+        <button @click="onClickSubmitButton" class="btn btn-primary" :disabled="disabledSubmitButton()">変更</button>
+        <Message ref="message" />
       </div>
     </div>
   </div>

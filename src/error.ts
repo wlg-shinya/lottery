@@ -7,7 +7,9 @@ export const getErrorMessage = (error: any): string => {
     } else {
       return error.message;
     }
-  } else {
+  } else if (error instanceof Error) {
     return error.message;
+  } else {
+    return error;
   }
 };
