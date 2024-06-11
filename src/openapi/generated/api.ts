@@ -89,7 +89,7 @@ export interface Lotteries {
      * @type {number}
      * @memberof Lotteries
      */
-    'used_count'?: number;
+    'used_count'?: number | null;
 }
 /**
  * 
