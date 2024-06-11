@@ -92,7 +92,6 @@ async def update_lottery(
     original.description = body.description
     return await _update_model(db=db, model=original)
 
-
 async def delete_lottery(
     db: AsyncSession, original: Model
 ) -> None:
@@ -105,3 +104,10 @@ async def is_lottery_id_mine(
     model = await read_lottery(db, id)
     tokens_model = await tokens.read_token(db, access_token)
     return tokens_model.user_id == model.user_id
+
+async def increment_lottery_used_count(
+    db: AsyncSession, id: int
+) -> Model:
+    model = await read_lottery(db, id)
+    model.used_count += 1
+    return await _update_model(db=db, model=model)
