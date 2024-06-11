@@ -22,7 +22,7 @@ async def read_my_lotteries(access_token: str, db: AsyncSession = Depends(db)):
     await tokens.validate_token(db=db, access_token=access_token)
     return await crud.read_my_lotteries(db=db, access_token=access_token)
 
-@router.get("/api/read_lottery", response_model=List[schema.Lotteries])
+@router.get("/api/read_lottery", response_model=schema.Lotteries)
 async def read_lottery(id: int, db: AsyncSession = Depends(db)):
     return await crud.read_lottery(db=db, id=id)
 

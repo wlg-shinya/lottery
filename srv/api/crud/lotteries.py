@@ -36,9 +36,9 @@ async def read_my_lotteries(
 async def read_lottery(
     db: AsyncSession, id: int
 ) -> Model:
-    model = await read_lottery(db, id)
+    model = await db.get(Model, id)
     _read_lottery_not_found(model)
-    return await db.get(Model, id)
+    return model
 
 async def read_my_lottery(
     db: AsyncSession, id: int, access_token: str
