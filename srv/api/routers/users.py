@@ -16,6 +16,10 @@ async def read_users(db: AsyncSession = Depends(db)):
 async def read_user(id: int, db: AsyncSession = Depends(db)):
     return await crud.read_user(db=db, id=id)
 
+@router.get("/api/read_user_by_access_token", response_model=schema.Users)
+async def read_user_by_access_token(access_token: str, db: AsyncSession = Depends(db)):
+    return await crud.read_user_by_access_token(db=db, access_token=access_token)
+
 @router.put("/api/update_user", response_model=schema.UserUpdateResponse)
 async def update_user(body: schema.UserUpdate, db: AsyncSession = Depends(db)):
     await tokens.validate_token(db=db, access_token=body.access_token)
