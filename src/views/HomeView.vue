@@ -377,7 +377,7 @@ onStart();
             <LotteryList
               v-show="showPullLotteryList()"
               @select="onSelectLotteryList"
-              @delete=""
+              @delete="onDeleteLotteryList"
               :list="pullLotteryData"
               header="ほかの人が作成"
               :addable="false"
