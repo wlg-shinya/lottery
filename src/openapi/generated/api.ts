@@ -175,6 +175,44 @@ export interface LotteryDelete {
 /**
  * 
  * @export
+ * @interface UserChangePassword
+ */
+export interface UserChangePassword {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserChangePassword
+     */
+    'access_token': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserChangePassword
+     */
+    'old_password': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserChangePassword
+     */
+    'new_password': string;
+}
+/**
+ * 
+ * @export
+ * @interface UserChangePasswordResponse
+ */
+export interface UserChangePasswordResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserChangePasswordResponse
+     */
+    'access_token': string;
+}
+/**
+ * 
+ * @export
  * @interface UserDelete
  */
 export interface UserDelete {
@@ -349,6 +387,42 @@ export interface ValidationErrorLocInner {
  */
 export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
+        /**
+         * 
+         * @summary Change Password
+         * @param {UserChangePassword} userChangePassword 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        changePasswordApiChangePasswordPut: async (userChangePassword: UserChangePassword, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userChangePassword' is not null or undefined
+            assertParamExists('changePasswordApiChangePasswordPut', 'userChangePassword', userChangePassword)
+            const localVarPath = `/api/change_password`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(userChangePassword, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
         /**
          * 
          * @summary Create Lottery
@@ -1040,6 +1114,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary Change Password
+         * @param {UserChangePassword} userChangePassword 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async changePasswordApiChangePasswordPut(userChangePassword: UserChangePassword, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserChangePasswordResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.changePasswordApiChangePasswordPut(userChangePassword, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.changePasswordApiChangePasswordPut']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Create Lottery
          * @param {LotteryCreate} lotteryCreate 
          * @param {*} [options] Override http request option.
@@ -1287,6 +1374,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
     return {
         /**
          * 
+         * @summary Change Password
+         * @param {UserChangePassword} userChangePassword 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        changePasswordApiChangePasswordPut(userChangePassword: UserChangePassword, options?: any): AxiosPromise<UserChangePasswordResponse> {
+            return localVarFp.changePasswordApiChangePasswordPut(userChangePassword, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Create Lottery
          * @param {LotteryCreate} lotteryCreate 
          * @param {*} [options] Override http request option.
@@ -1478,6 +1575,18 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
  * @extends {BaseAPI}
  */
 export class DefaultApi extends BaseAPI {
+    /**
+     * 
+     * @summary Change Password
+     * @param {UserChangePassword} userChangePassword 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public changePasswordApiChangePasswordPut(userChangePassword: UserChangePassword, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).changePasswordApiChangePasswordPut(userChangePassword, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary Create Lottery
