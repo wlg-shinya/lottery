@@ -20,6 +20,8 @@ async function onClickSigninButton(account: string, password: string) {
   })
     .then(async (response) => {
       emit("signin", response.data.access_token);
+      // これまでのメッセージをクリアしておく
+      accountPasswordInput.value.setMessage("", "");
     })
     .catch((error: Error) => {
       accountPasswordInput.value.setMessage(getErrorMessage(error), "text-danger");
