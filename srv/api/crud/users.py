@@ -8,12 +8,6 @@ from api.schemas.tokens import TokenCreate
 import api.schemas.users as schema
 import api.crud.tokens as tokens
 
-async def _update_model(db: AsyncSession, model: Model) -> Model:
-    db.add(model)
-    await db.commit()
-    await db.refresh(model)
-    return model
-
 async def create_user(
     db: AsyncSession, body: schema.UserCreate
 ) -> Model:
@@ -79,14 +73,7 @@ async def signin(
     users = row.tuple()[0]
     
     # トークン新規作成/更新
-    tokens_body = TokenCreate(access_token=access_token, user_id=users.id)
-    tokens_model = await tokens.read_token(db, access_token)
-    if tokens_model != None:
-        # すでに存在しているならトークン有効期限を更新
-        await tokens.update_token(db, tokens_body, tokens_model)
-    else:
-        # 存在していないならトークン新規作成
-        await tokens.create_token(db, tokens_body)
+    await _create_or_update_token(db, access_token, users.id)
 
     return schema.UserSigninResponse(access_token=access_token)
 
@@ -105,15 +92,32 @@ async def change_password(
             account_name=old_model.account_name,
             identification=body.new_password,
             pull_lottery_ids=old_model.pull_lottery_ids,
+            access_token=body.access_token
             ), 
         old_model
         )
-    # トークン新規作成
-    tokens_body = TokenCreate(access_token=new_model.identification, user_id=new_model.id)
-    await tokens.create_token(db, tokens_body)
+    new_access_token = new_model.identification
+    # トークン新規作成/更新
+    await _create_or_update_token(db, new_access_token, new_model.id)
     
-    return schema.UserChangePasswordResponse(access_token=new_model.identification)
+    return schema.UserChangePasswordResponse(access_token=new_access_token)
 
-def hash(account_name: str, identification: str):
+def hash(account_name: str, identification: str) -> str:
     src = account_name + identification # TODO:salt/pepperの検討
     return sha256(src.encode("utf-8")).hexdigest()
+
+async def _update_model(db: AsyncSession, model: Model) -> Model:
+    db.add(model)
+    await db.commit()
+    await db.refresh(model)
+    return model
+
+async def _create_or_update_token(db: AsyncSession, access_token: str, id: int) -> None:
+    tokens_body = TokenCreate(access_token=access_token, user_id=id)
+    tokens_model = await tokens.read_token(db, access_token)
+    if tokens_model != None:
+        # すでに存在しているならトークン有効期限を更新
+        await tokens.update_token(db, tokens_body, tokens_model)
+    else:
+        # 存在していないならトークン新規作成
+        await tokens.create_token(db, tokens_body)

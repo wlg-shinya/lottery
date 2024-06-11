@@ -6,12 +6,6 @@ from api.models import Lotteries as Model, Tokens as TokensModel
 import api.schemas.lotteries as schema
 import api.crud.tokens as tokens
 
-async def _update_model(db: AsyncSession, model: Model) -> Model:
-    db.add(model)
-    await db.commit()
-    await db.refresh(model)
-    return model
-
 async def create_lottery(
     db: AsyncSession, body: schema.LotteryCreate
 ) -> Model:
@@ -74,16 +68,6 @@ async def read_my_lottery(
     _read_lottery_not_match_user_id(model, tokens_model)
     return model
 
-def _read_lottery_not_found(model: Model | None):
-    # データが見つからない
-    if model is None:
-        raise HTTPException(status_code=404, detail=f"Not found id({id}) in {Model.__tablename__}")
-
-def _read_lottery_not_match_user_id(model: Model, tokens_model: TokensModel):
-    # アクセストークンと今回扱うデータの所有者が一致しない
-    if tokens_model.user_id != model.user_id:
-        raise HTTPException(status_code=400, detail=f"Bad Request not match user_id in {Model.__tablename__}")
-
 async def update_lottery(
     db: AsyncSession, body: schema.LotteryCreate, original: Model
 ) -> Model:
@@ -114,3 +98,19 @@ async def increment_lottery_used_count(
     else:
         model.used_count += 1
     return await _update_model(db=db, model=model)
+
+async def _update_model(db: AsyncSession, model: Model) -> Model:
+    db.add(model)
+    await db.commit()
+    await db.refresh(model)
+    return model
+
+def _read_lottery_not_found(model: Model | None):
+    # データが見つからない
+    if model is None:
+        raise HTTPException(status_code=404, detail=f"Not found id({id}) in {Model.__tablename__}")
+
+def _read_lottery_not_match_user_id(model: Model, tokens_model: TokensModel):
+    # アクセストークンと今回扱うデータの所有者が一致しない
+    if tokens_model.user_id != model.user_id:
+        raise HTTPException(status_code=400, detail=f"Bad Request not match user_id in {Model.__tablename__}")
