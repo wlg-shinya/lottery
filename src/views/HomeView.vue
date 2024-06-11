@@ -13,8 +13,7 @@ import LocalStorageLottery from "../local-storage-lottery";
 import { DefaultApiClient, LotteryCreate } from "../openapi";
 import { getErrorMessage } from "../error";
 import Modal from "../components/Modal.vue";
-import Signin from "../components/Signin.vue";
-import Signout from "../components/Signout.vue";
+import Sign from "../components/Sign.vue";
 import Lottery from "../components/Lottery.vue";
 import LotteryList from "../components/LotteryList.vue";
 import LotteryHistoryList from "../components/LotteryHistoryList.vue";
@@ -26,7 +25,6 @@ import GoPublicView from "../components/GoPublicView.vue";
 
 const modal = ref();
 const uploadDownload = ref();
-const signin = ref();
 
 const lotteryTopData = ref(structuredClone(defaultLotteryTopData));
 watch(
@@ -78,7 +76,6 @@ function onSignout() {
   // ローカルデータが消えるのでユーザー確認してからサインアウト
   if (lotteryTopData.value.accessToken) {
     modal.value.show("注意", "サーバーに保存していないデータはすべて消えます。よろしいですか？", "OK", async () => {
-      signin.value.clear();
       doSignout();
     });
   }
@@ -354,8 +351,7 @@ onStart();
   <div>
     <Modal ref="modal" />
     <div class="d-flex flex-column align-items-center">
-      <Signin ref="signin" @signin="onSignin" />
-      <Signout @signout="onSignout" />
+      <Sign @signin="onSignin" @signout="onSignout" />
     </div>
     <hr />
     <table class="table table-borderless">

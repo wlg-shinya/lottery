@@ -4,12 +4,12 @@ import router from "../router";
 import { DefaultApiClient } from "../openapi";
 import { getErrorMessage } from "../error";
 import AccountPasswordInput from "./AccountPasswordInput.vue";
+import Signout from "../components/Signout.vue";
 
 const emit = defineEmits<{
   signin: [accessToken: string];
+  signout: [];
 }>();
-
-defineExpose({ clear });
 
 const accountPasswordInput = ref();
 
@@ -32,7 +32,9 @@ function onClickSignupButton() {
   router.push("/signup");
 }
 
-function clear() {
+async function onSignout() {
+  emit("signout");
+  // 入力されていた情報をクリア
   accountPasswordInput.value.clear();
 }
 </script>
@@ -42,6 +44,7 @@ function clear() {
     <div class="d-flex flex-column">
       <AccountPasswordInput ref="accountPasswordInput" @click="onClickSigninButton" buttonClass="btn-outline-primary" buttonText="サインイン" />
       <button @click="onClickSignupButton" class="btn btn-link">作ったくじ引きをサーバーに保存したい？ではアカウントを作りましょう</button>
+      <Signout @signout="onSignout" />
     </div>
   </div>
 </template>
