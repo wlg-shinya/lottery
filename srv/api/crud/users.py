@@ -38,10 +38,11 @@ async def read_user_by_access_token(
     return await read_user(db, tokens_model.user_id)
 
 async def update_user(
-    db: AsyncSession, body: schema.UserCreate, original: Model
+    db: AsyncSession, body: schema.UserUpdate, original: Model
 ) -> Model:
     original.account_name = body.account_name
     original.identification = hash(body.account_name, body.identification)
+    original.pull_lottery_ids = body.pull_lottery_ids
     db.add(original)
     await db.commit()
     await db.refresh(original)
