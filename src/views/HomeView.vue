@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
 import {
+  type LotteryTopData,
   type LotteryData,
   type LotteryUserInputData,
   defaultLotteryTopData,
@@ -25,15 +26,23 @@ const uploadDownload = ref();
 const signin = ref();
 
 const lotteryTopData = ref(structuredClone(defaultLotteryTopData));
-// データに変化あり次第ローカルストレージに保存
 watch(
-  () => lotteryTopData,
-  () => LocalStorageLottery.save(lotteryTopData.value),
+  lotteryTopData,
+  (newValue: LotteryTopData) => {
+    // データに変化あり次第ローカルストレージに保存
+    LocalStorageLottery.save(newValue);
+
+    // 以前選択していたデータがなくなっていたら末尾を選択する
+    if (!newValue.listData.list.some((x) => x === selectedLotteryData.value)) {
+      const lastIndex = Math.max(newValue.listData.list.length - 1, 0);
+      selectedLotteryData.value = newValue.listData.list[lastIndex];
+    }
+  },
   { deep: true }
 );
 
 // 現在選択中のデータ
-// selectedLotteryData.value への直代入は参照先の変更（＝選択変更）であり値は変更されない点に注意
+// selectedLotteryData.value への直代入は参照先の変更（＝選択変更）中身の変更はプロパティ経由にする必要がある
 const selectedLotteryData = ref<LotteryData | null>(null);
 
 const reverseLotteryData = computed((): LotteryData[] => lotteryTopData.value.listData.list.slice().reverse());
@@ -46,8 +55,6 @@ async function onStart() {
   await LocalStorageLottery.setup();
   await LocalStorageLottery.load().then((result) => {
     lotteryTopData.value = result;
-    // ローカルストレージからデータを得られたら先頭要素を選択するようにする
-    resetSelectedLotteryData();
   });
 }
 
@@ -85,10 +92,6 @@ function onAddNewLotteryList() {
 }
 
 function onDeleteLotteryList(data: LotteryData) {
-  // MEMO:選択状態リセットを2段階にする理由
-  // 削除結果を反映すると選択している参照オブジェクトがいつ参照できなくなるかは不定なので削除前に比較する必要がある
-  // しかし選択状態のリセットは削除結果を反映した後のデータで行いたい。このジレンマの解消のため
-  const requierdResetSelectedLotteryData = selectedLotteryData.value === data;
   // 指定されたデータを厳密な参照値比較によって特定して削除後の一覧を作成する
   const deletedList = lotteryTopData.value.listData.list.filter((x) => x !== data);
   // 削除の結果、データが空になるならデフォルトデータを入れておく
@@ -97,10 +100,6 @@ function onDeleteLotteryList(data: LotteryData) {
   }
   // 削除結果を反映
   lotteryTopData.value.listData.list = deletedList;
-  // 削除結果反映後のデータで選択状態をリセット
-  if (requierdResetSelectedLotteryData) {
-    resetSelectedLotteryData();
-  }
 }
 
 function onChangeLottery(data: LotteryData) {
@@ -245,6 +244,7 @@ async function downloadData(accessToken: string, showWarning: boolean) {
             lotteryTopData.value.listData.list = [];
           }
 
+          // ダウンロードしてきたデータをローカルに反映させる
           const currentInputData: LotteryUserInputData = {
             id: lottery.id,
             text: lottery.text ?? "",
@@ -264,9 +264,6 @@ async function downloadData(accessToken: string, showWarning: boolean) {
             });
           }
         }
-
-        // 選択状態をリセット
-        resetSelectedLotteryData();
 
         // 正常終了
         uploadDownload.value.setMessage("サーバーから読み込みました", "text-success");
@@ -291,12 +288,6 @@ function doSignout() {
   lotteryTopData.value.accessToken = "";
   // ローカルデータを初期化
   lotteryTopData.value.listData = structuredClone(defaultLotteryListData);
-  // 選択状態をリセット
-  resetSelectedLotteryData();
-}
-
-function resetSelectedLotteryData() {
-  selectedLotteryData.value = lotteryTopData.value.listData.list[0];
 }
 
 onStart();
