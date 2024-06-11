@@ -1,5 +1,5 @@
 from sqlalchemy import Column
-from sqlalchemy.dialects.postgresql import INTEGER, TIMESTAMP, VARCHAR
+from sqlalchemy.dialects.postgresql import INTEGER, TIMESTAMP, VARCHAR, ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql.functions import current_timestamp
 
@@ -25,6 +25,7 @@ class Users(BaseModel):
 
     account_name = Column(VARCHAR(24), nullable=False, unique=True)
     identification = Column(VARCHAR(64), nullable=False)
+    pull_lottery_ids = Column(ARRAY(INTEGER))
 
 class Tokens(BaseModel):
     __tablename__ = "tokens"
