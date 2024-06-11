@@ -282,6 +282,7 @@ async function downloadData(accessToken: string, showWarning: boolean) {
               title: lottery.title ?? "",
               description: lottery.description ?? "",
               mine: true, // 自分のデータだけ取得してきているので true 固定
+              used_count: lottery.used_count ?? 0,
             };
             createOrUpdateLotteryContentsData(newData);
           }
@@ -309,6 +310,7 @@ async function downloadData(accessToken: string, showWarning: boolean) {
               title: pullLottery.title ?? "",
               description: pullLottery.description ?? "",
               mine: false, // 自分のものではないので false 固定
+              used_count: pullLottery.used_count ?? 0,
             };
             createOrUpdateLotteryContentsData(newData);
           }

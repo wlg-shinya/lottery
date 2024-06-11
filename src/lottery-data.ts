@@ -4,6 +4,7 @@ export interface LotteryContentsData {
   description: string;
   id: number;
   mine: boolean;
+  used_count: number;
 }
 
 export const defaultLotteryContentsData: LotteryContentsData = {
@@ -12,6 +13,7 @@ export const defaultLotteryContentsData: LotteryContentsData = {
   description: "",
   id: -1,
   mine: true,
+  used_count: 0,
 };
 
 export interface LotteryResultData {
