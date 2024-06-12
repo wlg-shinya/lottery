@@ -125,7 +125,7 @@ async function updateAllData() {
         pulledCount: pulledCount,
         filteredString: "",
       };
-      // タイトルと説明文の大文字小文字区別なしをフィルター対象文字列とする
+      // タイトルと説明文の大文字小文字区別なしを検索フィルター対象文字列とする
       data.filteredString = `${data.title.toLocaleLowerCase()}\n${data.description?.toLocaleLowerCase()}`;
       allData.value.push(data);
     }
@@ -155,7 +155,7 @@ onStart();
         </button>
         <div class="input-group">
           <span class="input-group-text"><span class="mdi mdi-magnify mdi-36px" /></span>
-          <input v-model="filter" class="form-control text-center fs-3" />
+          <input v-model="filter" class="form-control fs-3" />
         </div>
       </div>
       <table class="table table-striped table-hover">

@@ -59,5 +59,5 @@ export const defaultLotteryTopData: LotteryTopData = {
 export interface LotteryPublicData extends LotteryContentsData {
   username: string;
   pulledCount: number;
-  filteredString: string; // フィルター対象文字列
+  filteredString: string; // 検索フィルター対象文字列
 }
