@@ -1,6 +1,7 @@
 import os
 from functools import lru_cache
 from pydantic_settings import BaseSettings
+from zoneinfo import ZoneInfo
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,3 +21,6 @@ class Environment(BaseSettings):
 @lru_cache
 def env():
     return Environment()
+
+def default_timezone():
+    return ZoneInfo("Asia/Tokyo")

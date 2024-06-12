@@ -1,23 +1,21 @@
 from pydantic import BaseModel, Field
 from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo
 from api.schemas.common import IdBase, CreatedUpdatedAtBase, AccessTokenBase
-
-def default_timezone():
-    return ZoneInfo("Asia/Tokyo")
+from core.config import default_timezone
 
 def default_expire_at():
     return datetime.now(default_timezone()) + timedelta(days=3)
 
-class TokensBase(AccessTokenBase):
+class AccessTokensBase():
+    token: str = Field(desciption="アクセストークン")
     user_id: int = Field(desciption="ユーザーID")
     expire_at: datetime = Field(default_expire_at(), desciption="有効期限")
 
-class Tokens(BaseModel, IdBase, CreatedUpdatedAtBase, TokensBase):
+class AccessTokens(BaseModel, IdBase, CreatedUpdatedAtBase, AccessTokensBase):
     pass
 
-class TokenCreate(BaseModel, TokensBase):
+class AccessTokenCreate(BaseModel, AccessTokensBase):
     pass
 
-class TokenCreateResponse(BaseModel, IdBase):
+class AccessTokenCreateResponse(BaseModel, IdBase):
     pass

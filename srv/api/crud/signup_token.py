@@ -1,44 +1,40 @@
+from datetime import datetime
 from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from api.models import AccessTokens as Model
-from datetime import datetime
-from api.schemas.tokens import default_timezone
-import api.schemas.tokens as schema
+from core.config import default_timezone
+from api.models import SignupTokens as Model
+import api.schemas.signup_token as schema
 
 async def create_token(
-    db: AsyncSession, body: schema.TokenCreate
+    db: AsyncSession, body: schema.SignupTokenCreate
 ) -> Model:
     model = Model(**body.model_dump())
     return await _update_model(db=db, model=model)
 
 async def read_token(
-    db: AsyncSession, access_token: str
-) -> Model | None:
-    row = (await db.execute(select(Model).filter(Model.access_token == access_token))).first()
+    db: AsyncSession, token: str
+) -> Model:
+    row = (await db.execute(select(Model).filter(Model.token == token))).first()
     if row is None or len(row) == 0:
-        return None
+        raise HTTPException(status_code=401, detail=f"Unauthorized access token invalid.")
     else:
         return row.tuple()[0]
 
 async def validate_token(
-    db: AsyncSession, access_token: str
+    db: AsyncSession, token: str
 ) -> None:
-    tokens = await read_token(db=db, access_token=access_token)
-    # 存在しない
-    if tokens == None:
-        raise HTTPException(status_code=401, detail=f"Unauthorized access token invalid. Retry signin.")
+    tokens = await read_token(db=db, token=token)
     # 期限切れ
     if datetime.now(default_timezone()) > tokens.expire_at:
-        raise HTTPException(status_code=401, detail=f"Unauthorized access token expired. Retry signin.")
+        raise HTTPException(status_code=401, detail=f"Unauthorized access token expired.")
     # 検証正常通過
     pass
 
 async def update_token(
-    db: AsyncSession, body: schema.TokenCreate, original: Model
+    db: AsyncSession, body: schema.SignupTokenCreate, original: Model
 ) -> Model:
-    original.access_token = body.access_token
-    original.user_id = body.user_id
+    original.token = body.token
     original.expire_at = body.expire_at
     return await _update_model(db=db, model=original)
 
