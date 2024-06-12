@@ -211,9 +211,9 @@ async function uploadData(accessToken: string) {
         if (list.contentsData.id < 0) {
           // IDが未定なら新規追加
           await DefaultApiClient.createLotteryApiCreateLotteryPost(data)
-            .then((response2) => {
+            .then((response) => {
               // サーバー保存の結果得られたIDで更新することで、ローカル作成状態でないことにする
-              list.contentsData.id = response2.data.id;
+              list.contentsData.id = response.data.id;
               uploaded = true;
             })
             .catch((error) => {
