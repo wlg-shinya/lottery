@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
-from api.db import db
+from core.db import db
 import api.schemas.lotteries as schema
 import api.crud.lotteries as crud
 import api.crud.tokens as tokens
