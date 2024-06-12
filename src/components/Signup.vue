@@ -7,10 +7,10 @@ import Message from "./Message.vue";
 
 const message = ref();
 
-async function onClickSignupButton(email: string, accountName: string, password: string) {
+async function onClickSignupButton(email: string, userName: string, password: string) {
   await DefaultApiClient.signupStep1ApiSignupStep1Post({
     email: email,
-    account_name: accountName,
+    account_name: userName,
     identification: password,
   })
     .then(() => {
@@ -24,7 +24,7 @@ async function onClickSignupButton(email: string, accountName: string, password:
 
 <template>
   <div class="d-flex flex-column justify-content-center">
-    <AccountInput @click="onClickSignupButton" buttonClass="btn-primary" buttonText="新規登録" />
+    <AccountInput @click="onClickSignupButton" buttonClass="btn-primary" buttonText="新規登録" :hideUserName="false" />
     <Message ref="message" />
   </div>
 </template>

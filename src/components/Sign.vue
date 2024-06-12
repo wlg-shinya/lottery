@@ -34,10 +34,9 @@ watch(
 const message = ref();
 const username = ref("");
 
-async function onClickSigninButton(email: string, accountName: string, password: string) {
+async function onClickSigninButton(email: string, _userName: string, password: string) {
   await DefaultApiClient.signinApiSigninPost({
     email: email,
-    account_name: accountName,
     identification: password,
   })
     .then(async (response) => {
@@ -66,7 +65,7 @@ async function onSignout() {
 <template>
   <div class="d-flex flex-column justify-content-center">
     <div v-if="!props.accessToken">
-      <AccountInput @click="onClickSigninButton" buttonClass="btn-outline-primary" buttonText="サインイン" />
+      <AccountInput @click="onClickSigninButton" buttonClass="btn-outline-primary" buttonText="サインイン" :hideUserName="true" />
       <button @click="onClickSignupButton" class="btn btn-link p-0">作ったくじ引きをサーバーに保存したい？ではアカウントを作りましょう</button>
     </div>
     <div v-else>

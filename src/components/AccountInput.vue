@@ -3,17 +3,18 @@ import { ref, watchEffect } from "vue";
 import { VarcharMax } from "../openapi";
 import { PASSWORD_MAX_LENGTH } from "../constant";
 
-defineProps<{
+const props = defineProps<{
   buttonClass: string;
   buttonText: string;
+  hideUserName: boolean;
 }>();
 
 const emit = defineEmits<{
-  click: [email: string, accountName: string, password: string];
+  click: [email: string, userName: string, password: string];
 }>();
 
 const email = ref("");
-const accountName = ref("");
+const userName = ref("");
 const password = ref("");
 const showPassword = ref(false);
 
@@ -22,8 +23,8 @@ watchEffect(() => {
   if (email.value.length > VarcharMax.users_email) {
     email.value = email.value.slice(0, VarcharMax.users_email);
   }
-  if (accountName.value.length > VarcharMax.users_account_name) {
-    accountName.value = accountName.value.slice(0, VarcharMax.users_account_name);
+  if (userName.value.length > VarcharMax.users_account_name) {
+    userName.value = userName.value.slice(0, VarcharMax.users_account_name);
   }
   if (password.value.length > PASSWORD_MAX_LENGTH) {
     password.value = password.value.slice(0, PASSWORD_MAX_LENGTH);
@@ -31,7 +32,7 @@ watchEffect(() => {
 });
 
 function onClickSubmitButton() {
-  emit("click", email.value, accountName.value, password.value);
+  emit("click", email.value, userName.value, password.value);
 }
 
 function onClickShowPasswordButton() {
@@ -39,7 +40,8 @@ function onClickShowPasswordButton() {
 }
 
 function canClick(): boolean {
-  return email.value !== "" && accountName.value !== "" && password.value !== "";
+  const baseFlag = email.value !== "" && password.value !== "";
+  return props.hideUserName ? baseFlag : baseFlag && userName.value !== "";
 }
 </script>
 
@@ -50,9 +52,9 @@ function canClick(): boolean {
         <span class="input-group-text" style="width: 100px">Eメール</span>
         <input v-model="email" type="text" class="form-control" />
       </div>
-      <div class="input-group">
+      <div v-if="!hideUserName" class="input-group">
         <span class="input-group-text" style="width: 100px">ユーザー名</span>
-        <input v-model="accountName" type="text" class="form-control" />
+        <input v-model="userName" type="text" class="form-control" />
       </div>
       <div class="input-group">
         <span class="input-group-text" style="width: 100px">パスワード</span>
