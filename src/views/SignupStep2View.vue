@@ -17,12 +17,11 @@ async function onStart() {
     await DefaultApiClient.signupStep2ApiSignupStep2Post({
       signup_token: signupToken,
     })
-      .then(() => {
-        message.value.set("サインアップしました。ホームに戻ってサインインしてください", "text-success");
-      })
+      .then(() => {})
       .catch((error) => {
         throw error;
       });
+    message.value.set("サインアップしました。ホームに戻ってサインインしてください", "text-success");
   } catch (error) {
     message.value.set(getErrorMessage(error), "text-danger");
   }
