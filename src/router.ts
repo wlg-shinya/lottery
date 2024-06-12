@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "./views/HomeView.vue";
 import SignupView from "./views/SignupView.vue";
+import SignupStep2View from "./views/SignupStep2View.vue";
 import PublicView from "./views/PublicView.vue";
 import ProfileView from "./views/ProfileView.vue";
 
@@ -12,6 +13,10 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/signup",
     component: SignupView,
+  },
+  {
+    path: "/signup_step2",
+    component: SignupStep2View,
   },
   {
     path: "/public",

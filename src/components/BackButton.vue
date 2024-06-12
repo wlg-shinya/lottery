@@ -2,7 +2,7 @@
 import router from "../router";
 
 function onClickButton() {
-  router.go(-1);
+  router.push("/");
 }
 </script>
 
