@@ -15,6 +15,7 @@ async def create_user(
     db: AsyncSession, body: schema.UserCreate
 ) -> Model:
     model = Model(
+        email=body.email,
         account_name=body.account_name, 
         identification=access_token_hash(
             email=body.email, 
@@ -83,7 +84,7 @@ async def signup_step1(
             expire_at=signup_tokens_default_expire_at()
             ))
     # 認証用URL
-    return f"{env().frontend_url}/signup_step2/?signup_token={token}"
+    return f"{env().frontend_url}/#/signup_step2/?signup_token={token}"
 
 async def signup_step2(
     db: AsyncSession, body: schema.UserSignupStep2
