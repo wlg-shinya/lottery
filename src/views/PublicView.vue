@@ -35,9 +35,13 @@ const sortedShowData = computed((): LotteryPublicData[] => {
       return sortedShowDataByPulledCountDesc.value;
   }
 });
-const filteredSortedShowData = computed((): LotteryPublicData[] =>
-  sortedShowData.value.filter((x) => x.filteredString.search(filter.value.toLocaleLowerCase()) !== -1)
-);
+const filteredSortedShowData = computed((): LotteryPublicData[] => {
+  if (filter.value) {
+    return sortedShowData.value.filter((x) => x.filteredString.search(filter.value.toLocaleLowerCase()) !== -1);
+  } else {
+    return sortedShowData.value;
+  }
+});
 
 async function onStart() {
   await updateAllData();
