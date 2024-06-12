@@ -24,8 +24,9 @@ class Lotteries(BaseModel):
 class Users(BaseModel):
     __tablename__ = "users"
 
-    account_name = Column(VARCHAR(24), nullable=False, unique=True)
-    identification = Column(VARCHAR(64), nullable=False)
+    email = Column(VARCHAR(80), nullable=False, unique=True)
+    account_name = Column(VARCHAR(24), nullable=False)
+    identification = Column(VARCHAR(64), nullable=False, unique=True)
     pull_lottery_ids = Column(ARRAY(INTEGER), nullable=False)
 
 class Tokens(BaseModel):
