@@ -22,14 +22,14 @@ type SortType = "used" | "pull";
 const sortType = ref<SortType>("used");
 
 const showData = computed(() => allData.value.filter((x) => x.title));
-const sortedShowDataForUsed = computed(() => showData.value.slice().sort((a, b) => (a.usedCount < b.usedCount ? 1 : -1)));
-const sortedShowDataForPull = computed(() => showData.value.slice().sort((a, b) => (a.pulledCount < b.pulledCount ? 1 : -1)));
+const sortedShowDataByUsedCountDesc = computed(() => showData.value.slice().sort((a, b) => (a.usedCount < b.usedCount ? 1 : -1)));
+const sortedShowDataByPulledCountDesc = computed(() => showData.value.slice().sort((a, b) => (a.pulledCount < b.pulledCount ? 1 : -1)));
 const sortedShowData = computed(() => {
   switch (sortType.value) {
     case "used":
-      return sortedShowDataForUsed.value;
+      return sortedShowDataByUsedCountDesc.value;
     case "pull":
-      return sortedShowDataForPull.value;
+      return sortedShowDataByPulledCountDesc.value;
   }
 });
 
