@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { DefaultApiClient } from "../openapi";
+import { ref, watchEffect, computed } from "vue";
+import { DefaultApiClient, VarcharMax } from "../openapi";
 import { getErrorMessage } from "../error";
-import LocalStorageLottery from "../local-storage-lottery";
 import { LotteryContentsData, LotteryPublicData, defaultLotteryResultData } from "../lottery-data";
+import LocalStorageLottery from "../local-storage-lottery";
 import router from "../router";
 import Message from "../components/Message.vue";
 import BackButton from "../components/BackButton.vue";
@@ -12,6 +12,7 @@ import HighlightText from "../components/HighlightText.vue";
 
 const USED_MDI_CLASS = "mdi mdi-counter";
 const PULL_MDI_CLASS = "mdi mdi-download";
+const FILTER_MAX_LENGTH = Math.max(VarcharMax.lotteries_text, VarcharMax.lotteries_description);
 
 const message = ref();
 const allData = ref<LotteryPublicData[]>([]);
@@ -20,6 +21,13 @@ const filter = ref("");
 // ソートタイプ
 type SortType = "used" | "pull";
 const sortType = ref<SortType>("used");
+
+watchEffect(() => {
+  // テキスト入力の上限切りつめ
+  if (filter.value.length > FILTER_MAX_LENGTH) {
+    filter.value = filter.value.slice(0, FILTER_MAX_LENGTH);
+  }
+});
 
 const showData = computed((): LotteryPublicData[] => allData.value.filter((x) => x.title));
 const sortedShowDataByUsedCountDesc = computed((): LotteryPublicData[] =>

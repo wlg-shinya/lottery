@@ -20,8 +20,6 @@ import LotteryHistoryList from "../components/LotteryHistoryList.vue";
 import UploadDownload from "../components/UploadDownload.vue";
 import GoPublicView from "../components/GoPublicView.vue";
 
-// TODO:各種文字入力UIの文字数制限対応
-
 const modal = ref();
 const uploadDownload = ref();
 

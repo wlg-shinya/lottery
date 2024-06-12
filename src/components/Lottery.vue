@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
 import { LotteryData, defaultLotteryData } from "../lottery-data";
-import { DefaultApiClient } from "../openapi";
+import { DefaultApiClient, VarcharMax } from "../openapi";
 import FlexTextarea from "./FlexTextarea.vue";
 import RotateSlot from "./RotateSlot.vue";
 
@@ -20,8 +20,25 @@ const emit = defineEmits<{
 const editable = ref(false);
 
 const data = ref<LotteryData>(structuredClone(defaultLotteryData));
-// 入力されたデータに変化あったらイベント発火
-watch(data, () => emit("change", data.value), { deep: true });
+watch(
+  data,
+  () => {
+    // テキスト入力の上限切りつめ
+    if (data.value.contentsData.text.length > VarcharMax.lotteries_text) {
+      data.value.contentsData.text = data.value.contentsData.text.slice(0, VarcharMax.lotteries_text);
+    }
+    if (data.value.contentsData.title.length > VarcharMax.lotteries_title) {
+      data.value.contentsData.title = data.value.contentsData.title.slice(0, VarcharMax.lotteries_title);
+    }
+    if (data.value.contentsData.description.length > VarcharMax.lotteries_description) {
+      data.value.contentsData.description = data.value.contentsData.description.slice(0, VarcharMax.lotteries_description);
+    }
+
+    // 入力されたデータに変化あったらイベント発火
+    emit("change", data.value);
+  },
+  { deep: true }
+);
 
 // 初期データはローカルストレージ読込による遅延が起きるので watch で検出する
 watch(

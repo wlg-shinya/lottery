@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
+import { VarcharMax } from "../openapi";
+import { PASSWORD_MAX_LENGTH } from "../constant";
 
 defineProps<{
   buttonClass: string;
@@ -13,6 +15,16 @@ const emit = defineEmits<{
 const account = ref("");
 const password = ref("");
 const showPassword = ref(false);
+
+watchEffect(() => {
+  // テキスト入力の上限切りつめ
+  if (account.value.length > VarcharMax.users_account_name) {
+    account.value = account.value.slice(0, VarcharMax.users_account_name);
+  }
+  if (password.value.length > PASSWORD_MAX_LENGTH) {
+    password.value = password.value.slice(0, PASSWORD_MAX_LENGTH);
+  }
+});
 
 function onClickSubmitButton() {
   emit("click", account.value, password.value);

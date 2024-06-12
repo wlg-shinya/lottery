@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref, watchEffect } from "vue";
 import { DefaultApiClient } from "../openapi";
-import LocalStorageLottery from "../local-storage-lottery";
 import { getErrorMessage } from "../error";
+import { PASSWORD_MAX_LENGTH } from "../constant";
+import LocalStorageLottery from "../local-storage-lottery";
 import BackButton from "../components/BackButton.vue";
 import Message from "../components/Message.vue";
 
@@ -23,6 +24,14 @@ watchEffect(async () => {
     } else {
       message.value.set("", "");
     }
+  }
+
+  // テキスト入力の上限切りつめ
+  if (oldPassword.value.length > PASSWORD_MAX_LENGTH) {
+    oldPassword.value = oldPassword.value.slice(0, PASSWORD_MAX_LENGTH);
+  }
+  if (newPassword.value.length > PASSWORD_MAX_LENGTH) {
+    newPassword.value = newPassword.value.slice(0, PASSWORD_MAX_LENGTH);
   }
 });
 
