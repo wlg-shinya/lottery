@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 from hashlib import sha256
-from datetime import datetime
+from time import time
 from core.config import env, default_timezone
 from api.models import Users as Model
 from api.schemas.access_tokens import AccessTokenCreate, default_expire_at as access_tokens_default_expire_at
@@ -170,7 +170,7 @@ def access_token_hash(email: str, identification: str) -> str:
     return sha256(src.encode("utf-8")).hexdigest()
 
 def signup_token_hash(email: str) -> str:
-    src = email + datetime.now(default_timezone()).strftime("%Y%m%d%H%M%S%f")
+    src = email + str(time())
     return sha256(src.encode("utf-8")).hexdigest()
 
 async def _update_model(db: AsyncSession, model: Model) -> Model:
