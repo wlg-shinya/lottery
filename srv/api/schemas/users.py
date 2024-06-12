@@ -1,48 +1,40 @@
 from pydantic import BaseModel, ConfigDict, Field
-from datetime import datetime
+from api.schemas.common import IdBase, CreatedUpdatedAtBase, AccessTokenBase
 
-class UsersBase(BaseModel):
+class UsersBase():
+    email: str = Field(desciption="Eメールアドレス")
     account_name: str = Field(desciption="アカウント名")
     identification: str = Field(desciption="識別情報")
     pull_lottery_ids: list[int] = Field([], desciption="ほかの人が作成したくじ引きID")
 
-class Users(UsersBase):
-    id: int
-    created_at: datetime = Field(desciption="作成日時")
-    updated_at: datetime | None = Field(desciption="更新日時")
-
-    model_config = ConfigDict(from_attributes=True)
-
-class UserCreate(UsersBase):
+class Users(BaseModel, IdBase, CreatedUpdatedAtBase, UsersBase):
     pass
 
-class UserCreateResponse(UserCreate):
-    id: int
-
-    model_config = ConfigDict(from_attributes=True)
-
-class UserUpdate(UsersBase):
-    access_token: str = Field(desciption="アクセストークン")
-
-class UserUpdateResponse(BaseModel):
-    id: int
-
-    model_config = ConfigDict(from_attributes=True)
-
-class UserDelete(BaseModel):
-    access_token: str = Field(desciption="アクセストークン")
-
-class UserSignin(UsersBase):
+class UserCreate(BaseModel, UsersBase):
     pass
 
-class UserSigninResponse(BaseModel):
-    access_token: str = Field(desciption="アクセストークン")
+class UserCreateResponse(BaseModel, IdBase):
+    pass
 
-class UserChangePassword(BaseModel):
-    access_token: str = Field(desciption="アクセストークン")
+class UserUpdate(BaseModel, AccessTokenBase, UsersBase):
+    pass
+
+class UserUpdateResponse(BaseModel, IdBase):
+    pass
+
+class UserDelete(BaseModel, AccessTokenBase):
+    pass
+
+class UserSignin(BaseModel, UsersBase):
+    pass
+
+class UserSigninResponse(BaseModel, AccessTokenBase):
+    pass
+
+class UserChangePassword(BaseModel, AccessTokenBase):
     old_password: str = Field(desciption="現在のパスワード")
     new_password: str = Field(desciption="新しいパスワード")
 
-class UserChangePasswordResponse(BaseModel):
-    access_token: str = Field(desciption="アクセストークン")
+class UserChangePasswordResponse(BaseModel, AccessTokenBase):
+    pass
 
