@@ -146,13 +146,17 @@ onStart();
     <BackButton />
     <div class="d-flex flex-column justify-content-center">
       <Message ref="message" />
-      <div>
+      <div class="d-flex">
         <button @click="sortType = 'used'" :class="`btn ${sortType === 'used' ? 'btn' : 'text'}-primary`">
           <span :class="`${USED_MDI_CLASS} mdi-36px`" />
         </button>
         <button @click="sortType = 'pull'" :class="`btn ${sortType === 'pull' ? 'btn' : 'text'}-primary`">
           <span :class="`${PULL_MDI_CLASS} mdi-36px`" />
         </button>
+        <div class="input-group">
+          <span class="input-group-text"><span class="mdi mdi-magnify mdi-36px" /></span>
+          <input v-model="filter" class="form-control text-center fs-3" />
+        </div>
       </div>
       <table class="table table-striped table-hover">
         <thead>
