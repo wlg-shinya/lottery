@@ -7,7 +7,7 @@ import { LotteryContentsData, LotteryPublicData, defaultLotteryResultData } from
 import router from "../router";
 import Message from "../components/Message.vue";
 import BackButton from "../components/BackButton.vue";
-import SimpleShowText from "../components/OmitText.vue";
+import OmitText from "../components/OmitText.vue";
 
 const USED_MDI_CLASS = "mdi mdi-counter";
 const PULL_MDI_CLASS = "mdi mdi-download";
@@ -181,7 +181,7 @@ onStart();
             </td>
             <td>{{ data.username }}</td>
             <td style="white-space: pre-wrap">
-              <SimpleShowText :text="data.description" :length="32" :allowLineFeed="false" :initOmit="true" />
+              <OmitText :text="data.description" :length="32" :allowLineFeed="false" :initOmit="true" />
             </td>
           </tr>
         </tbody>
