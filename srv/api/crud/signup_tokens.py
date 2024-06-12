@@ -14,10 +14,10 @@ async def create_token(
 
 async def read_token(
     db: AsyncSession, token: str
-) -> Model:
+) -> Model | None:
     row = (await db.execute(select(Model).filter(Model.token == token))).first()
     if row is None or len(row) == 0:
-        raise HTTPException(status_code=401, detail=f"Unauthorized access token invalid.")
+        return None
     else:
         return row.tuple()[0]
 
@@ -25,6 +25,9 @@ async def validate_token(
     db: AsyncSession, token: str
 ) -> None:
     tokens = await read_token(db=db, token=token)
+    # 存在しない
+    if tokens is None:
+        raise HTTPException(status_code=401, detail=f"Unauthorized access token invalid.")
     # 期限切れ
     if datetime.now(default_timezone()) > tokens.expire_at:
         raise HTTPException(status_code=401, detail=f"Unauthorized access token expired.")
@@ -35,6 +38,9 @@ async def update_token(
     db: AsyncSession, body: schema.SignupTokenCreate, original: Model
 ) -> Model:
     original.token = body.token
+    original.email = body.email
+    original.account_name = body.account_name
+    original.identification = body.identification
     original.expire_at = body.expire_at
     return await _update_model(db=db, model=original)
 

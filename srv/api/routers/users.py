@@ -5,6 +5,7 @@ from core.db import db
 import api.schemas.users as schema
 import api.crud.users as crud
 import api.crud.access_tokens as access_tokens
+import api.crud.signup_tokens as signup_tokens
 
 router = APIRouter()
 
@@ -28,19 +29,25 @@ async def update_user(body: schema.UserUpdate, db: AsyncSession = Depends(db)):
 
 @router.put("/api/update_user_pull_lottery_ids", response_model=schema.UserUpdateResponse)
 async def update_user_pull_lottery_ids(access_token: str, pull_lottery_ids: list[int], db: AsyncSession = Depends(db)):
-    await access_tokens.validate_token(db=db, access_token=access_token)
+    await access_tokens.validate_token(db=db, token=access_token)
     model = await crud.read_user_by_access_token(db=db, access_token=access_token)
     return await crud.update_user_pull_lottery_ids(db=db, pull_lottery_ids=pull_lottery_ids, original=model)
 
 @router.delete("/api/delete_user", response_model=None)
 async def delete_user(body: schema.UserDelete, db: AsyncSession = Depends(db)):
-    await access_tokens.validate_token(db, body.access_token)
+    await access_tokens.validate_token(db=db, token=body.access_token)
     model = await crud.read_user_by_access_token(db=db, access_token=body.access_token)
     await crud.delete_user(db=db, original=model)
 
-@router.post("/api/signup", response_model=None)
-async def signup(body: schema.UserSignin, db: AsyncSession = Depends(db)):
-    await crud.signup(db=db, body=body)
+@router.post("/api/signup_step1", response_model=str)
+async def signup_step1(body: schema.UserSignin, db: AsyncSession = Depends(db)):
+    url = await crud.signup_step1(db=db, body=body)
+    return url
+
+@router.post("/api/signup_step2", response_model=None)
+async def signup_step2(body: schema.UserSignupStep2, db: AsyncSession = Depends(db)):
+    await signup_tokens.validate_token(db=db, token=body.signup_token)
+    await crud.signup_step2(db=db, body=body)
 
 @router.post("/api/signin", response_model=schema.UserSigninResponse)
 async def signin(body: schema.UserSignin, db: AsyncSession = Depends(db)):
