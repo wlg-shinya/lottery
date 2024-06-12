@@ -222,12 +222,6 @@ export interface UserSignin {
      * @type {string}
      * @memberof UserSignin
      */
-    'account_name': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserSignin
-     */
     'identification': string;
 }
 /**
@@ -273,13 +267,13 @@ export interface UserUpdate {
      * @type {string}
      * @memberof UserUpdate
      */
-    'account_name': string;
+    'identification': string;
     /**
      * 
      * @type {string}
      * @memberof UserUpdate
      */
-    'identification': string;
+    'account_name': string;
     /**
      * 
      * @type {Array<number>}
@@ -323,13 +317,13 @@ export interface Users {
      * @type {string}
      * @memberof Users
      */
-    'account_name': string;
+    'identification': string;
     /**
      * 
      * @type {string}
      * @memberof Users
      */
-    'identification': string;
+    'account_name': string;
     /**
      * 
      * @type {Array<number>}
