@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.config import default_timezone
 from api.models import AccessTokens as Model
-import api.schemas.access_token as schema
+import api.schemas.access_tokens as schema
 
 async def create_token(
     db: AsyncSession, body: schema.AccessTokenCreate

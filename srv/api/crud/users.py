@@ -4,9 +4,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 from api.models import Users as Model
 from hashlib import sha256
-from api.schemas.access_token import AccessTokenCreate
+from api.schemas.access_tokens import AccessTokenCreate
 import api.schemas.users as schema
-import api.crud.access_token as access_token
+import api.crud.access_tokens as access_tokens
 
 async def create_user(
     db: AsyncSession, body: schema.UserCreate
@@ -38,7 +38,7 @@ async def read_user(
 async def read_user_by_access_token(
     db: AsyncSession, access_token: str
 ) -> Model:
-    tokens_model = await access_token.read_token(db=db, access_token=access_token)
+    tokens_model = await access_tokens.read_token(db=db, access_token=access_token)
     return await read_user(db=db, id=tokens_model.user_id)
 
 async def update_user(
@@ -121,10 +121,10 @@ async def _update_model(db: AsyncSession, model: Model) -> Model:
 
 async def _create_or_update_token(db: AsyncSession, access_token: str, id: int) -> None:
     tokens_body = AccessTokenCreate(access_token=access_token, user_id=id)
-    tokens_model = await access_token.read_token(db=db, access_token=access_token)
+    tokens_model = await access_tokens.read_token(db=db, access_token=access_token)
     if tokens_model != None:
         # すでに存在しているならトークン有効期限を更新
-        await access_token.update_token(db=db, body=tokens_body, original=tokens_model)
+        await access_tokens.update_token(db=db, body=tokens_body, original=tokens_model)
     else:
         # 存在していないならトークン新規作成
-        await access_token.create_token(db=db, body=tokens_body)
+        await access_tokens.create_token(db=db, body=tokens_body)

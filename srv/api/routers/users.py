@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.db import db
 import api.schemas.users as schema
 import api.crud.users as crud
-import api.crud.access_token as access_token
+import api.crud.access_tokens as access_tokens
 
 router = APIRouter()
 
@@ -22,19 +22,19 @@ async def read_user_by_access_token(access_token: str, db: AsyncSession = Depend
 
 @router.put("/api/update_user", response_model=schema.UserUpdateResponse)
 async def update_user(body: schema.UserUpdate, db: AsyncSession = Depends(db)):
-    await access_token.validate_token(db=db, token=body.access_token)
+    await access_tokens.validate_token(db=db, token=body.access_token)
     model = await crud.read_user_by_access_token(db=db, access_token=body.access_token)
     return await crud.update_user(db=db, body=body, original=model)
 
 @router.put("/api/update_user_pull_lottery_ids", response_model=schema.UserUpdateResponse)
 async def update_user_pull_lottery_ids(access_token: str, pull_lottery_ids: list[int], db: AsyncSession = Depends(db)):
-    await access_token.validate_token(db=db, access_token=access_token)
+    await access_tokens.validate_token(db=db, access_token=access_token)
     model = await crud.read_user_by_access_token(db=db, access_token=access_token)
     return await crud.update_user_pull_lottery_ids(db=db, pull_lottery_ids=pull_lottery_ids, original=model)
 
 @router.delete("/api/delete_user", response_model=None)
 async def delete_user(body: schema.UserDelete, db: AsyncSession = Depends(db)):
-    await access_token.validate_token(db, body.access_token)
+    await access_tokens.validate_token(db, body.access_token)
     model = await crud.read_user_by_access_token(db=db, access_token=body.access_token)
     await crud.delete_user(db=db, original=model)
 

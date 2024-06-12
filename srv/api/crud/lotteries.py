@@ -4,12 +4,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 from api.models import Lotteries as Model, AccessTokens as TokensModel
 import api.schemas.lotteries as schema
-import api.crud.access_token as access_token
+import api.crud.access_tokens as access_tokens
 
 async def create_lottery(
     db: AsyncSession, body: schema.LotteryCreate
 ) -> Model:
-    tokens_model = await access_token.read_token(db=db, token=body.access_token)
+    tokens_model = await access_tokens.read_token(db=db, token=body.access_token)
     model = Model(
         user_id=tokens_model.user_id,
         text=body.text,
@@ -38,7 +38,7 @@ async def read_my_lotteries(
     db: AsyncSession, access_token: str
 ) -> List[schema.Lotteries]:
     # トークンからユーザIDを取得して自分が所有しているくじ引きデータをすべて返す
-    tokens_model = await access_token.read_token(db=db, access_token=access_token)
+    tokens_model = await access_tokens.read_token(db=db, access_token=access_token)
     result = await db.execute(
         select(
             Model.text,
@@ -64,7 +64,7 @@ async def read_my_lottery(
     db: AsyncSession, id: int, access_token: str
 ) -> Model:
     model = await read_lottery(db=db, id=id)
-    tokens_model = await access_token.read_token(db=db, access_token=access_token)
+    tokens_model = await access_tokens.read_token(db=db, access_token=access_token)
     _read_lottery_not_match_user_id(model=model, tokens_model=tokens_model)
     return model
 
@@ -86,7 +86,7 @@ async def is_lottery_id_mine(
     db: AsyncSession, id: int, access_token: str
 ) -> bool:
     model = await read_lottery(db=db, id=id)
-    tokens_model = await access_token.read_token(db=db, access_token=access_token)
+    tokens_model = await access_tokens.read_token(db=db, access_token=access_token)
     return tokens_model.user_id == model.user_id
 
 async def increment_lottery_used_count(
