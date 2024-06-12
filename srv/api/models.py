@@ -30,14 +30,14 @@ class Users(BaseModel):
     pull_lottery_ids = Column(ARRAY(INTEGER), nullable=False)
 
 class AccessTokens(BaseModel):
-    __tablename__ = "access_token"
+    __tablename__ = "access_tokens"
 
     token = Column(VARCHAR(64), nullable=False, unique=True)
     user_id = Column(INTEGER, nullable=False)
     expire_at = Column(TIMESTAMP(timezone=True), nullable=False)
 
 class SignupTokens(BaseModel):
-    __tablename__ = "signup_token"
+    __tablename__ = "signup_tokens"
 
     token = Column(VARCHAR(64), nullable=False, unique=True)
     expire_at = Column(TIMESTAMP(timezone=True), nullable=False)
