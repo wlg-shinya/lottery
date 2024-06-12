@@ -13,7 +13,8 @@ async function onClickSignupButton(email: string, userName: string, password: st
     account_name: userName,
     identification: password,
   })
-    .then(() => {
+    .then((response) => {
+      console.log(response.data);
       message.value.set("ユーザー登録しました。戻ってサインインしてください", "text-success");
     })
     .catch((error) => {
