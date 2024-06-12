@@ -40,4 +40,7 @@ class SignupTokens(BaseModel):
     __tablename__ = "signup_tokens"
 
     token = Column(VARCHAR(64), nullable=False, unique=True)
+    email = Column(VARCHAR(80), nullable=False)
+    account_name = Column(VARCHAR(24), nullable=False)
+    identification = Column(VARCHAR(64), nullable=False)
     expire_at = Column(TIMESTAMP(timezone=True), nullable=False)
