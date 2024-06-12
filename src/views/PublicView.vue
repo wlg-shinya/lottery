@@ -9,22 +9,25 @@ import Message from "../components/Message.vue";
 import BackButton from "../components/BackButton.vue";
 import SimpleShowText from "../components/OmitText.vue";
 
-// TODO:絞り込み機能
-
 const USED_MDI_CLASS = "mdi mdi-counter";
 const PULL_MDI_CLASS = "mdi mdi-download";
 
 const message = ref();
 const allData = ref<LotteryPublicData[]>([]);
+const filter = ref("");
 
 // ソートタイプ
 type SortType = "used" | "pull";
 const sortType = ref<SortType>("used");
 
-const showData = computed(() => allData.value.filter((x) => x.title));
-const sortedShowDataByUsedCountDesc = computed(() => showData.value.slice().sort((a, b) => (a.usedCount < b.usedCount ? 1 : -1)));
-const sortedShowDataByPulledCountDesc = computed(() => showData.value.slice().sort((a, b) => (a.pulledCount < b.pulledCount ? 1 : -1)));
-const sortedShowData = computed(() => {
+const showData = computed((): LotteryPublicData[] => allData.value.filter((x) => x.title));
+const sortedShowDataByUsedCountDesc = computed((): LotteryPublicData[] =>
+  showData.value.slice().sort((a, b) => (a.usedCount < b.usedCount ? 1 : -1))
+);
+const sortedShowDataByPulledCountDesc = computed((): LotteryPublicData[] =>
+  showData.value.slice().sort((a, b) => (a.pulledCount < b.pulledCount ? 1 : -1))
+);
+const sortedShowData = computed((): LotteryPublicData[] => {
   switch (sortType.value) {
     case "used":
       return sortedShowDataByUsedCountDesc.value;
@@ -32,6 +35,9 @@ const sortedShowData = computed(() => {
       return sortedShowDataByPulledCountDesc.value;
   }
 });
+const filteredSortedShowData = computed((): LotteryPublicData[] =>
+  sortedShowData.value.filter((x) => x.filteredString.search(filter.value.toLocaleLowerCase()) !== -1)
+);
 
 async function onStart() {
   await updateAllData();
@@ -108,7 +114,7 @@ async function updateAllData() {
       }, 0);
 
       // これまでの情報で公開用データを構築
-      allData.value.push({
+      const data: LotteryPublicData = {
         id: lottery.id,
         text: lottery.text ?? "",
         title: lottery.title ?? "",
@@ -117,7 +123,11 @@ async function updateAllData() {
         usedCount: lottery.used_count ?? 0,
         username: user_name,
         pulledCount: pulledCount,
-      });
+        filteredString: "",
+      };
+      // タイトルと説明文の大文字小文字区別なしをフィルター対象文字列とする
+      data.filteredString = `${data.title.toLocaleLowerCase()}\n${data.description?.toLocaleLowerCase()}`;
+      allData.value.push(data);
     }
   } catch (error) {
     message.value.set(getErrorMessage(error), "text-danger");
@@ -153,7 +163,7 @@ onStart();
           </tr>
         </thead>
         <tbody>
-          <tr v-for="data in sortedShowData" @click="onClickData(data)" :key="JSON.stringify(data)">
+          <tr v-for="data in filteredSortedShowData" @click="onClickData(data)" :key="JSON.stringify(data)">
             <td>
               {{ data.title }}<br />
               <span :class="`${USED_MDI_CLASS} mdi-24px pe-2`" style="vertical-align: middle" />
