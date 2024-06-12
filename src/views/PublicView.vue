@@ -9,13 +9,29 @@ import Message from "../components/Message.vue";
 import BackButton from "../components/BackButton.vue";
 import SimpleShowText from "../components/OmitText.vue";
 
-// TODO:pulledCount/usedCountによる降順ソート（＝ランキング表示）
 // TODO:絞り込み機能
+
+const USED_MDI_CLASS = "mdi mdi-counter";
+const PULL_MDI_CLASS = "mdi mdi-download";
 
 const message = ref();
 const allData = ref<LotteryPublicData[]>([]);
 
+// ソートタイプ
+type SortType = "used" | "pull";
+const sortType = ref<SortType>("used");
+
 const showData = computed(() => allData.value.filter((x) => x.title));
+const sortedShowDataForUsed = computed(() => showData.value.slice().sort((a, b) => (a.usedCount < b.usedCount ? 1 : -1)));
+const sortedShowDataForPull = computed(() => showData.value.slice().sort((a, b) => (a.pulledCount < b.pulledCount ? 1 : -1)));
+const sortedShowData = computed(() => {
+  switch (sortType.value) {
+    case "used":
+      return sortedShowDataForUsed.value;
+    case "pull":
+      return sortedShowDataForPull.value;
+  }
+});
 
 async function onStart() {
   await updateAllData();
@@ -120,6 +136,14 @@ onStart();
     <BackButton />
     <div class="d-flex flex-column justify-content-center">
       <Message ref="message" />
+      <div>
+        <button @click="sortType = 'used'" :class="`btn ${sortType === 'used' ? 'btn' : 'text'}-primary`">
+          <span :class="`${USED_MDI_CLASS} mdi-36px`" />
+        </button>
+        <button @click="sortType = 'pull'" :class="`btn ${sortType === 'pull' ? 'btn' : 'text'}-primary`">
+          <span :class="`${PULL_MDI_CLASS} mdi-36px`" />
+        </button>
+      </div>
       <table class="table table-striped table-hover">
         <thead>
           <tr>
@@ -129,12 +153,12 @@ onStart();
           </tr>
         </thead>
         <tbody>
-          <tr v-for="data in showData" @click="onClickData(data)" :key="JSON.stringify(data)">
+          <tr v-for="data in sortedShowData" @click="onClickData(data)" :key="JSON.stringify(data)">
             <td>
               {{ data.title }}<br />
-              <span class="mdi mdi-counter mdi-24px pe-2" style="vertical-align: middle" />
+              <span :class="`${USED_MDI_CLASS} mdi-24px pe-2`" style="vertical-align: middle" />
               <span class="fw-light pe-4">{{ numberToShowString(data.usedCount) }}</span>
-              <span class="mdi mdi-download mdi-24px pe-2" style="vertical-align: middle" />
+              <span :class="`${PULL_MDI_CLASS} mdi-24px pe-2`" style="vertical-align: middle" />
               <span class="fw-light pe-4">{{ numberToShowString(data.pulledCount) }}</span>
             </td>
             <td>{{ data.username }}</td>
