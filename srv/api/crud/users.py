@@ -3,7 +3,8 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 from hashlib import sha256
-from core.config import env
+from datetime import datetime
+from core.config import env, default_timezone
 from api.models import Users as Model
 from api.schemas.access_tokens import AccessTokenCreate, default_expire_at as access_tokens_default_expire_at
 from api.schemas.signup_tokens import SignupTokenCreate, default_expire_at as signup_tokens_default_expire_at
@@ -73,7 +74,7 @@ async def signup_step1(
     if len(result.all()) > 0:
         raise HTTPException(status_code=400, detail=f"Bad Request already exists email({body.email})")
     # サインアップトークンの発行
-    token = signup_token_hash(email=body.email, account_name=body.account_name, identification=body.identification)
+    token = signup_token_hash(email=body.email)
     await _create_or_update_signup_token(
         db=db, 
         body=SignupTokenCreate(
@@ -160,8 +161,8 @@ def access_token_hash(email: str, identification: str) -> str:
     src = email + identification # TODO:salt/pepperの検討
     return sha256(src.encode("utf-8")).hexdigest()
 
-def signup_token_hash(email: str, account_name:str, identification: str) -> str:
-    src = email + account_name + identification
+def signup_token_hash(email: str) -> str:
+    src = email + datetime.now(default_timezone()).strftime("%Y%m%d%H%M%S%f")
     return sha256(src.encode("utf-8")).hexdigest()
 
 async def _update_model(db: AsyncSession, model: Model) -> Model:
