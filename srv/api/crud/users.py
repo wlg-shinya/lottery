@@ -65,7 +65,7 @@ async def delete_user(
     await db.commit()
 
 async def signup_step1(
-    db: AsyncSession, body: schema.UserSignin
+    db: AsyncSession, body: schema.UserSignupStep1
 ) -> str:
     # すでに登録済みのEメールならはじく
     result = (await db.execute(select(Model).filter(Model.email == body.email)))

@@ -40,7 +40,7 @@ async def delete_user(body: schema.UserDelete, db: AsyncSession = Depends(db)):
     await crud.delete_user(db=db, original=model)
 
 @router.post("/api/signup_step1", response_model=str)
-async def signup_step1(body: schema.UserSignin, db: AsyncSession = Depends(db)):
+async def signup_step1(body: schema.UserSignupStep1, db: AsyncSession = Depends(db)):
     url = await crud.signup_step1(db=db, body=body)
     return url
 

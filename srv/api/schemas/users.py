@@ -35,6 +35,9 @@ class UserSignin(BaseModel, UserSigninBase):
 class UserSigninResponse(BaseModel, AccessTokenBase):
     pass
 
+class UserSignupStep1(BaseModel, UserCreateBase):
+    pass
+
 class UserSignupStep2(BaseModel):
     signup_token: str = Field(desciption="サインアップトークン")
 
