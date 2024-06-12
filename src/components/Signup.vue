@@ -2,14 +2,15 @@
 import { ref } from "vue";
 import { DefaultApiClient } from "../openapi";
 import { getErrorMessage } from "../error";
-import AccountPasswordInput from "./AccountPasswordInput.vue";
+import AccountInput from "./AccountInput.vue";
 import Message from "./Message.vue";
 
 const message = ref();
 
-async function onClickSignupButton(account: string, password: string) {
-  await DefaultApiClient.signupApiSignupPost({
-    account_name: account,
+async function onClickSignupButton(email: string, accountName: string, password: string) {
+  await DefaultApiClient.signupStep1ApiSignupStep1Post({
+    email: email,
+    account_name: accountName,
     identification: password,
   })
     .then(() => {
@@ -23,7 +24,7 @@ async function onClickSignupButton(account: string, password: string) {
 
 <template>
   <div class="d-flex flex-column justify-content-center">
-    <AccountPasswordInput @click="onClickSignupButton" buttonClass="btn-primary" buttonText="新規登録" />
+    <AccountInput @click="onClickSignupButton" buttonClass="btn-primary" buttonText="新規登録" />
     <Message ref="message" />
   </div>
 </template>

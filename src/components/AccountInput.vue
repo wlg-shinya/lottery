@@ -9,17 +9,21 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-  click: [account: string, password: string];
+  click: [email: string, accountName: string, password: string];
 }>();
 
-const account = ref("");
+const email = ref("");
+const accountName = ref("");
 const password = ref("");
 const showPassword = ref(false);
 
 watchEffect(() => {
   // テキスト入力の上限切りつめ
-  if (account.value.length > VarcharMax.users_account_name) {
-    account.value = account.value.slice(0, VarcharMax.users_account_name);
+  if (email.value.length > VarcharMax.users_email) {
+    email.value = email.value.slice(0, VarcharMax.users_email);
+  }
+  if (accountName.value.length > VarcharMax.users_account_name) {
+    accountName.value = accountName.value.slice(0, VarcharMax.users_account_name);
   }
   if (password.value.length > PASSWORD_MAX_LENGTH) {
     password.value = password.value.slice(0, PASSWORD_MAX_LENGTH);
@@ -27,7 +31,7 @@ watchEffect(() => {
 });
 
 function onClickSubmitButton() {
-  emit("click", account.value, password.value);
+  emit("click", email.value, accountName.value, password.value);
 }
 
 function onClickShowPasswordButton() {
@@ -35,7 +39,7 @@ function onClickShowPasswordButton() {
 }
 
 function canClick(): boolean {
-  return account.value !== "" && password.value !== "";
+  return email.value !== "" && accountName.value !== "" && password.value !== "";
 }
 </script>
 
@@ -43,8 +47,12 @@ function canClick(): boolean {
   <div class="d-flex justify-content-center">
     <div class="d-flex flex-column">
       <div class="input-group">
-        <span class="input-group-text" style="width: 100px">アカウント</span>
-        <input v-model="account" type="text" class="form-control" />
+        <span class="input-group-text" style="width: 100px">Eメール</span>
+        <input v-model="email" type="text" class="form-control" />
+      </div>
+      <div class="input-group">
+        <span class="input-group-text" style="width: 100px">ユーザー名</span>
+        <input v-model="accountName" type="text" class="form-control" />
       </div>
       <div class="input-group">
         <span class="input-group-text" style="width: 100px">パスワード</span>

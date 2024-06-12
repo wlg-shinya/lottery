@@ -3,7 +3,7 @@ import { ref, watch } from "vue";
 import router from "../router";
 import { DefaultApiClient } from "../openapi";
 import { getErrorMessage } from "../error";
-import AccountPasswordInput from "./AccountPasswordInput.vue";
+import AccountInput from "./AccountInput.vue";
 import Message from "./Message.vue";
 import Signout from "../components/Signout.vue";
 
@@ -34,9 +34,10 @@ watch(
 const message = ref();
 const username = ref("");
 
-async function onClickSigninButton(account: string, password: string) {
+async function onClickSigninButton(email: string, accountName: string, password: string) {
   await DefaultApiClient.signinApiSigninPost({
-    account_name: account,
+    email: email,
+    account_name: accountName,
     identification: password,
   })
     .then(async (response) => {
@@ -65,7 +66,7 @@ async function onSignout() {
 <template>
   <div class="d-flex flex-column justify-content-center">
     <div v-if="!props.accessToken">
-      <AccountPasswordInput @click="onClickSigninButton" buttonClass="btn-outline-primary" buttonText="サインイン" />
+      <AccountInput @click="onClickSigninButton" buttonClass="btn-outline-primary" buttonText="サインイン" />
       <button @click="onClickSignupButton" class="btn btn-link p-0">作ったくじ引きをサーバーに保存したい？ではアカウントを作りましょう</button>
     </div>
     <div v-else>
