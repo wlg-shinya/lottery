@@ -14,6 +14,7 @@ export const VarcharMax = {
   lotteries_text: 256,
   lotteries_title: 32,
   lotteries_description: 256,
+  users_email: 80,
   users_account_name: 24,
   users_identification: 64,
   users_access_token: 64,
