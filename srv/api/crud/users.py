@@ -108,9 +108,9 @@ async def signin(
 ) -> schema.UserSigninResponse:
     # アカウントマッチング
     access_token = access_token_hash(email=body.email, identification=body.identification)
-    row = (await db.execute(select(Model).filter(Model.account_name == body.account_name, Model.identification == access_token))).first()
+    row = (await db.execute(select(Model).filter(Model.email == body.email, Model.identification == access_token))).first()
     if row is None or len(row) == 0:
-        raise HTTPException(status_code=404, detail="Not found account or password")
+        raise HTTPException(status_code=404, detail="Not found email or password")
     users = row.tuple()[0]
     
     # トークン新規作成/更新

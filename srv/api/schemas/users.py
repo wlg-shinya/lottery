@@ -1,10 +1,12 @@
 from pydantic import BaseModel, Field
 from api.schemas.common import IdBase, CreatedUpdatedAtBase, AccessTokenBase
 
-class UserCreateBase():
+class UserSigninBase():
     email: str = Field(desciption="Eメールアドレス")
-    account_name: str = Field(desciption="アカウント名")
     identification: str = Field(desciption="識別情報")
+
+class UserCreateBase(UserSigninBase):
+    account_name: str = Field(desciption="アカウント名")
 
 class UsersBase(UserCreateBase):
     pull_lottery_ids: list[int] = Field([], desciption="ほかの人が作成したくじ引きID")
@@ -27,7 +29,7 @@ class UserUpdateResponse(BaseModel, IdBase):
 class UserDelete(BaseModel, AccessTokenBase):
     pass
 
-class UserSignin(BaseModel, UserCreateBase):
+class UserSignin(BaseModel, UserSigninBase):
     pass
 
 class UserSigninResponse(BaseModel, AccessTokenBase):
