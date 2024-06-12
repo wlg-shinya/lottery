@@ -58,7 +58,7 @@ async def update_user_pull_lottery_ids(
 async def delete_user(
     db: AsyncSession, original: Model
 ) -> None:
-    await db.delete(original)
+    await db.delete(instance=original)
     await db.commit()
 
 async def signup(
@@ -114,9 +114,9 @@ def hash(account_name: str, identification: str) -> str:
     return sha256(src.encode("utf-8")).hexdigest()
 
 async def _update_model(db: AsyncSession, model: Model) -> Model:
-    db.add(model)
+    db.add(instance=model)
     await db.commit()
-    await db.refresh(model)
+    await db.refresh(instance=model)
     return model
 
 async def _create_or_update_token(db: AsyncSession, access_token: str, id: int) -> None:

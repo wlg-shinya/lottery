@@ -9,7 +9,7 @@ import api.crud.tokens as tokens
 async def create_lottery(
     db: AsyncSession, body: schema.LotteryCreate
 ) -> Model:
-    tokens_model = await tokens.read_token(db, body.access_token)
+    tokens_model = await tokens.read_token(db=db, access_token=body.access_token)
     model = Model(
         user_id=tokens_model.user_id,
         text=body.text,
@@ -38,7 +38,7 @@ async def read_my_lotteries(
     db: AsyncSession, access_token: str
 ) -> List[schema.Lotteries]:
     # トークンからユーザIDを取得して自分が所有しているくじ引きデータをすべて返す
-    tokens_model = await tokens.read_token(db, access_token)
+    tokens_model = await tokens.read_token(db=db, access_token=access_token)
     result = await db.execute(
         select(
             Model.text,
@@ -56,16 +56,16 @@ async def read_my_lotteries(
 async def read_lottery(
     db: AsyncSession, id: int
 ) -> Model:
-    model = await db.get(Model, id)
-    _read_lottery_not_found(model)
+    model = await db.get(entity=Model, ident=id)
+    _read_lottery_not_found(model=model)
     return model
 
 async def read_my_lottery(
     db: AsyncSession, id: int, access_token: str
 ) -> Model:
-    model = await read_lottery(db, id)
-    tokens_model = await tokens.read_token(db, access_token)
-    _read_lottery_not_match_user_id(model, tokens_model)
+    model = await read_lottery(db=db, id=id)
+    tokens_model = await tokens.read_token(db=db, access_token=access_token)
+    _read_lottery_not_match_user_id(model=model, tokens_model=tokens_model)
     return model
 
 async def update_lottery(
@@ -79,20 +79,20 @@ async def update_lottery(
 async def delete_lottery(
     db: AsyncSession, original: Model
 ) -> None:
-    await db.delete(original)
+    await db.delete(instance=original)
     await db.commit()
 
 async def is_lottery_id_mine(
     db: AsyncSession, id: int, access_token: str
 ) -> bool:
-    model = await read_lottery(db, id)
-    tokens_model = await tokens.read_token(db, access_token)
+    model = await read_lottery(db=db, id=id)
+    tokens_model = await tokens.read_token(db=db, access_token=access_token)
     return tokens_model.user_id == model.user_id
 
 async def increment_lottery_used_count(
     db: AsyncSession, id: int
 ) -> Model:
-    model = await read_lottery(db, id)
+    model = await read_lottery(db=db, id=id)
     if model.used_count is None:
         model.used_count = 1
     else:
@@ -100,9 +100,9 @@ async def increment_lottery_used_count(
     return await _update_model(db=db, model=model)
 
 async def _update_model(db: AsyncSession, model: Model) -> Model:
-    db.add(model)
+    db.add(instance=model)
     await db.commit()
-    await db.refresh(model)
+    await db.refresh(instance=model)
     return model
 
 def _read_lottery_not_found(model: Model | None):

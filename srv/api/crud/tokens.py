@@ -10,10 +10,7 @@ async def create_token(
     db: AsyncSession, body: schema.TokenCreate
 ) -> Model:
     model = Model(**body.model_dump())
-    db.add(model)
-    await db.commit()
-    await db.refresh(model)
-    return model
+    return await _update_model(db=db, model=model)
 
 async def read_token(
     db: AsyncSession, access_token: str
@@ -27,7 +24,7 @@ async def read_token(
 async def validate_token(
     db: AsyncSession, access_token: str
 ) -> None:
-    tokens = await read_token(db, access_token)
+    tokens = await read_token(db=db, access_token=access_token)
     # 存在しない
     if tokens == None:
         raise HTTPException(status_code=401, detail=f"Unauthorized access token invalid. Retry signin.")
@@ -43,13 +40,16 @@ async def update_token(
     original.access_token = body.access_token
     original.user_id = body.user_id
     original.expire_at = body.expire_at
-    db.add(original)
-    await db.commit()
-    await db.refresh(original)
-    return original
+    return await _update_model(db=db, model=original)
 
 async def delete_token(
     db: AsyncSession, original: Model
 ) -> None:
-    await db.delete(original)
+    await db.delete(instance=original)
     await db.commit()
+
+async def _update_model(db: AsyncSession, model: Model) -> Model:
+    db.add(instance=model)
+    await db.commit()
+    await db.refresh(instance=model)
+    return model
