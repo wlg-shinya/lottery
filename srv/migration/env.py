@@ -11,7 +11,7 @@ from logging.config import fileConfig
 from alembic import context
 
 from api.models import Base
-from migration.db import Engine
+from srv.core.db import sync_engine
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -72,7 +72,7 @@ def run_migrations_online() -> None:
     #     poolclass=pool.NullPool,
     # )
     url = config.get_main_option("sqlalchemy.url")
-    connectable = Engine
+    connectable = sync_engine
 
     with connectable.connect() as connection:
         context.configure(
