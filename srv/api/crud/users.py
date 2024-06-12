@@ -29,7 +29,15 @@ async def create_user(
 async def read_users(
     db: AsyncSession
 ) -> List[schema.Users]:
-    result = await db.execute(select(Model.id, Model.account_name, Model.identification, Model.pull_lottery_ids, Model.created_at, Model.updated_at))
+    result = await db.execute(select(
+        Model.id, 
+        Model.created_at, 
+        Model.updated_at, 
+        Model.email, 
+        Model.account_name, 
+        Model.identification, 
+        Model.pull_lottery_ids
+        ))
     return result.all()
 
 async def read_user(
