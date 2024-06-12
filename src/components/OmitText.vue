@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import HighlightText from "../components/HighlightText.vue";
 
 const props = defineProps<{
   text: string;
   length: number;
   allowLineFeed: boolean;
   initOmit: boolean;
+  highlight: string;
 }>();
 
 const needOmit = computed(() => props.text.length > props.length);
@@ -36,7 +38,7 @@ function showText(): string {
 
 <template>
   <div>
-    <span>{{ showText() }}</span>
+    <HighlightText :text="showText()" :highlight="highlight" />
     <span v-if="needOmit">
       <button @click.stop="onClickSwitchButton" class="btn btn-link p-0">{{ omit ? "...もっと見る" : "一部を表示" }}</button>
     </span>

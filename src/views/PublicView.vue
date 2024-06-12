@@ -8,6 +8,7 @@ import router from "../router";
 import Message from "../components/Message.vue";
 import BackButton from "../components/BackButton.vue";
 import OmitText from "../components/OmitText.vue";
+import HighlightText from "../components/HighlightText.vue";
 
 const USED_MDI_CLASS = "mdi mdi-counter";
 const PULL_MDI_CLASS = "mdi mdi-download";
@@ -173,7 +174,7 @@ onStart();
         <tbody>
           <tr v-for="data in filteredSortedShowData" @click="onClickData(data)" :key="JSON.stringify(data)">
             <td>
-              {{ data.title }}<br />
+              <HighlightText :text="data.title" :highlight="filter" /><br />
               <span :class="`${USED_MDI_CLASS} mdi-24px pe-2`" style="vertical-align: middle" />
               <span class="fw-light pe-4">{{ numberToShowString(data.usedCount) }}</span>
               <span :class="`${PULL_MDI_CLASS} mdi-24px pe-2`" style="vertical-align: middle" />
@@ -181,7 +182,7 @@ onStart();
             </td>
             <td>{{ data.username }}</td>
             <td style="white-space: pre-wrap">
-              <OmitText :text="data.description" :length="32" :allowLineFeed="false" :initOmit="true" />
+              <OmitText :text="data.description" :length="32" :allowLineFeed="false" :initOmit="true" :highlight="filter" />
             </td>
           </tr>
         </tbody>
