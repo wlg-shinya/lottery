@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
-from api.models import Lotteries as Model, Tokens as TokensModel
+from api.models import Lotteries as Model, AccessTokens as TokensModel
 import api.schemas.lotteries as schema
 import api.crud.tokens as tokens
 

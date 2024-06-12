@@ -29,9 +29,15 @@ class Users(BaseModel):
     identification = Column(VARCHAR(64), nullable=False, unique=True)
     pull_lottery_ids = Column(ARRAY(INTEGER), nullable=False)
 
-class Tokens(BaseModel):
-    __tablename__ = "tokens"
+class AccessTokens(BaseModel):
+    __tablename__ = "access_token"
 
-    access_token = Column(VARCHAR(64), nullable=False, unique=True)
+    token = Column(VARCHAR(64), nullable=False, unique=True)
     user_id = Column(INTEGER, nullable=False)
+    expire_at = Column(TIMESTAMP(timezone=True), nullable=False)
+
+class SignupTokens(BaseModel):
+    __tablename__ = "signup_token"
+
+    token = Column(VARCHAR(64), nullable=False, unique=True)
     expire_at = Column(TIMESTAMP(timezone=True), nullable=False)

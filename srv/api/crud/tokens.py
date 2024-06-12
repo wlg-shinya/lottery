@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from api.models import Tokens as Model
+from api.models import AccessTokens as Model
 from datetime import datetime
 from api.schemas.tokens import default_timezone
 import api.schemas.tokens as schema
