@@ -240,6 +240,31 @@ export interface UserSigninResponse {
 /**
  * 
  * @export
+ * @interface UserSignupStep1
+ */
+export interface UserSignupStep1 {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSignupStep1
+     */
+    'email': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSignupStep1
+     */
+    'identification': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSignupStep1
+     */
+    'account_name': string;
+}
+/**
+ * 
+ * @export
  * @interface UserSignupStep2
  */
 export interface UserSignupStep2 {
@@ -948,13 +973,13 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 
          * @summary Signup Step1
-         * @param {UserSignin} userSignin 
+         * @param {UserSignupStep1} userSignupStep1 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        signupStep1ApiSignupStep1Post: async (userSignin: UserSignin, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userSignin' is not null or undefined
-            assertParamExists('signupStep1ApiSignupStep1Post', 'userSignin', userSignin)
+        signupStep1ApiSignupStep1Post: async (userSignupStep1: UserSignupStep1, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userSignupStep1' is not null or undefined
+            assertParamExists('signupStep1ApiSignupStep1Post', 'userSignupStep1', userSignupStep1)
             const localVarPath = `/api/signup_step1`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -974,7 +999,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(userSignin, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(userSignupStep1, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1348,12 +1373,12 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Signup Step1
-         * @param {UserSignin} userSignin 
+         * @param {UserSignupStep1} userSignupStep1 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async signupStep1ApiSignupStep1Post(userSignin: UserSignin, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.signupStep1ApiSignupStep1Post(userSignin, options);
+        async signupStep1ApiSignupStep1Post(userSignupStep1: UserSignupStep1, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.signupStep1ApiSignupStep1Post(userSignupStep1, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.signupStep1ApiSignupStep1Post']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1576,12 +1601,12 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         /**
          * 
          * @summary Signup Step1
-         * @param {UserSignin} userSignin 
+         * @param {UserSignupStep1} userSignupStep1 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        signupStep1ApiSignupStep1Post(userSignin: UserSignin, options?: any): AxiosPromise<string> {
-            return localVarFp.signupStep1ApiSignupStep1Post(userSignin, options).then((request) => request(axios, basePath));
+        signupStep1ApiSignupStep1Post(userSignupStep1: UserSignupStep1, options?: any): AxiosPromise<string> {
+            return localVarFp.signupStep1ApiSignupStep1Post(userSignupStep1, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1819,13 +1844,13 @@ export class DefaultApi extends BaseAPI {
     /**
      * 
      * @summary Signup Step1
-     * @param {UserSignin} userSignin 
+     * @param {UserSignupStep1} userSignupStep1 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public signupStep1ApiSignupStep1Post(userSignin: UserSignin, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).signupStep1ApiSignupStep1Post(userSignin, options).then((request) => request(this.axios, this.basePath));
+    public signupStep1ApiSignupStep1Post(userSignupStep1: UserSignupStep1, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).signupStep1ApiSignupStep1Post(userSignupStep1, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
