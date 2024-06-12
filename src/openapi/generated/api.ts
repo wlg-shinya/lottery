@@ -65,7 +65,7 @@ export interface Lotteries {
      * @type {number}
      * @memberof Lotteries
      */
-    'id': number;
+    'user_id': number;
     /**
      * 
      * @type {string}
@@ -83,7 +83,7 @@ export interface Lotteries {
      * @type {number}
      * @memberof Lotteries
      */
-    'user_id': number;
+    'id': number;
     /**
      * 
      * @type {number}
@@ -130,34 +130,16 @@ export interface LotteryCreate {
 export interface LotteryCreateResponse {
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof LotteryCreateResponse
      */
-    'text'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof LotteryCreateResponse
-     */
-    'title'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof LotteryCreateResponse
-     */
-    'description'?: string;
+    'user_id': number;
     /**
      * 
      * @type {number}
      * @memberof LotteryCreateResponse
      */
     'id': number;
-    /**
-     * 
-     * @type {number}
-     * @memberof LotteryCreateResponse
-     */
-    'user_id': number;
 }
 /**
  * 
@@ -234,6 +216,12 @@ export interface UserSignin {
      * @type {string}
      * @memberof UserSignin
      */
+    'email': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSignin
+     */
     'account_name': string;
     /**
      * 
@@ -267,6 +255,12 @@ export interface UserSigninResponse {
  * @interface UserUpdate
  */
 export interface UserUpdate {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserUpdate
+     */
+    'email': string;
     /**
      * 
      * @type {string}
@@ -316,6 +310,12 @@ export interface Users {
      * @type {string}
      * @memberof Users
      */
+    'email': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Users
+     */
     'account_name': string;
     /**
      * 
@@ -331,12 +331,6 @@ export interface Users {
     'pull_lottery_ids'?: Array<number>;
     /**
      * 
-     * @type {number}
-     * @memberof Users
-     */
-    'id': number;
-    /**
-     * 
      * @type {string}
      * @memberof Users
      */
@@ -347,6 +341,12 @@ export interface Users {
      * @memberof Users
      */
     'updated_at': string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof Users
+     */
+    'id': number;
 }
 /**
  * 
