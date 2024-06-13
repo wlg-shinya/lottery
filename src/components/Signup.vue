@@ -14,8 +14,7 @@ async function onClickSignupButton(email: string, userName: string, password: st
     identification: password,
   })
     .then((response) => {
-      console.log(response.data);
-      message.value.set("ユーザー登録しました。戻ってサインインしてください", "text-success");
+      message.value.set(response.data, "text-success");
     })
     .catch((error) => {
       message.value.set(getErrorMessage(error), "text-danger");
@@ -25,7 +24,14 @@ async function onClickSignupButton(email: string, userName: string, password: st
 
 <template>
   <div class="d-flex flex-column justify-content-center">
-    <AccountInput @click="onClickSignupButton" buttonClass="btn-primary" buttonText="新規登録" :hideUserName="false" />
+    <AccountInput
+      @click="onClickSignupButton"
+      submitLabel="新規登録"
+      :hideUserName="false"
+      :emailLabel="'受信を確認できるEメールアドレス'"
+      :userNameLabel="'登録したいユーザー名'"
+      :passwordLabel="'サインイン時に入力するパスワード'"
+    />
     <Message ref="message" />
   </div>
 </template>

@@ -3,11 +3,18 @@ import { ref, watchEffect } from "vue";
 import { VarcharMax } from "../openapi";
 import { PASSWORD_MAX_LENGTH } from "../constant";
 
-const props = defineProps<{
-  buttonClass: string;
-  buttonText: string;
+interface Props {
   hideUserName: boolean;
-}>();
+  submitLabel: string;
+  emailLabel: string;
+  userNameLabel: string;
+  passwordLabel: string;
+}
+const props = withDefaults(defineProps<Props>(), {
+  emailLabel: "Eメールアドレス",
+  userNameLabel: "ユーザー名",
+  passwordLabel: "パスワード",
+});
 
 const emit = defineEmits<{
   click: [email: string, userName: string, password: string];
@@ -48,22 +55,24 @@ function canClick(): boolean {
 <template>
   <div class="d-flex justify-content-center">
     <div class="d-flex flex-column">
-      <div class="input-group">
-        <span class="input-group-text" style="width: 100px">Eメール</span>
-        <input v-model="email" type="text" class="form-control" />
+      <div>
+        <label for="email" class="form-label">{{ emailLabel }}</label>
+        <input v-model="email" id="email" type="text" class="form-control" />
       </div>
-      <div v-if="!hideUserName" class="input-group">
-        <span class="input-group-text" style="width: 100px">ユーザー名</span>
-        <input v-model="userName" type="text" class="form-control" />
+      <div v-if="!hideUserName">
+        <label for="userName" class="form-label">{{ userNameLabel }}</label>
+        <input v-model="userName" id="userName" type="text" class="form-control" />
       </div>
-      <div class="input-group">
-        <span class="input-group-text" style="width: 100px">パスワード</span>
-        <input v-model="password" :type="showPassword ? 'text' : 'password'" class="form-control" />
-        <button @click="onClickShowPasswordButton" :class="`btn ${showPassword ? 'btn-secondary' : 'btn-outline-secondary'}`">
-          <span class="mdi mdi-eye" />
-        </button>
+      <div>
+        <label for="password" class="form-label">{{ passwordLabel }}</label>
+        <div class="input-group">
+          <input v-model="password" :type="showPassword ? 'text' : 'password'" class="form-control" />
+          <button @click="onClickShowPasswordButton" :class="`btn ${showPassword ? 'btn-secondary' : 'btn-outline-secondary'}`">
+            <span class="mdi mdi-eye" />
+          </button>
+        </div>
       </div>
-      <button @click="onClickSubmitButton" :class="`btn ${buttonClass}`" :disabled="!canClick()">{{ buttonText }}</button>
+      <button @click="onClickSubmitButton" :class="`btn btn-primary mt-3`" :disabled="!canClick()">{{ submitLabel }}</button>
     </div>
   </div>
 </template>
