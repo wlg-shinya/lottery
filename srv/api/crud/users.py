@@ -4,13 +4,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 from hashlib import sha256
 from time import time
-from core.config import env, default_timezone
+from core.config import env
+from core.mail import send_gmail
 from api.models import Users as Model
 from api.schemas.access_tokens import AccessTokenCreate, default_expire_at as access_tokens_default_expire_at
 from api.schemas.signup_tokens import SignupTokenCreate, default_expire_at as signup_tokens_default_expire_at
 import api.schemas.users as schema
 import api.crud.access_tokens as access_tokens
 import api.crud.signup_tokens as signup_tokens
+from textwrap import dedent
 
 async def create_user(
     db: AsyncSession, body: schema.UserCreate
@@ -82,7 +84,7 @@ async def delete_user(
 
 async def signup_step1(
     db: AsyncSession, body: schema.UserSignupStep1
-) -> str:
+) -> None:
     # すでに登録済みのEメールならはじく
     result = (await db.execute(select(Model).filter(Model.email == body.email)))
     if len(result.all()) > 0:
@@ -99,7 +101,18 @@ async def signup_step1(
             expire_at=signup_tokens_default_expire_at()
             ))
     # 認証用URL
-    return f"{env().frontend_url}/#/signup_step2/?signup_token={token}"
+    signup_url = f"{env().frontend_url}/#/signup_step2/?signup_token={token}"
+    # メール送信
+    mail_body = dedent('''
+        {signup_url}
+        
+        上記リンクをクリックしてサインアップを完了させてください
+        このメールに心当たりがない場合はこのメール自体を削除してください
+        ''').format(signup_url=signup_url).strip()
+    try:
+        send_gmail(body.email, env().notice_email, f"{env().app_title}/サインアップ", mail_body)
+    except:
+        raise HTTPException(status_code=400, detail=f"Bad Request can not send notice email.")
 
 async def signup_step2(
     db: AsyncSession, body: schema.UserSignupStep2
