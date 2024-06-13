@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watchEffect } from "vue";
+import { LotteryTopData } from "../lottery-data";
 import { DefaultApiClient } from "../openapi";
 import { getErrorMessage } from "../error";
 import { PASSWORD_MAX_LENGTH } from "../constant";
@@ -8,12 +9,24 @@ import HomeButton from "../components/HomeButton.vue";
 import Message from "../components/Message.vue";
 
 const message = ref();
+const lotteryTopData = ref<LotteryTopData | null>(null);
 const oldPassword = ref("");
 const newPassword = ref("");
 const showOldPassword = ref(false);
 const showNewPassword = ref(false);
 
 watchEffect(async () => {
+  // サインインチェック
+  if (lotteryTopData.value) {
+    if (lotteryTopData.value.accessToken === "") {
+      message.value.set("サインインしてください", "text-danger");
+      return;
+    }
+  } else {
+    return;
+  }
+
+  // メッセージ更新
   if (oldPassword.value && !newPassword.value) {
     message.value.set("新しいパスワードも入力する必要があります", "text-danger");
   } else if (!oldPassword.value && newPassword.value) {
@@ -37,23 +50,19 @@ watchEffect(async () => {
 
 async function onClickSubmitButton() {
   try {
-    // ローカルストレージからデータを得る
-    const lotteryTopData = await LocalStorageLottery.load()
-      .then(async (result) => result)
-      .catch((error) => {
-        throw error;
-      });
-    if (!lotteryTopData.accessToken) return;
+    // サインインしていなかったら何もしない
+    const topData = lotteryTopData.value;
+    if (!topData || !topData.accessToken) return;
 
     // パスワード変更をして成功したら新しいアクセストークンをローカル保存する
     await DefaultApiClient.changePasswordApiChangePasswordPut({
-      access_token: lotteryTopData.accessToken,
+      access_token: topData.accessToken,
       old_password: oldPassword.value,
       new_password: newPassword.value,
     })
       .then(async (response) => {
-        lotteryTopData.accessToken = response.data.access_token;
-        await LocalStorageLottery.save(lotteryTopData)
+        topData.accessToken = response.data.access_token;
+        await LocalStorageLottery.save(topData)
           .then(() => {
             message.value.set("パスワードを更新しました", "text-success");
           })
@@ -72,12 +81,20 @@ async function onClickSubmitButton() {
 function disabledSubmitButton(): boolean {
   return !oldPassword.value || !newPassword.value || oldPassword.value === newPassword.value;
 }
+
+async function created() {
+  // ローカスストレージのデータを得る
+  await LocalStorageLottery.load().then((result) => {
+    lotteryTopData.value = result;
+  });
+}
+created();
 </script>
 
 <template>
   <div class="d-flex flex-column justify-content-center">
     <HomeButton />
-    <div class="d-flex justify-content-center">
+    <div v-if="lotteryTopData?.accessToken !== ''" class="d-flex justify-content-center">
       <div>
         <div>
           <div>
