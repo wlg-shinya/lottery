@@ -13,8 +13,8 @@ async function onClickSignupButton(email: string, userName: string, password: st
     account_name: userName,
     identification: password,
   })
-    .then((response) => {
-      message.value.set(response.data, "text-success");
+    .then(() => {
+      message.value.set("認証用のメールを送信しました。登録したEメールを確認してください", "text-success");
     })
     .catch((error) => {
       message.value.set(getErrorMessage(error), "text-danger");
