@@ -27,6 +27,12 @@ async def update_user(body: schema.UserUpdate, db: AsyncSession = Depends(db)):
     model = await crud.read_user_by_access_token(db=db, access_token=body.access_token)
     return await crud.update_user(db=db, body=body, original=model)
 
+@router.put("/api/update_user_account_name", response_model=schema.UserUpdateResponse)
+async def update_user_account_name(access_token: str, account_name: str, db: AsyncSession = Depends(db)):
+    await access_tokens.validate_token(db=db, token=access_token)
+    model = await crud.read_user_by_access_token(db=db, access_token=access_token)
+    return await crud.update_user_account_name(db=db, account_name=account_name, original=model)
+
 @router.put("/api/update_user_pull_lottery_ids", response_model=schema.UserUpdateResponse)
 async def update_user_pull_lottery_ids(access_token: str, pull_lottery_ids: list[int], db: AsyncSession = Depends(db)):
     await access_tokens.validate_token(db=db, token=access_token)

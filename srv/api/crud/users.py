@@ -62,6 +62,12 @@ async def update_user(
     original.pull_lottery_ids = body.pull_lottery_ids
     return await _update_model(db=db, model=original)
 
+async def update_user_account_name(
+    db: AsyncSession, account_name: str, original: Model
+) -> Model:
+    original.account_name = account_name
+    return await _update_model(db=db, model=original)
+
 async def update_user_pull_lottery_ids(
     db: AsyncSession, pull_lottery_ids: list[int], original: Model
 ) -> Model:
