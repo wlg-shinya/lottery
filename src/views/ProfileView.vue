@@ -75,29 +75,33 @@ function disabledSubmitButton(): boolean {
 </script>
 
 <template>
-  <div class="d-flex justify-content-center">
-    <div class="d-flex flex-column">
-      <HomeButton />
+  <div class="d-flex flex-column justify-content-center">
+    <HomeButton />
+    <div class="d-flex justify-content-center">
       <div>
-        <label for="oldPassword" class="form-label">現在のパスワード</label>
-        <div class="input-group">
-          <input v-model="oldPassword" id="oldPassword" :type="showOldPassword ? 'text' : 'password'" class="form-control" />
-          <button @click="showOldPassword = !showOldPassword" :class="`btn ${showOldPassword ? 'btn-secondary' : 'btn-outline-secondary'}`">
-            <span class="mdi mdi-eye" />
-          </button>
+        <div>
+          <div>
+            <label for="oldPassword" class="form-label">現在のパスワード</label>
+            <div class="input-group">
+              <input v-model="oldPassword" id="oldPassword" :type="showOldPassword ? 'text' : 'password'" class="form-control" />
+              <button @click="showOldPassword = !showOldPassword" :class="`btn ${showOldPassword ? 'btn-secondary' : 'btn-outline-secondary'}`">
+                <span class="mdi mdi-eye" />
+              </button>
+            </div>
+          </div>
+          <div>
+            <label for="newPassword" class="form-label">新しいパスワード</label>
+            <div class="input-group">
+              <input v-model="newPassword" id="newPassword" :type="showNewPassword ? 'text' : 'password'" class="form-control" />
+              <button @click="showNewPassword = !showNewPassword" :class="`btn ${showNewPassword ? 'btn-secondary' : 'btn-outline-secondary'}`">
+                <span class="mdi mdi-eye" />
+              </button>
+            </div>
+          </div>
+          <button @click="onClickSubmitButton" class="btn btn-primary mt-3 w-100" :disabled="disabledSubmitButton()">変更</button>
         </div>
       </div>
-      <div>
-        <label for="newPassword" class="form-label">新しいパスワード</label>
-        <div class="input-group">
-          <input v-model="newPassword" id="newPassword" :type="showNewPassword ? 'text' : 'password'" class="form-control" />
-          <button @click="showNewPassword = !showNewPassword" :class="`btn ${showNewPassword ? 'btn-secondary' : 'btn-outline-secondary'}`">
-            <span class="mdi mdi-eye" />
-          </button>
-        </div>
-      </div>
-      <button @click="onClickSubmitButton" class="btn btn-primary mt-3" :disabled="disabledSubmitButton()">変更</button>
-      <Message ref="message" />
     </div>
+    <Message ref="message" />
   </div>
 </template>

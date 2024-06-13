@@ -49,7 +49,7 @@ function canClick(): boolean {
 
 <template>
   <div class="d-flex justify-content-center">
-    <div class="d-flex flex-column">
+    <div>
       <div>
         <label for="email" class="form-label">{{ emailLabel }}</label>
         <input v-model="email" id="email" type="text" class="form-control" />
@@ -67,7 +67,7 @@ function canClick(): boolean {
           </button>
         </div>
       </div>
-      <button @click="onClickSubmitButton" :class="`btn btn-primary mt-3`" :disabled="!canClick()">{{ submitLabel }}</button>
+      <button @click="onClickSubmitButton" class="btn btn-primary mt-3 w-100" :disabled="!canClick()">{{ submitLabel }}</button>
     </div>
   </div>
 </template>
