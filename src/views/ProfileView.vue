@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watchEffect } from "vue";
 import { LotteryTopData } from "../lottery-data";
-import { DefaultApiClient } from "../openapi";
+import { DefaultApiClient, VarcharMax } from "../openapi";
 import { getErrorMessage } from "../error";
 import { PASSWORD_MAX_LENGTH } from "../constant";
 import LocalStorageLottery from "../local-storage-lottery";
@@ -41,6 +41,9 @@ watchEffect(async () => {
   }
 
   // テキスト入力の上限切りつめ
+  if (userName.value.length > VarcharMax.users_account_name) {
+    userName.value = userName.value.slice(0, VarcharMax.users_account_name);
+  }
   if (oldPassword.value.length > PASSWORD_MAX_LENGTH) {
     oldPassword.value = oldPassword.value.slice(0, PASSWORD_MAX_LENGTH);
   }
@@ -49,36 +52,49 @@ watchEffect(async () => {
   }
 });
 
-async function onClickChangeUserNameButton() {}
+async function onClickChangeUserNameButton() {
+  // サインインしていなかったら何もしない
+  const topData = lotteryTopData.value;
+  if (!topData || !topData.accessToken) return;
+
+  // 新しいユーザー名をサーバーに反映する
+  await DefaultApiClient.updateUserAccountNameApiUpdateUserAccountNamePut(topData.accessToken, userName.value)
+    .then(() => {
+      message.value.set("ユーザー名を更新しました", "text-success");
+    })
+    .catch((error) => {
+      message.value.set(getErrorMessage(error), "text-danger");
+    });
+}
 
 async function onClickChangePasswordButton() {
-  try {
-    // サインインしていなかったら何もしない
-    const topData = lotteryTopData.value;
-    if (!topData || !topData.accessToken) return;
+  // サインインしていなかったら何もしない
+  const topData = lotteryTopData.value;
+  if (!topData || !topData.accessToken) return;
 
-    // パスワード変更をして成功したら新しいアクセストークンをローカル保存する
-    await DefaultApiClient.changePasswordApiChangePasswordPut({
-      access_token: topData.accessToken,
-      old_password: oldPassword.value,
-      new_password: newPassword.value,
+  // パスワード変更をして成功したら新しいアクセストークンをローカル保存する
+  await DefaultApiClient.changePasswordApiChangePasswordPut({
+    access_token: topData.accessToken,
+    old_password: oldPassword.value,
+    new_password: newPassword.value,
+  })
+    .then(async (response) => {
+      topData.accessToken = response.data.access_token;
+      await LocalStorageLottery.save(topData)
+        .then(() => {
+          message.value.set("パスワードを更新しました", "text-success");
+        })
+        .catch((error) => {
+          throw error;
+        });
     })
-      .then(async (response) => {
-        topData.accessToken = response.data.access_token;
-        await LocalStorageLottery.save(topData)
-          .then(() => {
-            message.value.set("パスワードを更新しました", "text-success");
-          })
-          .catch((error) => {
-            throw error;
-          });
-      })
-      .catch((error) => {
-        throw error;
-      });
-  } catch (error) {
-    message.value.set(getErrorMessage(error), "text-danger");
-  }
+    .catch((error) => {
+      message.value.set(getErrorMessage(error), "text-danger");
+    });
+}
+
+function disabledChangeUserNameButton(): boolean {
+  return !userName.value;
 }
 
 function disabledChangePasswordButton(): boolean {
@@ -113,12 +129,15 @@ created();
 <template>
   <div class="d-flex flex-column justify-content-center">
     <HomeButton />
+    <Message ref="message" />
     <div v-if="lotteryTopData?.accessToken !== ''">
       <div class="d-flex justify-content-center">
         <div>
           <label for="userName" class="form-label">ユーザー名</label>
           <input v-model="userName" id="userName" class="form-control" />
-          <button @click="onClickChangeUserNameButton" class="btn btn-primary mt-2 w-100">ユーザー名変更</button>
+          <button @click="onClickChangeUserNameButton" class="btn btn-primary mt-2 w-100" :disabled="disabledChangeUserNameButton()">
+            ユーザー名変更
+          </button>
         </div>
       </div>
       <div class="d-flex justify-content-center mt-4">
@@ -149,6 +168,5 @@ created();
         </div>
       </div>
     </div>
-    <Message ref="message" />
   </div>
 </template>
