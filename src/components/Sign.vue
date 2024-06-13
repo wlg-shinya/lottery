@@ -82,7 +82,7 @@ async function onSignout() {
           <span class="fs-2 p-2">{{ username }}</span>
           <span>さん</span>
         </div>
-        <button @click="onClickGoProfileButton" class="btn btn-link p-0">プロファイルの編集</button>
+        <button @click="onClickGoProfileButton" class="btn btn-link p-0">個人設定の編集</button>
       </div>
       <Signout @signout="onSignout" />
     </div>
