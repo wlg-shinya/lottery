@@ -19,7 +19,7 @@ class Environment(BaseSettings):
         return f"postgresql+asyncpg://{self.db_url}"
 
     class Config:
-        env_file = os.path.join(PROJECT_ROOT, '.env')
+        env_file = os.path.join(PROJECT_ROOT, '.env.local')
 
 @lru_cache
 def env():
