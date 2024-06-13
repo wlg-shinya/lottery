@@ -76,7 +76,7 @@ async function onSignout() {
       <button @click="onClickSignupButton" class="btn btn-link p-0">作ったくじ引きをサーバーに保存したい？ではアカウントを作りましょう</button>
     </div>
     <div v-else>
-      <div v-if="username">
+      <div v-if="username" class="d-flex flex-column justify-content-center">
         <div class="text-center">
           <span>ようこそ</span>
           <span class="fs-2 p-2">{{ username }}</span>
