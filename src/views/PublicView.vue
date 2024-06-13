@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watchEffect, computed } from "vue";
+import { ref, watchEffect, computed, onMounted } from "vue";
 import { DefaultApiClient, VarcharMax } from "../openapi";
 import { getErrorMessage } from "../error";
 import { LotteryContentsData, LotteryPublicData, defaultLotteryResultData } from "../lottery-data";
@@ -52,9 +52,9 @@ const filteredSortedShowData = computed((): LotteryPublicData[] => {
   }
 });
 
-async function onStart() {
+onMounted(async () => {
   await updateAllData();
-}
+});
 
 async function onClickData(data: LotteryPublicData) {
   try {
@@ -150,8 +150,6 @@ async function updateAllData() {
 function numberToShowString(value: number) {
   return value.toLocaleString();
 }
-
-onStart();
 </script>
 
 <template>

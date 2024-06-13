@@ -49,13 +49,6 @@ const serverSavedLotteryData = computed((): LotteryData[] => reverseLotteryData.
 const serverSavedMyLotteryData = computed((): LotteryData[] => serverSavedLotteryData.value.filter((x) => x.contentsData.mine));
 const pullLotteryData = computed((): LotteryData[] => serverSavedLotteryData.value.filter((x) => !x.contentsData.mine));
 
-async function onStart() {
-  await LocalStorageLottery.setup();
-  await LocalStorageLottery.load().then((result) => {
-    lotteryTopData.value = result;
-  });
-}
-
 async function onSignin(accessToken: string) {
   // サインイン済みの場合はユーザー確認の上でサインアウトしてからサインインする
   // 新規サインインの時は普通にサインイン
@@ -341,7 +334,13 @@ function doSignout() {
   lotteryTopData.value.listData = structuredClone(defaultLotteryListData);
 }
 
-onStart();
+async function created() {
+  await LocalStorageLottery.setup();
+  await LocalStorageLottery.load().then((result) => {
+    lotteryTopData.value = result;
+  });
+}
+created();
 </script>
 
 <template>
