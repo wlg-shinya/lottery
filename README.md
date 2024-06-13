@@ -6,6 +6,7 @@
 $ npm install
 $ cd ./srv
 $ poetry install
+$ echo SMTP_PASSWORD=\"YourGmailAppPassword\" > .env.local
 ```
 
 ## Development

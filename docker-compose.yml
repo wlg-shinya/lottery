@@ -35,8 +35,10 @@ services:
       poetry run uvicorn api.main:app --host 0.0.0.0 --port 5000 --reload
       "
     environment:
+      - APP_TITLE=くじ引きメーカー(β)
       - DB_URL=postgres:postgres@lottery-db:5432/lottery
       - FRONTEND_URL=http://localhost:8500
+      - NOTICE_EMAIL=welovegamesinc+noreply@gmail.com
     depends_on:
       db:
         condition: service_healthy
