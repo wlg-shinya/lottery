@@ -1421,7 +1421,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async signupStep1ApiSignupStep1Post(userSignupStep1: UserSignupStep1, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+        async signupStep1ApiSignupStep1Post(userSignupStep1: UserSignupStep1, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.signupStep1ApiSignupStep1Post(userSignupStep1, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.signupStep1ApiSignupStep1Post']?.[localVarOperationServerIndex]?.url;
@@ -1663,7 +1663,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        signupStep1ApiSignupStep1Post(userSignupStep1: UserSignupStep1, options?: any): AxiosPromise<string> {
+        signupStep1ApiSignupStep1Post(userSignupStep1: UserSignupStep1, options?: any): AxiosPromise<any> {
             return localVarFp.signupStep1ApiSignupStep1Post(userSignupStep1, options).then((request) => request(axios, basePath));
         },
         /**
