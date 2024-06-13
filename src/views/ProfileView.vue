@@ -10,6 +10,7 @@ import Message from "../components/Message.vue";
 
 const message = ref();
 const lotteryTopData = ref<LotteryTopData | null>(null);
+const userName = ref("");
 const oldPassword = ref("");
 const newPassword = ref("");
 const showOldPassword = ref(false);
@@ -48,7 +49,9 @@ watchEffect(async () => {
   }
 });
 
-async function onClickSubmitButton() {
+async function onClickChangeUserNameButton() {}
+
+async function onClickChangePasswordButton() {
   try {
     // サインインしていなかったら何もしない
     const topData = lotteryTopData.value;
@@ -78,15 +81,31 @@ async function onClickSubmitButton() {
   }
 }
 
-function disabledSubmitButton(): boolean {
+function disabledChangePasswordButton(): boolean {
   return !oldPassword.value || !newPassword.value || oldPassword.value === newPassword.value;
 }
 
 async function created() {
   // ローカスストレージのデータを得る
-  await LocalStorageLottery.load().then((result) => {
-    lotteryTopData.value = result;
-  });
+  await LocalStorageLottery.load()
+    .then(async (result) => {
+      lotteryTopData.value = result;
+
+      // アクセストークンが得られていればユーザーデータも得る
+      if (lotteryTopData.value.accessToken) {
+        await DefaultApiClient.readUserByAccessTokenApiReadUserByAccessTokenGet(lotteryTopData.value.accessToken)
+          .then((response) => {
+            // ユーザー名
+            userName.value = response.data.account_name;
+          })
+          .catch((error) => {
+            throw error;
+          });
+      }
+    })
+    .catch((error) => {
+      message.value.set(getErrorMessage(error), "text-danger");
+    });
 }
 created();
 </script>
@@ -94,28 +113,39 @@ created();
 <template>
   <div class="d-flex flex-column justify-content-center">
     <HomeButton />
-    <div v-if="lotteryTopData?.accessToken !== ''" class="d-flex justify-content-center">
-      <div>
+    <div v-if="lotteryTopData?.accessToken !== ''">
+      <div class="d-flex justify-content-center">
+        <div>
+          <label for="userName" class="form-label">ユーザー名</label>
+          <input v-model="userName" id="userName" class="form-control" />
+          <button @click="onClickChangeUserNameButton" class="btn btn-primary mt-2 w-100">ユーザー名変更</button>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center mt-4">
         <div>
           <div>
-            <label for="oldPassword" class="form-label">現在のパスワード</label>
-            <div class="input-group">
-              <input v-model="oldPassword" id="oldPassword" :type="showOldPassword ? 'text' : 'password'" class="form-control" />
-              <button @click="showOldPassword = !showOldPassword" :class="`btn ${showOldPassword ? 'btn-secondary' : 'btn-outline-secondary'}`">
-                <span class="mdi mdi-eye" />
-              </button>
+            <div>
+              <label for="oldPassword" class="form-label">現在のパスワード</label>
+              <div class="input-group">
+                <input v-model="oldPassword" id="oldPassword" :type="showOldPassword ? 'text' : 'password'" class="form-control" />
+                <button @click="showOldPassword = !showOldPassword" :class="`btn ${showOldPassword ? 'btn-secondary' : 'btn-outline-secondary'}`">
+                  <span class="mdi mdi-eye" />
+                </button>
+              </div>
             </div>
-          </div>
-          <div>
-            <label for="newPassword" class="form-label">新しいパスワード</label>
-            <div class="input-group">
-              <input v-model="newPassword" id="newPassword" :type="showNewPassword ? 'text' : 'password'" class="form-control" />
-              <button @click="showNewPassword = !showNewPassword" :class="`btn ${showNewPassword ? 'btn-secondary' : 'btn-outline-secondary'}`">
-                <span class="mdi mdi-eye" />
-              </button>
+            <div>
+              <label for="newPassword" class="form-label">新しいパスワード</label>
+              <div class="input-group">
+                <input v-model="newPassword" id="newPassword" :type="showNewPassword ? 'text' : 'password'" class="form-control" />
+                <button @click="showNewPassword = !showNewPassword" :class="`btn ${showNewPassword ? 'btn-secondary' : 'btn-outline-secondary'}`">
+                  <span class="mdi mdi-eye" />
+                </button>
+              </div>
             </div>
+            <button @click="onClickChangePasswordButton" class="btn btn-primary mt-2 w-100" :disabled="disabledChangePasswordButton()">
+              パスワード変更
+            </button>
           </div>
-          <button @click="onClickSubmitButton" class="btn btn-primary mt-3 w-100" :disabled="disabledSubmitButton()">変更</button>
         </div>
       </div>
     </div>
