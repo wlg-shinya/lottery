@@ -1087,6 +1087,50 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
+         * @summary Update User Account Name
+         * @param {string} accessToken 
+         * @param {string} accountName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateUserAccountNameApiUpdateUserAccountNamePut: async (accessToken: string, accountName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'accessToken' is not null or undefined
+            assertParamExists('updateUserAccountNameApiUpdateUserAccountNamePut', 'accessToken', accessToken)
+            // verify required parameter 'accountName' is not null or undefined
+            assertParamExists('updateUserAccountNameApiUpdateUserAccountNamePut', 'accountName', accountName)
+            const localVarPath = `/api/update_user_account_name`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (accessToken !== undefined) {
+                localVarQueryParameter['access_token'] = accessToken;
+            }
+
+            if (accountName !== undefined) {
+                localVarQueryParameter['account_name'] = accountName;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Update User
          * @param {UserUpdate} userUpdate 
          * @param {*} [options] Override http request option.
@@ -1412,6 +1456,20 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Update User Account Name
+         * @param {string} accessToken 
+         * @param {string} accountName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateUserAccountNameApiUpdateUserAccountNamePut(accessToken: string, accountName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserUpdateResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserAccountNameApiUpdateUserAccountNamePut(accessToken, accountName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.updateUserAccountNameApiUpdateUserAccountNamePut']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Update User
          * @param {UserUpdate} userUpdate 
          * @param {*} [options] Override http request option.
@@ -1628,6 +1686,17 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         updateLotteryApiUpdateLotteryPut(id: number, lotteryCreate: LotteryCreate, options?: any): AxiosPromise<LotteryCreateResponse> {
             return localVarFp.updateLotteryApiUpdateLotteryPut(id, lotteryCreate, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Update User Account Name
+         * @param {string} accessToken 
+         * @param {string} accountName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateUserAccountNameApiUpdateUserAccountNamePut(accessToken: string, accountName: string, options?: any): AxiosPromise<UserUpdateResponse> {
+            return localVarFp.updateUserAccountNameApiUpdateUserAccountNamePut(accessToken, accountName, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1876,6 +1945,19 @@ export class DefaultApi extends BaseAPI {
      */
     public updateLotteryApiUpdateLotteryPut(id: number, lotteryCreate: LotteryCreate, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).updateLotteryApiUpdateLotteryPut(id, lotteryCreate, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Update User Account Name
+     * @param {string} accessToken 
+     * @param {string} accountName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public updateUserAccountNameApiUpdateUserAccountNamePut(accessToken: string, accountName: string, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).updateUserAccountNameApiUpdateUserAccountNamePut(accessToken, accountName, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
