@@ -3,18 +3,13 @@ import { ref, watchEffect } from "vue";
 import { VarcharMax } from "../openapi";
 import { PASSWORD_MAX_LENGTH } from "../constant";
 
-interface Props {
+const props = defineProps<{
   hideUserName: boolean;
   submitLabel: string;
   emailLabel: string;
   userNameLabel: string;
   passwordLabel: string;
-}
-const props = withDefaults(defineProps<Props>(), {
-  emailLabel: "Eメールアドレス",
-  userNameLabel: "ユーザー名",
-  passwordLabel: "パスワード",
-});
+}>();
 
 const emit = defineEmits<{
   click: [email: string, userName: string, password: string];

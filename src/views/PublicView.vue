@@ -6,7 +6,7 @@ import { LotteryContentsData, LotteryPublicData, defaultLotteryResultData } from
 import LocalStorageLottery from "../local-storage-lottery";
 import router from "../router";
 import Message from "../components/Message.vue";
-import BackButton from "../components/BackButton.vue";
+import HomeButton from "../components/HomeButton.vue";
 import OmitText from "../components/OmitText.vue";
 import HighlightText from "../components/HighlightText.vue";
 
@@ -156,8 +156,8 @@ onStart();
 
 <template>
   <div>
-    <BackButton />
     <div class="d-flex flex-column justify-content-center">
+      <HomeButton />
       <Message ref="message" />
       <div class="d-flex">
         <button @click="sortType = 'used'" :class="`btn ${sortType === 'used' ? 'btn' : 'text'}-primary`">

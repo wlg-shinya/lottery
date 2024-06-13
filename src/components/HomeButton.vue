@@ -8,6 +8,6 @@ function onClickButton() {
 
 <template>
   <button @click="onClickButton" class="btn">
-    <span class="mdi mdi-arrow-left text-primary mdi-24px" />
+    <span class="mdi mdi-home text-primary mdi-36px" />
   </button>
 </template>

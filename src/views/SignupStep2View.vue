@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { DefaultApiClient } from "../openapi";
 import { getErrorMessage } from "../error";
-import BackButton from "../components/BackButton.vue";
+import HomeButton from "../components/HomeButton.vue";
 import Message from "../components/Message.vue";
 
 const message = ref();
 
-async function onStart() {
+onMounted(async () => {
   try {
     const signupToken = useRoute().query["signup_token"]?.toString();
     if (!signupToken) {
@@ -25,16 +25,12 @@ async function onStart() {
   } catch (error) {
     message.value.set(getErrorMessage(error), "text-danger");
   }
-}
-
-onStart();
+});
 </script>
 
 <template>
-  <div>
-    <BackButton />
-    <div class="d-flex flex-column justify-content-center">
-      <Message ref="message" />
-    </div>
+  <div class="d-flex flex-column justify-content-center">
+    <HomeButton />
+    <Message ref="message" />
   </div>
 </template>

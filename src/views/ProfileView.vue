@@ -4,7 +4,7 @@ import { DefaultApiClient } from "../openapi";
 import { getErrorMessage } from "../error";
 import { PASSWORD_MAX_LENGTH } from "../constant";
 import LocalStorageLottery from "../local-storage-lottery";
-import BackButton from "../components/BackButton.vue";
+import HomeButton from "../components/HomeButton.vue";
 import Message from "../components/Message.vue";
 
 const message = ref();
@@ -75,27 +75,29 @@ function disabledSubmitButton(): boolean {
 </script>
 
 <template>
-  <div>
-    <BackButton />
-    <div class="d-flex justify-content-center">
-      <div class="d-flex flex-column">
+  <div class="d-flex justify-content-center">
+    <div class="d-flex flex-column">
+      <HomeButton />
+      <div>
+        <label for="oldPassword" class="form-label">現在のパスワード</label>
         <div class="input-group">
-          <span class="input-group-text" style="width: 150px">現在のパスワード</span>
-          <input v-model="oldPassword" :type="showOldPassword ? 'text' : 'password'" class="form-control" />
+          <input v-model="oldPassword" id="oldPassword" :type="showOldPassword ? 'text' : 'password'" class="form-control" />
           <button @click="showOldPassword = !showOldPassword" :class="`btn ${showOldPassword ? 'btn-secondary' : 'btn-outline-secondary'}`">
             <span class="mdi mdi-eye" />
           </button>
         </div>
+      </div>
+      <div>
+        <label for="newPassword" class="form-label">新しいパスワード</label>
         <div class="input-group">
-          <span class="input-group-text" style="width: 150px">新しいパスワード</span>
-          <input v-model="newPassword" :type="showNewPassword ? 'text' : 'password'" class="form-control" />
+          <input v-model="newPassword" id="newPassword" :type="showNewPassword ? 'text' : 'password'" class="form-control" />
           <button @click="showNewPassword = !showNewPassword" :class="`btn ${showNewPassword ? 'btn-secondary' : 'btn-outline-secondary'}`">
             <span class="mdi mdi-eye" />
           </button>
         </div>
-        <button @click="onClickSubmitButton" class="btn btn-primary" :disabled="disabledSubmitButton()">変更</button>
-        <Message ref="message" />
       </div>
+      <button @click="onClickSubmitButton" class="btn btn-primary mt-3" :disabled="disabledSubmitButton()">変更</button>
+      <Message ref="message" />
     </div>
   </div>
 </template>

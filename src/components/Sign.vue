@@ -65,7 +65,14 @@ async function onSignout() {
 <template>
   <div class="d-flex flex-column justify-content-center">
     <div v-if="!props.accessToken">
-      <AccountInput @click="onClickSigninButton" submitLabel="サインイン" :hideUserName="true" :emailLabel="'登録したEメールアドレス'" />
+      <AccountInput
+        @click="onClickSigninButton"
+        :hideUserName="true"
+        :submitLabel="'サインイン'"
+        :emailLabel="'登録したEメールアドレス'"
+        :userNameLabel="'ユーザー名'"
+        :passwordLabel="'パスワード'"
+      />
       <button @click="onClickSignupButton" class="btn btn-link p-0">作ったくじ引きをサーバーに保存したい？ではアカウントを作りましょう</button>
     </div>
     <div v-else>
