@@ -7,7 +7,7 @@ function onClickButton() {
 </script>
 
 <template>
-  <button @click="onClickButton" class="btn">
+  <button @click="onClickButton" class="btn btn-link">
     <span class="mdi mdi-home text-primary mdi-36px" />
   </button>
 </template>
