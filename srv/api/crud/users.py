@@ -146,6 +146,7 @@ async def change_password(
     new_model = await update_user(
         db=db, 
         body=schema.UserUpdate(
+            email=old_model.email,
             account_name=old_model.account_name,
             identification=body.new_password,
             pull_lottery_ids=old_model.pull_lottery_ids,
