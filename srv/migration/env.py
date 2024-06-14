@@ -1,16 +1,12 @@
-import sys
-# 相対パスでcoreディレクトリが参照できないので、読み取れるように
-sys.path.append("..")
-from core.config import env
-
 from logging.config import fileConfig
 
-# from sqlalchemy import engine_from_config
-# from sqlalchemy import pool
+from sqlalchemy import engine_from_config
+from sqlalchemy import pool
 
 from alembic import context
 
 from api.models import Base
+from core.config import env
 from core.db import sync_engine
 
 # this is the Alembic Config object, which provides
@@ -26,7 +22,6 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-# target_metadata = None
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
@@ -66,11 +61,6 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    # connectable = engine_from_config(
-    #     config.get_section(config.config_ini_section, {}),
-    #     prefix="sqlalchemy.",
-    #     poolclass=pool.NullPool,
-    # )
     url = config.get_main_option("sqlalchemy.url")
     connectable = sync_engine
 
