@@ -13,10 +13,10 @@ class Environment(BaseSettings):
     notice_email: str
     smtp_password: str
 
-    def get_sync_db_url(db_url: str):
+    def get_sync_db_url(self, db_url: str):
         return f"postgresql+psycopg2://{db_url}"
 
-    def get_async_db_url(db_url: str):
+    def get_async_db_url(self, db_url: str):
         return f"postgresql+asyncpg://{db_url}"
 
     class Config:
