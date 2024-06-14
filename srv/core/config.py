@@ -1,5 +1,6 @@
 import os
 from functools import lru_cache
+from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
 from zoneinfo import ZoneInfo
 
@@ -19,8 +20,9 @@ class Environment(BaseSettings):
     def get_async_db_url(self, db_url: str):
         return f"postgresql+asyncpg://{db_url}"
 
-    class Config:
+    model_config = ConfigDict(
         env_file = os.path.join(PROJECT_ROOT, '.env.local')
+        )
 
 @lru_cache
 def env():
