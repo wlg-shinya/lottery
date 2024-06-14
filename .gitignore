@@ -24,7 +24,7 @@ dist-ssr
 *.sw?
 
 # DB
-pgdata
+pgdata*
 
 # python
 __pycache__/
