@@ -8,15 +8,16 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 class Environment(BaseSettings):
     app_title: str
     db_url: str
+    db_test_url: str
     frontend_url: str
     notice_email: str
     smtp_password: str
 
-    def get_sync_db_url(self):
-        return f"postgresql+psycopg2://{self.db_url}"
+    def get_sync_db_url(db_url: str):
+        return f"postgresql+psycopg2://{db_url}"
 
-    def get_async_db_url(self):
-        return f"postgresql+asyncpg://{self.db_url}"
+    def get_async_db_url(db_url: str):
+        return f"postgresql+asyncpg://{db_url}"
 
     class Config:
         env_file = os.path.join(PROJECT_ROOT, '.env.local')
