@@ -8,8 +8,8 @@ def default_expire_at():
     return datetime.now(default_timezone()) + timedelta(minutes=10)
 
 class SignupTokensBase(UserCreateBase):
-    token: str = Field(desciption="サインアップトークン")
-    expire_at: datetime = Field(default_expire_at(), desciption="有効期限")
+    token: str = Field(json_schema_extra={ "desciption": "サインアップトークン" })
+    expire_at: datetime = Field(default=default_expire_at(), json_schema_extra={ "desciption": "有効期限" })
 
 class SignupTokens(BaseModel, IdBase, CreatedUpdatedAtBase, SignupTokensBase):
     pass
