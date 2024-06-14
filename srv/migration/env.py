@@ -1,6 +1,6 @@
 import sys
 # 相対パスでcoreディレクトリが参照できないので、読み取れるように
-sys.path = ['', '..'] + sys.path[1:]
+sys.path.append("..")
 from core.config import env
 
 from logging.config import fileConfig
