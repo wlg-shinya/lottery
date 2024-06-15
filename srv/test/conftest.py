@@ -9,7 +9,7 @@ from api.models import Base
 from api.main import app
 
 @pytest.fixture
-async def async_client() -> AsyncGenerator[AsyncClient, None]:
+async def client_generator() -> AsyncGenerator[AsyncClient, None]:
     async_engine = create_async_engine(env().get_async_db_url(env().db_test_url), echo=True)
     async_session = sessionmaker(autocommit=False, autoflush=False, bind=async_engine, class_=AsyncSession)
 
