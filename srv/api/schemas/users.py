@@ -23,9 +23,6 @@ class UserUpdate(BaseModel, AccessTokenBase, UsersBase):
 class UserUpdateResponse(BaseModel, AccessTokenBase):
     pass
 
-class UserDelete(BaseModel, AccessTokenBase):
-    pass
-
 class UserSignin(BaseModel, UserSigninBase):
     pass
 

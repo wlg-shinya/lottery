@@ -18,7 +18,7 @@ async def test_integration(client_generator):
 
     # サインアップステップ1(Eメール非送信版)
     res_signup_step1 = await client.post(
-        "/api/admin/signup_step1",
+        "/api/test/signup_step1",
         headers=headers,
         content=body_signup_step1.model_dump_json()
         )
@@ -145,3 +145,11 @@ async def test_integration(client_generator):
     # アクセストークン更新
     access_token = res_change_password_obj.access_token
 
+    # ユーザー削除
+    res_delete = await client.delete(f"/api/delete_user_by_access_token?access_token={access_token}", headers=headers)
+    assert res_delete.status_code == 200
+
+    # 作成したユーザー消したので0なはず
+    read_users = await client.get("/api/read_users", headers=headers)
+    assert read_users.status_code == 200
+    assert len(read_users.json()) == 0
