@@ -86,7 +86,10 @@ async def test_integration(client_generator):
         )
     assert res_update_user.status_code == 200
     res_update_user_account_name_obj = schema.UserUpdateResponse(**res_update_user.json())
-    assert res_update_user_account_name_obj.id == res_read_user.id
+    assert res_update_user_account_name_obj.access_token != access_token
+
+    # アクセストークン更新
+    access_token = res_update_user_account_name_obj.access_token
 
     # ユーザー情報が正しく更新されたか確認
     res_read_user_by_access_token = await client.get(
@@ -106,7 +109,7 @@ async def test_integration(client_generator):
         )
     assert res_update_user_account_name.status_code == 200
     res_update_user_account_name_obj = schema.UserUpdateResponse(**res_update_user_account_name.json())
-    assert res_update_user_account_name_obj.id == res_read_user.id
+    assert res_update_user_account_name_obj.access_token == access_token # アカウント名更新ではアクセストークンは変わらないはず
     # ほかの人のくじ引きID登録情報の更新
     # user_pull_lottery_ids3 = [1, 2]
     # res_update_user_pull_lottery_ids = await client.put(
