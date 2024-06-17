@@ -154,7 +154,7 @@ async def test_integration(client_generator):
     # くじ引き作成
     body_create_lottery = lotteriesSchema.LotteryCreate(
         access_token=access_token,
-        text="1\n2\n3",
+        text="1",
         title="test",
         description="TEST"
         )
@@ -178,7 +178,7 @@ async def test_integration(client_generator):
     assert res_read_my_lotteries.status_code == 200
     assert len(res_read_my_lotteries.json()) == 1
 
-    # IDでくじ引きデータを得る
+    # IDでくじ引きを得る
     res_read_lottery = await client.get(f"/api/read_lottery?id={read_lotteries_top_obj.id}", headers=headers)
     assert res_read_lottery.status_code == 200
     res_read_lottery_obj = lotteriesSchema.Lotteries(**res_read_lottery.json())
@@ -186,11 +186,79 @@ async def test_integration(client_generator):
     assert res_read_lottery_obj.title == body_create_lottery.title
     assert res_read_lottery_obj.description == body_create_lottery.description
 
-    # ユーザー削除
-    res_delete = await client.delete(f"/api/delete_user_by_access_token?access_token={access_token}", headers=headers)
-    assert res_delete.status_code == 200
+    # くじ引き更新
+    body_update_lottery = lotteriesSchema.LotteryCreate(
+        access_token=access_token,
+        text="1\n2",
+        title="test2",
+        description="TEST2"
+        )
+    res_update_lottery = await client.put(
+        f"/api/update_lottery?id={res_read_lottery_obj.id}",
+        headers=headers,
+        content=body_update_lottery.model_dump_json()
+        )
+    assert res_update_lottery.status_code == 200
+    res_update_lottery_obj = lotteriesSchema.LotteryCreateResponse(**res_update_lottery.json())
+    assert res_update_lottery_obj.id == res_read_lottery_obj.id
+    assert res_update_lottery_obj.user_id == res_read_lottery_obj.user_id
 
-    # 作成したユーザー消したので0なはず
+    # くじ引きは更新されているはず
+    res_read_lottery = await client.get(f"/api/read_lottery?id={res_read_lottery_obj.id}", headers=headers)
+    assert res_read_lottery.status_code == 200
+    res_read_lottery_obj = lotteriesSchema.Lotteries(**res_read_lottery.json())
+    assert res_read_lottery_obj.text == body_update_lottery.text
+    assert res_read_lottery_obj.title == body_update_lottery.title
+    assert res_read_lottery_obj.description == body_update_lottery.description
+    assert res_read_lottery_obj.used_count == 0
+
+    # これまでに得たIDなら自分のくじ引きデータなはず
+    res_is_lottery_id_mine = await client.get(f"/api/is_lottery_id_mine?id={res_read_lottery_obj.id}&access_token={access_token}", headers=headers)
+    assert res_is_lottery_id_mine.status_code == 200
+    assert bool(res_is_lottery_id_mine.json()) == True
+
+    # 適当なIDなら自分のくじ引きデータではない
+    res_is_lottery_id_mine = await client.get(f"/api/is_lottery_id_mine?id=999&access_token={access_token}", headers=headers)
+    assert res_is_lottery_id_mine.status_code == 200
+    assert bool(res_is_lottery_id_mine.json()) == False
+
+    # くじ引き抽選回数を増加
+    res_increment_lottery_used_count = await client.post(f"/api/increment_lottery_used_count?id={res_read_lottery_obj.id}&access_token={access_token}", headers=headers)
+    assert res_increment_lottery_used_count.status_code == 200
+    res_increment_lottery_used_count_obj = lotteriesSchema.LotteryCreateResponse(**res_increment_lottery_used_count.json())
+    assert res_increment_lottery_used_count_obj.id == res_read_lottery_obj.id
+    assert res_increment_lottery_used_count_obj.user_id == res_read_lottery_obj.user_id
+
+    # くじ引き抽選回数は更新されているはず
+    res_read_lottery = await client.get(f"/api/read_lottery?id={res_read_lottery_obj.id}", headers=headers)
+    assert res_read_lottery.status_code == 200
+    res_read_lottery_obj = lotteriesSchema.Lotteries(**res_read_lottery.json())
+    assert res_read_lottery_obj.used_count == 1
+
+    # くじ引きをもう1回抽選
+    res_increment_lottery_used_count = await client.post(f"/api/increment_lottery_used_count?id={res_read_lottery_obj.id}&access_token={access_token}", headers=headers)
+    assert res_increment_lottery_used_count.status_code == 200
+
+    # くじ引き抽選回数は更新されているはず
+    res_read_lottery = await client.get(f"/api/read_lottery?id={res_read_lottery_obj.id}", headers=headers)
+    assert res_read_lottery.status_code == 200
+    res_read_lottery_obj = lotteriesSchema.Lotteries(**res_read_lottery.json())
+    assert res_read_lottery_obj.used_count == 2
+
+    # くじ引き削除
+    res_delete_lottery = await client.delete(f"/api/delete_lottery?id={res_read_lottery_obj.id}&access_token={access_token}", headers=headers)
+    assert res_delete_lottery.status_code == 200
+
+    # 作成したくじ引きを消したので0なはず
+    res_read_lotteries = await client.get("/api/read_lotteries", headers=headers)
+    assert res_read_lotteries.status_code == 200
+    assert len(res_read_lotteries.json()) == 0
+
+    # ユーザー削除
+    res_delete_user_by_access_token = await client.delete(f"/api/delete_user_by_access_token?access_token={access_token}", headers=headers)
+    assert res_delete_user_by_access_token.status_code == 200
+
+    # 作成したユーザーを消したので0なはず
     res_read_users = await client.get("/api/read_users", headers=headers)
     assert res_read_users.status_code == 200
     assert len(res_read_users.json()) == 0
