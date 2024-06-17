@@ -49,7 +49,7 @@ async def test_integration(client_generator):
     res_signin_obj = schema.UserSigninResponse(**res_signin.json())
     assert res_signin_obj.access_token != ""
 
-    # 
+    # アクセストークン確保
     access_token = res_signin_obj.access_token
 
     # アクセストークンでユーザー情報を得る
