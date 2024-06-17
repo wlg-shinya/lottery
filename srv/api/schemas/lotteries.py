@@ -17,6 +17,3 @@ class LotteryCreate(BaseModel, AccessTokenBase, LotteriesBase):
 
 class LotteryCreateResponse(BaseModel, IdBase, UserIdBase):
     pass
-
-class LotteryDelete(BaseModel, AccessTokenBase):
-    pass

@@ -33,9 +33,9 @@ async def update_lottery(id: int, body: schema.LotteryCreate, db: AsyncSession =
     return await crud.update_lottery(db=db, body=body, original=model)
 
 @router.delete("/api/delete_lottery", response_model=None)
-async def delete_lottery(id: int, body: schema.LotteryDelete, db: AsyncSession = Depends(db)):
-    await access_tokens.validate_token(db=db, token=body.access_token)
-    model = await crud.read_my_lottery(db=db, id=id, access_token=body.access_token)
+async def delete_lottery(id: int, access_token: str, db: AsyncSession = Depends(db)):
+    await access_tokens.validate_token(db=db, token=access_token)
+    model = await crud.read_my_lottery(db=db, id=id, access_token=access_token)
     await crud.delete_lottery(db=db, original=model)
 
 @router.get("/api/is_lottery_id_mine", response_model=bool)
@@ -47,8 +47,3 @@ async def is_lottery_id_mine(id: int, access_token: str, db: AsyncSession = Depe
 async def increment_lottery_used_count(id: int, access_token: str, db: AsyncSession = Depends(db)):
     await access_tokens.validate_token(db=db, token=access_token)
     return await crud.increment_lottery_used_count(db=db, id=id)
-
-@router.delete("/api/admin/delete_lottery", response_model=None)
-async def delete_lottery(id: int, db: AsyncSession = Depends(db)):
-    model = await crud.read_lottery(db=db, id=id)
-    await crud.delete_lottery(db=db, original=model)
