@@ -10,9 +10,9 @@ async def test_integration(client_generator):
     body_signup_step1 = schema.UserSignupStep1(email=body_signin.email, identification=body_signin.identification, account_name="test")
 
     # ユーザーは未登録なはず
-    res_read_users = await client.get("/api/read_users", headers={"accept": "application/json"})
-    assert res_read_users.status_code == 200
-    assert len(res_read_users.json()) == 0
+    read_users = await client.get("/api/read_users", headers={"accept": "application/json"})
+    assert read_users.status_code == 200
+    assert len(read_users.json()) == 0
 
     # サインアップステップ1(Eメール非送信版)
     res_signup_step1 = await client.post(
@@ -33,9 +33,9 @@ async def test_integration(client_generator):
     assert res_signup_step2.status_code == 200
 
     # ユーザー登録数は1名になったはず
-    res_read_users = await client.get("/api/read_users", headers={"accept": "application/json"})
-    assert res_read_users.status_code == 200
-    assert len(res_read_users.json()) == 1
+    read_users = await client.get("/api/read_users", headers={"accept": "application/json"})
+    assert read_users.status_code == 200
+    assert len(read_users.json()) == 1
 
     # サインイン
     res_signin = await client.post(
@@ -49,3 +49,24 @@ async def test_integration(client_generator):
 
     # 
     access_token = res_signin_obj.access_token
+
+    # アクセストークンでユーザー情報を得る
+    res_read_user_by_access_token = await client.get(
+        f"/api/read_user_by_access_token?access_token={access_token}", 
+        headers={"accept": "application/json"})
+    assert res_read_user_by_access_token.status_code == 200
+    res_read_user_by_access_token_obj = schema.Users(**res_read_user_by_access_token.json())
+    assert res_read_user_by_access_token_obj.email == body_signin.email
+    assert res_read_user_by_access_token_obj.identification == access_token
+    assert res_read_user_by_access_token_obj.account_name == body_signup_step1.account_name
+
+    # IDでユーザー情報を得る
+    res_read_user = await client.get(
+        f"/api/read_user?id={res_read_user_by_access_token_obj.id}", 
+        headers={"accept": "application/json"})
+    assert res_read_user.status_code == 200
+    res_read_user = schema.Users(**res_read_user.json())
+    assert res_read_user.email == res_read_user_by_access_token_obj.email
+    assert res_read_user.identification == res_read_user_by_access_token_obj.identification
+    assert res_read_user.account_name == res_read_user_by_access_token_obj.account_name
+
