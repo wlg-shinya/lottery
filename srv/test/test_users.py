@@ -8,7 +8,7 @@ async def test_integration(client_generator):
 
     headers = Headers(headers={"accept": "application/json"}, encoding=None)
     body_signin = schema.UserSignin(email="test@dummy.com", identification="test")
-    body_signup_step1 = schema.UserSignupStep1(email=body_signin.email, identification=body_signin.identification, account_name="test")
+    body_signup_step1 = schema.UserSignupStep1(email=body_signin.email, identification=body_signin.identification, account_name="TEST")
 
     # ユーザーは未登録なはず
     read_users = await client.get("/api/read_users", headers=headers)
@@ -70,3 +70,29 @@ async def test_integration(client_generator):
     assert res_read_user.email == res_read_user_by_access_token_obj.email
     assert res_read_user.identification == res_read_user_by_access_token_obj.identification
     assert res_read_user.account_name == res_read_user_by_access_token_obj.account_name
+
+    # ユーザ情報更新
+    body_update = schema.UserUpdate(
+        access_token=access_token,
+        email="test2@dummy.com", 
+        identification="test2",
+        account_name="TEST2",
+        pull_lottery_ids=[]
+        )
+    res_update_user = await client.put(
+        "/api/update_user",
+        headers=headers,
+        content=body_update.model_dump_json()
+        )
+    assert res_update_user.status_code == 200
+    res_update_user_obj = schema.UserUpdateResponse(**res_update_user.json())
+    assert res_update_user_obj.id == res_read_user.id
+
+    # ユーザー情報が正しく更新されたか確認
+    res_read_user_by_access_token = await client.get(
+        f"/api/read_user_by_access_token?access_token={access_token}", 
+        headers=headers)
+    assert res_read_user_by_access_token.status_code == 200
+    res_read_user_by_access_token_obj = schema.Users(**res_read_user_by_access_token.json())
+    assert res_read_user_by_access_token_obj.email == body_update.email
+    assert res_read_user_by_access_token_obj.account_name == body_update.account_name
