@@ -54,28 +54,42 @@ async def read_user_by_access_token(
     db: AsyncSession, access_token: str
 ) -> Model:
     tokens_model = await access_tokens.read_token(db=db, token=access_token)
+    if tokens_model is None:
+        raise HTTPException(status_code=404, detail=f"Not found access_token")
     return await read_user(db=db, id=tokens_model.user_id)
 
 async def update_user(
     db: AsyncSession, body: schema.UserUpdate, original: Model
-) -> Model:
+) -> schema.UserUpdateResponse:
     original.email = body.email
     original.account_name = body.account_name
     original.identification = access_token_hash(email=body.email, identification=body.identification)
     original.pull_lottery_ids = body.pull_lottery_ids
-    return await _update_model(db=db, model=original)
+    model = await _update_model(db=db, model=original)
+    new_access_token = model.identification
+    # トークン新規作成/更新
+    await _create_or_update_access_token(
+        db=db, 
+        body=AccessTokenCreate(
+            token=new_access_token,
+            user_id=model.id,
+            expire_at=access_tokens_default_expire_at()
+            ))
+    return schema.UserUpdateResponse(access_token=new_access_token)
 
 async def update_user_account_name(
     db: AsyncSession, account_name: str, original: Model
-) -> Model:
+) -> schema.UserUpdateResponse:
     original.account_name = account_name
-    return await _update_model(db=db, model=original)
+    model = await _update_model(db=db, model=original)
+    return schema.UserUpdateResponse(access_token=model.identification)
 
 async def update_user_pull_lottery_ids(
     db: AsyncSession, pull_lottery_ids: list[int], original: Model
-) -> Model:
+) -> schema.UserUpdateResponse:
     original.pull_lottery_ids = pull_lottery_ids
-    return await _update_model(db=db, model=original)
+    model = await _update_model(db=db, model=original)
+    return schema.UserUpdateResponse(access_token=model.identification)
 
 async def delete_user(
     db: AsyncSession, original: Model
@@ -162,17 +176,7 @@ async def change_password(
             ), 
         original=old_model
         )
-    new_access_token = new_model.identification
-    # トークン新規作成/更新
-    await _create_or_update_access_token(
-        db=db, 
-        body=AccessTokenCreate(
-            token=new_access_token,
-            user_id=new_model.id,
-            expire_at=access_tokens_default_expire_at()
-            ))
-    
-    return schema.UserUpdateResponse(access_token=new_access_token)
+    return schema.UserUpdateResponse(access_token=new_model.identification)
 
 def access_token_hash(email: str, identification: str) -> str:
     src = email + identification # TODO:salt/pepperの検討
