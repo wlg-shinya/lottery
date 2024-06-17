@@ -20,7 +20,7 @@ class UserCreate(BaseModel, UserCreateBase):
 class UserUpdate(BaseModel, AccessTokenBase, UsersBase):
     pass
 
-class UserUpdateResponse(BaseModel, IdBase):
+class UserUpdateResponse(BaseModel, AccessTokenBase):
     pass
 
 class UserDelete(BaseModel, AccessTokenBase):
@@ -41,7 +41,3 @@ class UserSignupStep2(BaseModel):
 class UserChangePassword(BaseModel, AccessTokenBase):
     old_password: str = Field(json_schema_extra={ "desciption": "現在のパスワード" })
     new_password: str = Field(json_schema_extra={ "desciption": "新しいパスワード" })
-
-class UserChangePasswordResponse(BaseModel, AccessTokenBase):
-    pass
-

@@ -59,7 +59,7 @@ async def signup_step2(body: schema.UserSignupStep2, db: AsyncSession = Depends(
 async def signin(body: schema.UserSignin, db: AsyncSession = Depends(db)):
     return await crud.signin(db=db, body=body)
 
-@router.put("/api/change_password", response_model=schema.UserChangePasswordResponse)
+@router.put("/api/change_password", response_model=schema.UserUpdateResponse)
 async def change_password(body: schema.UserChangePassword, db: AsyncSession = Depends(db)):
     return await crud.change_password(db=db, body=body)
 

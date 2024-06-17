@@ -144,7 +144,7 @@ async def signin(
 
 async def change_password(
     db: AsyncSession, body: schema.UserChangePassword
-) -> schema.UserChangePasswordResponse:
+) -> schema.UserUpdateResponse:
     # 現在のパスワードの検証
     old_model = await read_user_by_access_token(db=db, access_token=body.access_token)
     old_access_token = access_token_hash(email=old_model.email, identification=body.old_password)
@@ -172,7 +172,7 @@ async def change_password(
             expire_at=access_tokens_default_expire_at()
             ))
     
-    return schema.UserChangePasswordResponse(access_token=new_access_token)
+    return schema.UserUpdateResponse(access_token=new_access_token)
 
 def access_token_hash(email: str, identification: str) -> str:
     src = email + identification # TODO:salt/pepperの検討
