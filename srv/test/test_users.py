@@ -80,7 +80,7 @@ async def test_integration(client_generator):
         account_name="TEST2",
         pull_lottery_ids=[1]
         )
-    res_update_user = await client.put(
+    res_update_user = await client.post(
         "/api/update_user",
         headers=headers,
         content=body_update.model_dump_json()
@@ -126,3 +126,22 @@ async def test_integration(client_generator):
     res_read_user_by_access_token_obj = schema.Users(**res_read_user_by_access_token.json())
     assert res_read_user_by_access_token_obj.account_name == account_name3
     assert res_read_user_by_access_token_obj.pull_lottery_ids == user_pull_lottery_ids3
+
+    # パスワード変更
+    body_change_password = schema.UserChangePassword(
+        access_token=access_token,
+        old_password=body_update.identification,
+        new_password="test3"
+        )
+    res_change_password = await client.post(
+        "/api/change_password",
+        headers=headers,
+        content=body_change_password.model_dump_json()
+        )
+    assert res_change_password.status_code == 200
+    res_change_password_obj = schema.UserUpdateResponse(**res_change_password.json())
+    assert res_change_password_obj.access_token != access_token
+
+    # アクセストークン更新
+    access_token = res_change_password_obj.access_token
+

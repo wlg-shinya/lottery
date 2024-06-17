@@ -165,7 +165,7 @@ async def change_password(
     if old_access_token != old_model.identification:
         raise HTTPException(status_code=401, detail="Unauthorized")
     # 検証を通過したので新しいパスワードでユーザーを更新
-    new_model = await update_user(
+    response = await update_user(
         db=db, 
         body=schema.UserUpdate(
             email=old_model.email,
@@ -176,7 +176,7 @@ async def change_password(
             ), 
         original=old_model
         )
-    return schema.UserUpdateResponse(access_token=new_model.identification)
+    return schema.UserUpdateResponse(access_token=response.access_token)
 
 def access_token_hash(email: str, identification: str) -> str:
     src = email + identification # TODO:salt/pepperの検討
