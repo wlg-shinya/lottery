@@ -77,7 +77,7 @@ async def test_integration(client_generator):
         email="test2@dummy.com", 
         identification="test2",
         account_name="TEST2",
-        pull_lottery_ids=[]
+        pull_lottery_ids=[1]
         )
     res_update_user = await client.put(
         "/api/update_user",
@@ -85,8 +85,8 @@ async def test_integration(client_generator):
         content=body_update.model_dump_json()
         )
     assert res_update_user.status_code == 200
-    res_update_user_obj = schema.UserUpdateResponse(**res_update_user.json())
-    assert res_update_user_obj.id == res_read_user.id
+    res_update_user_account_name_obj = schema.UserUpdateResponse(**res_update_user.json())
+    assert res_update_user_account_name_obj.id == res_read_user.id
 
     # ユーザー情報が正しく更新されたか確認
     res_read_user_by_access_token = await client.get(
@@ -96,3 +96,32 @@ async def test_integration(client_generator):
     res_read_user_by_access_token_obj = schema.Users(**res_read_user_by_access_token.json())
     assert res_read_user_by_access_token_obj.email == body_update.email
     assert res_read_user_by_access_token_obj.account_name == body_update.account_name
+    assert res_read_user_by_access_token_obj.pull_lottery_ids == body_update.pull_lottery_ids
+
+    # アカウント名更新
+    account_name3 = "TEST3"
+    res_update_user_account_name = await client.put(
+        f"/api/update_user_account_name?access_token={access_token}&account_name={account_name3}",
+        headers=headers
+        )
+    assert res_update_user_account_name.status_code == 200
+    res_update_user_account_name_obj = schema.UserUpdateResponse(**res_update_user_account_name.json())
+    assert res_update_user_account_name_obj.id == res_read_user.id
+    # ほかの人のくじ引きID登録情報の更新
+    # user_pull_lottery_ids3 = [1, 2]
+    # res_update_user_pull_lottery_ids = await client.put(
+    #     f"/api/update_user_pull_lottery_ids?access_token={access_token}&pull_lottery_ids={','.join(user_pull_lottery_ids3)}",
+    #     headers=headers
+    #     )
+    # assert res_update_user_pull_lottery_ids.status_code == 200
+    # res_update_user_pull_lottery_ids_obj = schema.UserUpdateResponse(**res_update_user_pull_lottery_ids.json())
+    # assert res_update_user_pull_lottery_ids_obj.id == res_read_user.id
+
+    # ユーザー情報が正しく更新されたか確認
+    res_read_user_by_access_token = await client.get(
+        f"/api/read_user_by_access_token?access_token={access_token}", 
+        headers=headers)
+    assert res_read_user_by_access_token.status_code == 200
+    res_read_user_by_access_token_obj = schema.Users(**res_read_user_by_access_token.json())
+    assert res_read_user_by_access_token_obj.account_name == account_name3
+    # assert res_read_user_by_access_token_obj.pull_lottery_ids == user_pull_lottery_ids3
