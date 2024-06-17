@@ -144,19 +144,6 @@ export interface LotteryCreateResponse {
 /**
  * 
  * @export
- * @interface LotteryDelete
- */
-export interface LotteryDelete {
-    /**
-     * 
-     * @type {string}
-     * @memberof LotteryDelete
-     */
-    'access_token': string;
-}
-/**
- * 
- * @export
  * @interface UserChangePassword
  */
 export interface UserChangePassword {
@@ -178,32 +165,6 @@ export interface UserChangePassword {
      * @memberof UserChangePassword
      */
     'new_password': string;
-}
-/**
- * 
- * @export
- * @interface UserChangePasswordResponse
- */
-export interface UserChangePasswordResponse {
-    /**
-     * 
-     * @type {string}
-     * @memberof UserChangePasswordResponse
-     */
-    'access_token': string;
-}
-/**
- * 
- * @export
- * @interface UserDelete
- */
-export interface UserDelete {
-    /**
-     * 
-     * @type {string}
-     * @memberof UserDelete
-     */
-    'access_token': string;
 }
 /**
  * 
@@ -320,10 +281,10 @@ export interface UserUpdate {
 export interface UserUpdateResponse {
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof UserUpdateResponse
      */
-    'id': number;
+    'access_token': string;
 }
 /**
  * 
@@ -420,9 +381,9 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        changePasswordApiChangePasswordPut: async (userChangePassword: UserChangePassword, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        changePasswordApiChangePasswordPost: async (userChangePassword: UserChangePassword, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userChangePassword' is not null or undefined
-            assertParamExists('changePasswordApiChangePasswordPut', 'userChangePassword', userChangePassword)
+            assertParamExists('changePasswordApiChangePasswordPost', 'userChangePassword', userChangePassword)
             const localVarPath = `/api/change_password`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -431,7 +392,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -489,52 +450,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * 
          * @summary Delete Lottery
          * @param {number} id 
+         * @param {string} accessToken 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteLotteryApiAdminDeleteLotteryDelete: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('deleteLotteryApiAdminDeleteLotteryDelete', 'id', id)
-            const localVarPath = `/api/admin/delete_lottery`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            if (id !== undefined) {
-                localVarQueryParameter['id'] = id;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary Delete Lottery
-         * @param {number} id 
-         * @param {LotteryDelete} lotteryDelete 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        deleteLotteryApiDeleteLotteryDelete: async (id: number, lotteryDelete: LotteryDelete, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deleteLotteryApiDeleteLotteryDelete: async (id: number, accessToken: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('deleteLotteryApiDeleteLotteryDelete', 'id', id)
-            // verify required parameter 'lotteryDelete' is not null or undefined
-            assertParamExists('deleteLotteryApiDeleteLotteryDelete', 'lotteryDelete', lotteryDelete)
+            // verify required parameter 'accessToken' is not null or undefined
+            assertParamExists('deleteLotteryApiDeleteLotteryDelete', 'accessToken', accessToken)
             const localVarPath = `/api/delete_lottery`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -551,44 +475,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
                 localVarQueryParameter['id'] = id;
             }
 
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(lotteryDelete, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary Delete User
-         * @param {number} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        deleteUserApiAdminDeleteUserDelete: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('deleteUserApiAdminDeleteUserDelete', 'id', id)
-            const localVarPath = `/api/admin/delete_user`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            if (id !== undefined) {
-                localVarQueryParameter['id'] = id;
+            if (accessToken !== undefined) {
+                localVarQueryParameter['access_token'] = accessToken;
             }
 
 
@@ -605,14 +493,14 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 
          * @summary Delete User
-         * @param {UserDelete} userDelete 
+         * @param {string} accessToken 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteUserApiDeleteUserDelete: async (userDelete: UserDelete, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userDelete' is not null or undefined
-            assertParamExists('deleteUserApiDeleteUserDelete', 'userDelete', userDelete)
-            const localVarPath = `/api/delete_user`;
+        deleteUserApiDeleteUserByAccessTokenDelete: async (accessToken: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'accessToken' is not null or undefined
+            assertParamExists('deleteUserApiDeleteUserByAccessTokenDelete', 'accessToken', accessToken)
+            const localVarPath = `/api/delete_user_by_access_token`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -624,14 +512,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
+            if (accessToken !== undefined) {
+                localVarQueryParameter['access_token'] = accessToken;
+            }
+
 
     
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(userDelete, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1008,6 +897,42 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
+         * @summary Signup Step1
+         * @param {UserSignupStep1} userSignupStep1 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        signupStep1ApiTestSignupStep1Post: async (userSignupStep1: UserSignupStep1, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userSignupStep1' is not null or undefined
+            assertParamExists('signupStep1ApiTestSignupStep1Post', 'userSignupStep1', userSignupStep1)
+            const localVarPath = `/api/test/signup_step1`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(userSignupStep1, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Signup Step2
          * @param {UserSignupStep2} userSignupStep2 
          * @param {*} [options] Override http request option.
@@ -1136,9 +1061,9 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateUserApiUpdateUserPut: async (userUpdate: UserUpdate, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateUserApiUpdateUserPost: async (userUpdate: UserUpdate, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userUpdate' is not null or undefined
-            assertParamExists('updateUserApiUpdateUserPut', 'userUpdate', userUpdate)
+            assertParamExists('updateUserApiUpdateUserPost', 'userUpdate', userUpdate)
             const localVarPath = `/api/update_user`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1147,7 +1072,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -1225,10 +1150,10 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async changePasswordApiChangePasswordPut(userChangePassword: UserChangePassword, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserChangePasswordResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.changePasswordApiChangePasswordPut(userChangePassword, options);
+        async changePasswordApiChangePasswordPost(userChangePassword: UserChangePassword, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserUpdateResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.changePasswordApiChangePasswordPost(userChangePassword, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DefaultApi.changePasswordApiChangePasswordPut']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.changePasswordApiChangePasswordPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1248,25 +1173,12 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * 
          * @summary Delete Lottery
          * @param {number} id 
+         * @param {string} accessToken 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteLotteryApiAdminDeleteLotteryDelete(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteLotteryApiAdminDeleteLotteryDelete(id, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DefaultApi.deleteLotteryApiAdminDeleteLotteryDelete']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary Delete Lottery
-         * @param {number} id 
-         * @param {LotteryDelete} lotteryDelete 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async deleteLotteryApiDeleteLotteryDelete(id: number, lotteryDelete: LotteryDelete, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteLotteryApiDeleteLotteryDelete(id, lotteryDelete, options);
+        async deleteLotteryApiDeleteLotteryDelete(id: number, accessToken: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteLotteryApiDeleteLotteryDelete(id, accessToken, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.deleteLotteryApiDeleteLotteryDelete']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1274,27 +1186,14 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Delete User
-         * @param {number} id 
+         * @param {string} accessToken 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteUserApiAdminDeleteUserDelete(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteUserApiAdminDeleteUserDelete(id, options);
+        async deleteUserApiDeleteUserByAccessTokenDelete(accessToken: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteUserApiDeleteUserByAccessTokenDelete(accessToken, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DefaultApi.deleteUserApiAdminDeleteUserDelete']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary Delete User
-         * @param {UserDelete} userDelete 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async deleteUserApiDeleteUserDelete(userDelete: UserDelete, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteUserApiDeleteUserDelete(userDelete, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DefaultApi.deleteUserApiDeleteUserDelete']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.deleteUserApiDeleteUserByAccessTokenDelete']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1429,6 +1328,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Signup Step1
+         * @param {UserSignupStep1} userSignupStep1 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async signupStep1ApiTestSignupStep1Post(userSignupStep1: UserSignupStep1, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserSignupStep2>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.signupStep1ApiTestSignupStep1Post(userSignupStep1, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.signupStep1ApiTestSignupStep1Post']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Signup Step2
          * @param {UserSignupStep2} userSignupStep2 
          * @param {*} [options] Override http request option.
@@ -1475,10 +1387,10 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateUserApiUpdateUserPut(userUpdate: UserUpdate, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserUpdateResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserApiUpdateUserPut(userUpdate, options);
+        async updateUserApiUpdateUserPost(userUpdate: UserUpdate, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserUpdateResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserApiUpdateUserPost(userUpdate, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DefaultApi.updateUserApiUpdateUserPut']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.updateUserApiUpdateUserPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1512,8 +1424,8 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        changePasswordApiChangePasswordPut(userChangePassword: UserChangePassword, options?: any): AxiosPromise<UserChangePasswordResponse> {
-            return localVarFp.changePasswordApiChangePasswordPut(userChangePassword, options).then((request) => request(axios, basePath));
+        changePasswordApiChangePasswordPost(userChangePassword: UserChangePassword, options?: any): AxiosPromise<UserUpdateResponse> {
+            return localVarFp.changePasswordApiChangePasswordPost(userChangePassword, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1529,42 +1441,22 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * 
          * @summary Delete Lottery
          * @param {number} id 
+         * @param {string} accessToken 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteLotteryApiAdminDeleteLotteryDelete(id: number, options?: any): AxiosPromise<any> {
-            return localVarFp.deleteLotteryApiAdminDeleteLotteryDelete(id, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary Delete Lottery
-         * @param {number} id 
-         * @param {LotteryDelete} lotteryDelete 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        deleteLotteryApiDeleteLotteryDelete(id: number, lotteryDelete: LotteryDelete, options?: any): AxiosPromise<any> {
-            return localVarFp.deleteLotteryApiDeleteLotteryDelete(id, lotteryDelete, options).then((request) => request(axios, basePath));
+        deleteLotteryApiDeleteLotteryDelete(id: number, accessToken: string, options?: any): AxiosPromise<any> {
+            return localVarFp.deleteLotteryApiDeleteLotteryDelete(id, accessToken, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Delete User
-         * @param {number} id 
+         * @param {string} accessToken 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteUserApiAdminDeleteUserDelete(id: number, options?: any): AxiosPromise<any> {
-            return localVarFp.deleteUserApiAdminDeleteUserDelete(id, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary Delete User
-         * @param {UserDelete} userDelete 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        deleteUserApiDeleteUserDelete(userDelete: UserDelete, options?: any): AxiosPromise<any> {
-            return localVarFp.deleteUserApiDeleteUserDelete(userDelete, options).then((request) => request(axios, basePath));
+        deleteUserApiDeleteUserByAccessTokenDelete(accessToken: string, options?: any): AxiosPromise<any> {
+            return localVarFp.deleteUserApiDeleteUserByAccessTokenDelete(accessToken, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1668,6 +1560,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
+         * @summary Signup Step1
+         * @param {UserSignupStep1} userSignupStep1 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        signupStep1ApiTestSignupStep1Post(userSignupStep1: UserSignupStep1, options?: any): AxiosPromise<UserSignupStep2> {
+            return localVarFp.signupStep1ApiTestSignupStep1Post(userSignupStep1, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Signup Step2
          * @param {UserSignupStep2} userSignupStep2 
          * @param {*} [options] Override http request option.
@@ -1705,8 +1607,8 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateUserApiUpdateUserPut(userUpdate: UserUpdate, options?: any): AxiosPromise<UserUpdateResponse> {
-            return localVarFp.updateUserApiUpdateUserPut(userUpdate, options).then((request) => request(axios, basePath));
+        updateUserApiUpdateUserPost(userUpdate: UserUpdate, options?: any): AxiosPromise<UserUpdateResponse> {
+            return localVarFp.updateUserApiUpdateUserPost(userUpdate, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1737,8 +1639,8 @@ export class DefaultApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public changePasswordApiChangePasswordPut(userChangePassword: UserChangePassword, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).changePasswordApiChangePasswordPut(userChangePassword, options).then((request) => request(this.axios, this.basePath));
+    public changePasswordApiChangePasswordPost(userChangePassword: UserChangePassword, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).changePasswordApiChangePasswordPost(userChangePassword, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1757,49 +1659,25 @@ export class DefaultApi extends BaseAPI {
      * 
      * @summary Delete Lottery
      * @param {number} id 
+     * @param {string} accessToken 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public deleteLotteryApiAdminDeleteLotteryDelete(id: number, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).deleteLotteryApiAdminDeleteLotteryDelete(id, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary Delete Lottery
-     * @param {number} id 
-     * @param {LotteryDelete} lotteryDelete 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    public deleteLotteryApiDeleteLotteryDelete(id: number, lotteryDelete: LotteryDelete, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).deleteLotteryApiDeleteLotteryDelete(id, lotteryDelete, options).then((request) => request(this.axios, this.basePath));
+    public deleteLotteryApiDeleteLotteryDelete(id: number, accessToken: string, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).deleteLotteryApiDeleteLotteryDelete(id, accessToken, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @summary Delete User
-     * @param {number} id 
+     * @param {string} accessToken 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public deleteUserApiAdminDeleteUserDelete(id: number, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).deleteUserApiAdminDeleteUserDelete(id, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary Delete User
-     * @param {UserDelete} userDelete 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    public deleteUserApiDeleteUserDelete(userDelete: UserDelete, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).deleteUserApiDeleteUserDelete(userDelete, options).then((request) => request(this.axios, this.basePath));
+    public deleteUserApiDeleteUserByAccessTokenDelete(accessToken: string, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).deleteUserApiDeleteUserByAccessTokenDelete(accessToken, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1924,6 +1802,18 @@ export class DefaultApi extends BaseAPI {
 
     /**
      * 
+     * @summary Signup Step1
+     * @param {UserSignupStep1} userSignupStep1 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public signupStep1ApiTestSignupStep1Post(userSignupStep1: UserSignupStep1, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).signupStep1ApiTestSignupStep1Post(userSignupStep1, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary Signup Step2
      * @param {UserSignupStep2} userSignupStep2 
      * @param {*} [options] Override http request option.
@@ -1968,8 +1858,8 @@ export class DefaultApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public updateUserApiUpdateUserPut(userUpdate: UserUpdate, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).updateUserApiUpdateUserPut(userUpdate, options).then((request) => request(this.axios, this.basePath));
+    public updateUserApiUpdateUserPost(userUpdate: UserUpdate, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).updateUserApiUpdateUserPost(userUpdate, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
