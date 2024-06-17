@@ -84,7 +84,7 @@ async def delete_user(
 
 async def signup_step1(
     db: AsyncSession, body: schema.UserSignupStep1
-) -> None:
+) -> schema.UserSignupStep2:
     # すでに登録済みのEメールならはじく
     result = (await db.execute(select(Model).filter(Model.email == body.email)))
     if len(result.all()) > 0:
@@ -100,19 +100,7 @@ async def signup_step1(
             identification=body.identification,
             expire_at=signup_tokens_default_expire_at()
             ))
-    # 認証用URL
-    signup_url = f"{env().frontend_url}/#/signup_step2/?signup_token={token}"
-    # メール送信
-    mail_body = dedent('''
-        {signup_url}
-        
-        上記リンクをクリックしてサインアップを完了させてください
-        このメールに心当たりがない場合はこのメール自体を削除してください
-        ''').format(signup_url=signup_url).strip()
-    try:
-        send_gmail(body.email, env().notice_email, f"{env().app_title}/サインアップ", mail_body)
-    except:
-        raise HTTPException(status_code=400, detail=f"Bad Request can not send notice email.")
+    return schema.UserSignupStep2(signup_token=token)
 
 async def signup_step2(
     db: AsyncSession, body: schema.UserSignupStep2
@@ -193,6 +181,21 @@ def signup_token_hash(email: str) -> str:
     src = email + str(time())
     return sha256(src.encode("utf-8")).hexdigest()
 
+def send_signup_gmail(to_email: str, signup_token: str) -> None:
+    # 認証用URL
+    signup_url = f"{env().frontend_url}/#/signup_step2/?signup_token={signup_token}"
+    # メール送信
+    mail_body = dedent('''
+        {signup_url}
+        
+        上記リンクをクリックしてサインアップを完了させてください
+        このメールに心当たりがない場合はこのメール自体を削除してください
+        ''').format(signup_url=signup_url).strip()
+    try:
+        send_gmail(to_email, env().notice_email, f"{env().app_title}/サインアップ", mail_body)
+    except:
+        raise HTTPException(status_code=400, detail=f"Bad Request can not send notice email.")
+    
 async def _update_model(db: AsyncSession, model: Model) -> Model:
     db.add(instance=model)
     await db.commit()

@@ -47,7 +47,8 @@ async def delete_user(body: schema.UserDelete, db: AsyncSession = Depends(db)):
 
 @router.post("/api/signup_step1", response_model=None)
 async def signup_step1(body: schema.UserSignupStep1, db: AsyncSession = Depends(db)):
-    await crud.signup_step1(db=db, body=body)
+    response = await crud.signup_step1(db=db, body=body)
+    crud.send_signup_gmail(to_email=body.email, signup_token=response.signup_token)
 
 @router.post("/api/signup_step2", response_model=None)
 async def signup_step2(body: schema.UserSignupStep2, db: AsyncSession = Depends(db)):
@@ -61,6 +62,10 @@ async def signin(body: schema.UserSignin, db: AsyncSession = Depends(db)):
 @router.put("/api/change_password", response_model=schema.UserChangePasswordResponse)
 async def change_password(body: schema.UserChangePassword, db: AsyncSession = Depends(db)):
     return await crud.change_password(db=db, body=body)
+
+@router.post("/api/admin/signup_step1", response_model=schema.UserSignupStep2)
+async def signup_step1(body: schema.UserSignupStep1, db: AsyncSession = Depends(db)):
+    return await crud.signup_step1(db=db, body=body)
 
 @router.delete("/api/admin/delete_user", response_model=None)
 async def delete_user(id: int, db: AsyncSession = Depends(db)):
