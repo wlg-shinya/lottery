@@ -1,4 +1,5 @@
 import pytest
+import json
 import api.schemas.users as schema
 from httpx import Headers
  
@@ -92,9 +93,7 @@ async def test_integration(client_generator):
     access_token = res_update_user_account_name_obj.access_token
 
     # ユーザー情報が正しく更新されたか確認
-    res_read_user_by_access_token = await client.get(
-        f"/api/read_user_by_access_token?access_token={access_token}", 
-        headers=headers)
+    res_read_user_by_access_token = await client.get(f"/api/read_user_by_access_token?access_token={access_token}", headers=headers)
     assert res_read_user_by_access_token.status_code == 200
     res_read_user_by_access_token_obj = schema.Users(**res_read_user_by_access_token.json())
     assert res_read_user_by_access_token_obj.email == body_update.email
@@ -109,22 +108,21 @@ async def test_integration(client_generator):
         )
     assert res_update_user_account_name.status_code == 200
     res_update_user_account_name_obj = schema.UserUpdateResponse(**res_update_user_account_name.json())
-    assert res_update_user_account_name_obj.access_token == access_token # アカウント名更新ではアクセストークンは変わらないはず
+    assert res_update_user_account_name_obj.access_token == access_token # このAPIではアクセストークンは変わらないはず
     # ほかの人のくじ引きID登録情報の更新
-    # user_pull_lottery_ids3 = [1, 2]
-    # res_update_user_pull_lottery_ids = await client.put(
-    #     f"/api/update_user_pull_lottery_ids?access_token={access_token}&pull_lottery_ids={','.join(user_pull_lottery_ids3)}",
-    #     headers=headers
-    #     )
-    # assert res_update_user_pull_lottery_ids.status_code == 200
-    # res_update_user_pull_lottery_ids_obj = schema.UserUpdateResponse(**res_update_user_pull_lottery_ids.json())
-    # assert res_update_user_pull_lottery_ids_obj.id == res_read_user.id
+    user_pull_lottery_ids3 = [1, 2]
+    res_update_user_pull_lottery_ids = await client.put(
+        f"/api/update_user_pull_lottery_ids?access_token={access_token}",
+        headers=headers,
+        content=json.dumps(user_pull_lottery_ids3)
+        )
+    assert res_update_user_pull_lottery_ids.status_code == 200
+    res_update_user_pull_lottery_ids_obj = schema.UserUpdateResponse(**res_update_user_pull_lottery_ids.json())
+    assert res_update_user_pull_lottery_ids_obj.access_token == access_token # このAPIではアクセストークンは変わらないはず
 
     # ユーザー情報が正しく更新されたか確認
-    res_read_user_by_access_token = await client.get(
-        f"/api/read_user_by_access_token?access_token={access_token}", 
-        headers=headers)
+    res_read_user_by_access_token = await client.get(f"/api/read_user_by_access_token?access_token={access_token}", headers=headers)
     assert res_read_user_by_access_token.status_code == 200
     res_read_user_by_access_token_obj = schema.Users(**res_read_user_by_access_token.json())
     assert res_read_user_by_access_token_obj.account_name == account_name3
-    # assert res_read_user_by_access_token_obj.pull_lottery_ids == user_pull_lottery_ids3
+    assert res_read_user_by_access_token_obj.pull_lottery_ids == user_pull_lottery_ids3
