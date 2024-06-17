@@ -21,7 +21,7 @@ async def read_user(id: int, db: AsyncSession = Depends(db)):
 async def read_user_by_access_token(access_token: str, db: AsyncSession = Depends(db)):
     return await crud.read_user_by_access_token(db=db, access_token=access_token)
 
-@router.put("/api/update_user", response_model=schema.UserUpdateResponse)
+@router.post("/api/update_user", response_model=schema.UserUpdateResponse)
 async def update_user(body: schema.UserUpdate, db: AsyncSession = Depends(db)):
     await access_tokens.validate_token(db=db, token=body.access_token)
     model = await crud.read_user_by_access_token(db=db, access_token=body.access_token)
@@ -59,7 +59,7 @@ async def signup_step2(body: schema.UserSignupStep2, db: AsyncSession = Depends(
 async def signin(body: schema.UserSignin, db: AsyncSession = Depends(db)):
     return await crud.signin(db=db, body=body)
 
-@router.put("/api/change_password", response_model=schema.UserUpdateResponse)
+@router.post("/api/change_password", response_model=schema.UserUpdateResponse)
 async def change_password(body: schema.UserChangePassword, db: AsyncSession = Depends(db)):
     return await crud.change_password(db=db, body=body)
 
