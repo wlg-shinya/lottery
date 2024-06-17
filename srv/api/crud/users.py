@@ -59,6 +59,7 @@ async def read_user_by_access_token(
 async def update_user(
     db: AsyncSession, body: schema.UserUpdate, original: Model
 ) -> Model:
+    original.email = body.email
     original.account_name = body.account_name
     original.identification = access_token_hash(email=body.email, identification=body.identification)
     original.pull_lottery_ids = body.pull_lottery_ids
