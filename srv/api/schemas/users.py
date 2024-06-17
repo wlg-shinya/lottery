@@ -17,9 +17,6 @@ class Users(BaseModel, IdBase, CreatedUpdatedAtBase, UsersBase):
 class UserCreate(BaseModel, UserCreateBase):
     pass
 
-class UserCreateResponse(BaseModel, IdBase):
-    pass
-
 class UserUpdate(BaseModel, AccessTokenBase, UsersBase):
     pass
 
