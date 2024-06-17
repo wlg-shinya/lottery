@@ -73,7 +73,7 @@ async function onClickChangePasswordButton() {
   if (!topData || !topData.accessToken) return;
 
   // パスワード変更をして成功したら新しいアクセストークンをローカル保存する
-  await DefaultApiClient.changePasswordApiChangePasswordPut({
+  await DefaultApiClient.changePasswordApiChangePasswordPost({
     access_token: topData.accessToken,
     old_password: oldPassword.value,
     new_password: newPassword.value,

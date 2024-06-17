@@ -170,7 +170,7 @@ async function uploadData(accessToken: string) {
         const localIds = lotteryTopData.value.listData.list.map((x) => x.contentsData.id);
         const deletedIds = serverIds.filter((id) => !localIds.some((x) => x === id));
         for (const id of deletedIds) {
-          await DefaultApiClient.deleteLotteryApiDeleteLotteryDelete(id, { access_token: accessToken })
+          await DefaultApiClient.deleteLotteryApiDeleteLotteryDelete(id, accessToken)
             .then(() => (uploaded = true))
             .catch((error) => {
               throw error;
