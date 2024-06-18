@@ -26,11 +26,11 @@ async function onClickSignupButton(email: string, userName: string, password: st
   <div class="d-flex flex-column justify-content-center">
     <AccountInput
       @click="onClickSignupButton"
-      :hideUserName="false"
       :submitLabel="'新規登録'"
       :emailLabel="'受信を確認できるEメールアドレス'"
       :userNameLabel="'登録したいユーザー名'"
       :passwordLabel="'サインイン時に入力するパスワード'"
+      initEmail=""
     />
     <Message ref="message" />
   </div>

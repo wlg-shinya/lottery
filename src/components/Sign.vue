@@ -19,7 +19,7 @@ const emit = defineEmits<{
 watch(
   () => props.accessToken,
   async (newValue: string) => {
-    // サインインが確定したらユーザ名を得る
+    // サインインが確定したらユーザ名とEメールを得る
     if (newValue) {
       const users = await DefaultApiClient.readUserByAccessTokenApiReadUserByAccessTokenGet(newValue)
         .then((response) => response.data)
@@ -27,12 +27,15 @@ watch(
           message.value.set(getErrorMessage(error), "text-danger");
         });
       username.value = users?.account_name ?? "";
+      email.value = users?.email ?? "";
+      message.value.set("", "");
     }
   }
 );
 
 const message = ref();
 const username = ref("");
+const email = ref("");
 
 async function onClickSigninButton(email: string, _userName: string, password: string) {
   await DefaultApiClient.signinApiSigninPost({
@@ -41,8 +44,7 @@ async function onClickSigninButton(email: string, _userName: string, password: s
   })
     .then(async (response) => {
       emit("signin", response.data.access_token);
-      // これまでのメッセージをクリアしておく
-      message.value.set("", "");
+      message.value.set("サインインしました", "text-success");
     })
     .catch((error: Error) => {
       message.value.set(getErrorMessage(error), "text-danger");
@@ -59,6 +61,7 @@ function onClickGoProfileButton() {
 
 async function onSignout() {
   emit("signout");
+  message.value.set("", "");
 }
 </script>
 
@@ -67,11 +70,11 @@ async function onSignout() {
     <div v-if="!props.accessToken">
       <AccountInput
         @click="onClickSigninButton"
-        :hideUserName="true"
         :submitLabel="'サインイン'"
         :emailLabel="'登録したEメールアドレス'"
-        :userNameLabel="'ユーザー名'"
         :passwordLabel="'パスワード'"
+        userNameLabel=""
+        initEmail=""
       />
       <button @click="onClickSignupButton" class="btn btn-link p-0">作ったくじ引きをサーバーに保存したい？ではアカウントを作りましょう</button>
     </div>
@@ -85,6 +88,14 @@ async function onSignout() {
         <button @click="onClickGoProfileButton" class="btn btn-link p-0">個人設定の編集</button>
       </div>
       <Signout @signout="onSignout" />
+      <AccountInput
+        @click="onClickSigninButton"
+        :submitLabel="'サインインの更新'"
+        :passwordLabel="'アクセスの有効期限が切れたらパスワードを入力してください'"
+        :initEmail="email"
+        emailLabel=""
+        userNameLabel=""
+      />
     </div>
     <Message ref="message" />
   </div>

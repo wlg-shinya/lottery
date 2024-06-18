@@ -20,6 +20,9 @@ import LotteryHistoryList from "../components/LotteryHistoryList.vue";
 import UploadDownload from "../components/UploadDownload.vue";
 import GoPublicView from "../components/GoPublicView.vue";
 
+const MESSAGE_REMOVE_LOCAL_DATA = "サーバーに保存していないデータは履歴も含めてすべて消えます。よろしいですか？";
+const MESSAGE_REMOVE_LOCAL_DATA_WITHOUT_RESULT = "サーバーに保存していないデータは消えます。よろしいですか？";
+
 const modal = ref();
 const uploadDownload = ref();
 
@@ -50,22 +53,13 @@ const serverSavedMyLotteryData = computed((): LotteryData[] => serverSavedLotter
 const pullLotteryData = computed((): LotteryData[] => serverSavedLotteryData.value.filter((x) => !x.contentsData.mine));
 
 async function onSignin(accessToken: string) {
-  // サインイン済みの場合はユーザー確認の上でサインアウトしてからサインインする
-  // 新規サインインの時は普通にサインイン
-  if (lotteryTopData.value.accessToken) {
-    modal.value.show("注意", "サーバーに保存していないデータはすべて消えます。よろしいですか？", "OK", async () => {
-      doSignout();
-      await doSignin(accessToken);
-    });
-  } else {
-    await doSignin(accessToken);
-  }
+  await doSignin(accessToken);
 }
 
 function onSignout() {
   // ローカルデータが消えるのでユーザー確認してからサインアウト
   if (lotteryTopData.value.accessToken) {
-    modal.value.show("注意", "サーバーに保存していないデータはすべて消えます。よろしいですか？", "OK", async () => {
+    modal.value.show("注意", MESSAGE_REMOVE_LOCAL_DATA, "OK", async () => {
       doSignout();
     });
   }
@@ -114,9 +108,7 @@ async function onUpload() {
 }
 
 async function onDownload() {
-  modal.value.show("注意", "サーバーに保存していないデータはすべて消えます。よろしいですか？", "OK", () =>
-    downloadData(lotteryTopData.value.accessToken, true)
-  );
+  modal.value.show("注意", MESSAGE_REMOVE_LOCAL_DATA_WITHOUT_RESULT, "OK", () => downloadData(lotteryTopData.value.accessToken, true));
 }
 
 function showLocalLotteryList(): boolean {
