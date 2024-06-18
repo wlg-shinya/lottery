@@ -114,10 +114,7 @@ async function updateAllData() {
     // 取得できた各種データから公開するべきデータを構築する
     for (const lottery of allLotteries) {
       // ユーザーIDからくじ引きを作成したユーザ名を得る
-      const user_name = allUsers.find((x) => x.id === lottery.user_id)?.account_name;
-      if (!user_name) {
-        throw new Error(`Not found user_id(${lottery.id})`);
-      }
+      const user_name = allUsers.find((x) => x.id === lottery.user_id)?.account_name ?? "";
 
       // このくじ引きがほかの人にどれだけ取得されているか集計する
       const pulledCount = allUsers.reduce((acc, current) => {
