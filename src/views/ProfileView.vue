@@ -143,8 +143,8 @@ created();
           <Message ref="messageChangeUserName" />
         </div>
       </div>
-      <div class="d-flex justify-content-center mt-4">
-        <div>
+      <div class="d-flex flex-column mt-4">
+        <div class="d-flex justify-content-center">
           <div>
             <div>
               <label for="oldPassword" class="form-label">現在のパスワード</label>
@@ -167,9 +167,9 @@ created();
             <button @click="onClickChangePasswordButton" class="btn btn-primary mt-2 w-100" :disabled="disabledChangePasswordButton()">
               パスワード変更
             </button>
-            <Message ref="messageChangePassword" />
           </div>
         </div>
+        <Message ref="messageChangePassword" />
       </div>
     </div>
   </div>
