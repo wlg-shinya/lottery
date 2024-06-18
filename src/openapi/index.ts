@@ -9,7 +9,7 @@ export const DefaultApiClient = new DefaultApi(
   })
 );
 
-// srv\api\models.py 以下の文字数条件の定数化
+// srv\api\models.py 以下の文字数上限の定数化
 export const VarcharMax = {
   lotteries_text: 256,
   lotteries_title: 32,
