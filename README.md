@@ -29,6 +29,20 @@ $ npm run srv
 $ npm run dev
 ```
 
+### Backend test
+
+First time only
+
+```
+$ docker-compose -f docker-compose-db-test.yml up
+```
+
+Main process
+
+```
+$ npm run srv:test
+```
+
 ### Backend's docker startup
 
 ```
