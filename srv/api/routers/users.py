@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, BackgroundTasks
 from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.db import db
@@ -51,9 +51,9 @@ async def delete_user(access_token: str, db: AsyncSession = Depends(db)):
     await crud.delete_user(db=db, original=model)
 
 @router.post("/api/signup_step1", response_model=None)
-async def signup_step1(body: schema.UserSignupStep1, db: AsyncSession = Depends(db)):
+async def signup_step1(body: schema.UserSignupStep1, background_tasks: BackgroundTasks, db: AsyncSession = Depends(db)):
     response = await crud.signup_step1(db=db, body=body)
-    crud.send_signup_gmail(to_email=body.email, signup_token=response.signup_token)
+    background_tasks.add_task(crud.send_signup_gmail, to_email=body.email, signup_token=response.signup_token)
 
 @router.post("/api/signup_step2", response_model=None)
 async def signup_step2(body: schema.UserSignupStep2, db: AsyncSession = Depends(db)):
