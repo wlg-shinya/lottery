@@ -8,7 +8,9 @@ import LocalStorageLottery from "../local-storage-lottery";
 import HomeButton from "../components/HomeButton.vue";
 import Message from "../components/Message.vue";
 
-const message = ref();
+const messageTop = ref();
+const messageChangeUserName = ref();
+const messageChangePassword = ref();
 const lotteryTopData = ref<LotteryTopData | null>(null);
 const userName = ref("");
 const oldPassword = ref("");
@@ -20,7 +22,7 @@ watchEffect(async () => {
   // サインインチェック
   if (lotteryTopData.value) {
     if (lotteryTopData.value.accessToken === "") {
-      message.value.set("サインインしてください", "text-danger");
+      messageTop.value.set("サインインしてください", "text-danger");
       return;
     }
   } else {
@@ -29,14 +31,14 @@ watchEffect(async () => {
 
   // メッセージ更新
   if (oldPassword.value && !newPassword.value) {
-    message.value.set("新しいパスワードも入力する必要があります", "text-danger");
+    messageChangePassword.value.set("新しいパスワードも入力する必要があります", "text-danger");
   } else if (!oldPassword.value && newPassword.value) {
-    message.value.set("現在のパスワードも入力する必要があります", "text-danger");
+    messageChangePassword.value.set("現在のパスワードも入力する必要があります", "text-danger");
   } else if (oldPassword.value && newPassword.value) {
     if (oldPassword.value === newPassword.value) {
-      message.value.set("新しいパスワードは現在のパスワードと異なる必要があります", "text-danger");
+      messageChangePassword.value.set("新しいパスワードは現在のパスワードと異なる必要があります", "text-danger");
     } else {
-      message.value.set("", "");
+      messageChangePassword.value.set("", "");
     }
   }
 
@@ -60,10 +62,10 @@ async function onClickChangeUserNameButton() {
   // 新しいユーザー名をサーバーに反映する
   await DefaultApiClient.updateUserAccountNameApiUpdateUserAccountNamePut(topData.accessToken, userName.value)
     .then(() => {
-      message.value.set("ユーザー名を更新しました", "text-success");
+      messageChangeUserName.value.set("ユーザー名を更新しました", "text-success");
     })
     .catch((error) => {
-      message.value.set(getErrorMessage(error), "text-danger");
+      messageChangeUserName.value.set(getErrorMessage(error), "text-danger");
     });
 }
 
@@ -82,14 +84,14 @@ async function onClickChangePasswordButton() {
       topData.accessToken = response.data.access_token;
       await LocalStorageLottery.save(topData)
         .then(() => {
-          message.value.set("パスワードを更新しました", "text-success");
+          messageChangePassword.value.set("パスワードを更新しました", "text-success");
         })
         .catch((error) => {
           throw error;
         });
     })
     .catch((error) => {
-      message.value.set(getErrorMessage(error), "text-danger");
+      messageChangePassword.value.set(getErrorMessage(error), "text-danger");
     });
 }
 
@@ -120,7 +122,7 @@ async function created() {
       }
     })
     .catch((error) => {
-      message.value.set(getErrorMessage(error), "text-danger");
+      messageTop.value.set(getErrorMessage(error), "text-danger");
     });
 }
 created();
@@ -129,7 +131,7 @@ created();
 <template>
   <div class="d-flex flex-column justify-content-center">
     <HomeButton />
-    <Message ref="message" />
+    <Message ref="messageTop" />
     <div v-if="lotteryTopData?.accessToken !== ''">
       <div class="d-flex justify-content-center">
         <div>
@@ -138,6 +140,7 @@ created();
           <button @click="onClickChangeUserNameButton" class="btn btn-primary mt-2 w-100" :disabled="disabledChangeUserNameButton()">
             ユーザー名変更
           </button>
+          <Message ref="messageChangeUserName" />
         </div>
       </div>
       <div class="d-flex justify-content-center mt-4">
@@ -164,6 +167,7 @@ created();
             <button @click="onClickChangePasswordButton" class="btn btn-primary mt-2 w-100" :disabled="disabledChangePasswordButton()">
               パスワード変更
             </button>
+            <Message ref="messageChangePassword" />
           </div>
         </div>
       </div>
