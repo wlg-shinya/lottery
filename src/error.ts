@@ -3,6 +3,7 @@ import {
   DUPLICATED_EXCEPTION,
   EXPIRED_ACCESS_TOKEN_EXCEPTION,
   EXPIRED_SIGNUP_TOKEN_EXCEPTION,
+  INVALID_PASSWORD_EXCEPTION,
   NOT_FOUND_EXCEPTION,
   UNAUTHORIZED_EXCEPTION,
 } from "./openapi";
@@ -18,6 +19,8 @@ export const getErrorMessage = (error: any): string => {
           return "アクセスの有効期限が切れました。再度サインインしてください";
         case EXPIRED_SIGNUP_TOKEN_EXCEPTION:
           return "サインアップの有効期限が切れました。再度サインアップを試みてください";
+        case INVALID_PASSWORD_EXCEPTION:
+          return "パスワードが正しくありません";
         case NOT_FOUND_EXCEPTION:
           return "データが見つかりませんでした";
         case UNAUTHORIZED_EXCEPTION:

@@ -24,5 +24,6 @@ export const VarcharMax = {
 export const DUPLICATED_EXCEPTION = "DuplicatedException";
 export const EXPIRED_ACCESS_TOKEN_EXCEPTION = "ExpiredAccessTokenException";
 export const EXPIRED_SIGNUP_TOKEN_EXCEPTION = "ExpiredSignupTokenException";
+export const INVALID_PASSWORD_EXCEPTION = "InvalidPasswordException";
 export const NOT_FOUND_EXCEPTION = "NotFoundException";
 export const UNAUTHORIZED_EXCEPTION = "UnauthorizedException";

@@ -163,7 +163,7 @@ async def change_password(
     old_model = await read_user_by_access_token(db=db, access_token=body.access_token)
     old_access_token = access_token_hash(email=old_model.email, identification=body.old_password)
     if old_access_token != old_model.identification:
-        raise HTTPException(status_code=401, detail="UnauthorizedException")
+        raise HTTPException(status_code=403, detail="InvalidPasswordException")
     # 検証を通過したので新しいパスワードでユーザーを更新
     response = await update_user(
         db=db, 
