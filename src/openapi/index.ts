@@ -19,3 +19,10 @@ export const VarcharMax = {
   users_identification: 64,
   users_access_token: 64,
 };
+
+// HTTPException(detail="*")の*部 (AxiosError.response.data.detail と比較可能)
+export const DUPLICATED_EXCEPTION = "DuplicatedException";
+export const EXPIRED_ACCESS_TOKEN_EXCEPTION = "ExpiredAccessTokenException";
+export const EXPIRED_SIGNUP_TOKEN_EXCEPTION = "ExpiredSignupTokenException";
+export const NOT_FOUND_EXCEPTION = "NotFoundException";
+export const UNAUTHORIZED_EXCEPTION = "UnauthorizedException";

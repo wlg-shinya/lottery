@@ -47,7 +47,7 @@ async def read_user(
 ) -> Model:
     model = await db.get(entity=Model, ident=id)
     if model is None:
-        raise HTTPException(status_code=404, detail=f"Not found id({id}) in {Model.__tablename__}")
+        raise HTTPException(status_code=404, detail="NotFoundException")
     return model
 
 async def read_user_by_access_token(
@@ -55,7 +55,7 @@ async def read_user_by_access_token(
 ) -> Model:
     tokens_model = await access_tokens.read_token(db=db, token=access_token)
     if tokens_model is None:
-        raise HTTPException(status_code=404, detail=f"Not found access_token")
+        raise HTTPException(status_code=404, detail="NotFoundException")
     return await read_user(db=db, id=tokens_model.user_id)
 
 async def update_user(
@@ -103,7 +103,7 @@ async def signup_step1(
     # すでに登録済みのEメールならはじく
     result = (await db.execute(select(Model).filter(Model.email == body.email)))
     if len(result.all()) > 0:
-        raise HTTPException(status_code=400, detail=f"Bad Request already exists email({body.email})")
+        raise HTTPException(status_code=400, detail="DuplicatedException")
     # サインアップトークンの発行
     token = signup_token_hash(email=body.email)
     await _create_or_update_signup_token(
@@ -124,7 +124,7 @@ async def signup_step2(
     # 念のためユーザー作成直前でもEメール重複チェックを行う
     result = (await db.execute(select(Model).filter(Model.email == tokens_model.email)))
     if len(result.all()) > 0:
-        raise HTTPException(status_code=400, detail=f"Bad Request already exists email({tokens_model.email})")
+        raise HTTPException(status_code=400, detail="DuplicatedException")
     # ユーザ作成
     await create_user(
         db=db, 
@@ -142,7 +142,7 @@ async def signin(
     access_token = access_token_hash(email=body.email, identification=body.identification)
     row = (await db.execute(select(Model).filter(Model.email == body.email, Model.identification == access_token))).first()
     if row is None or len(row) == 0:
-        raise HTTPException(status_code=404, detail="Not found email or password")
+        raise HTTPException(status_code=404, detail="NotFoundException")
     users = row.tuple()[0]
     
     # トークン新規作成/更新
@@ -163,7 +163,7 @@ async def change_password(
     old_model = await read_user_by_access_token(db=db, access_token=body.access_token)
     old_access_token = access_token_hash(email=old_model.email, identification=body.old_password)
     if old_access_token != old_model.identification:
-        raise HTTPException(status_code=401, detail="Unauthorized")
+        raise HTTPException(status_code=401, detail="UnauthorizedException")
     # 検証を通過したので新しいパスワードでユーザーを更新
     response = await update_user(
         db=db, 
@@ -199,7 +199,7 @@ def send_signup_gmail(to_email: str, signup_token: str) -> None:
     try:
         send_gmail(to_email, env().notice_email, f"{env().app_title}/サインアップ", mail_body)
     except:
-        raise HTTPException(status_code=400, detail=f"Bad Request can not send notice email.")
+        raise HTTPException(status_code=400, detail="CanNotSendEmailException")
     
 async def _update_model(db: AsyncSession, model: Model) -> Model:
     db.add(instance=model)

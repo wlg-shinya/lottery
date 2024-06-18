@@ -110,9 +110,9 @@ async def _update_model(db: AsyncSession, model: Model) -> Model:
 def _read_lottery_not_found(model: Model | None):
     # データが見つからない
     if model is None:
-        raise HTTPException(status_code=404, detail=f"Not found id({id}) in {Model.__tablename__}")
+        raise HTTPException(status_code=404, detail="NotFoundException")
 
 def _read_lottery_not_match_user_id(model: Model, tokens_model: TokensModel):
     # アクセストークンと今回扱うデータの所有者が一致しない
     if tokens_model.user_id != model.user_id:
-        raise HTTPException(status_code=400, detail=f"Bad Request not match user_id in {Model.__tablename__}")
+        raise HTTPException(status_code=400, detail="InvalidTokenException")

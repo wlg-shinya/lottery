@@ -27,10 +27,10 @@ async def validate_token(
     tokens = await read_token(db=db, token=token)
     # 存在しない
     if tokens is None:
-        raise HTTPException(status_code=401, detail=f"Unauthorized access token invalid. Retry signin.")
+        raise HTTPException(status_code=404, detail="NotFoundException")
     # 期限切れ
     if datetime.now(default_timezone()) > tokens.expire_at:
-        raise HTTPException(status_code=401, detail=f"Unauthorized access token expired. Retry signin.")
+        raise HTTPException(status_code=403, detail="ExpiredAccessTokenException")
     # 検証正常通過
     pass
 
