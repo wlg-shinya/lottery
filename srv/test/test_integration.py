@@ -3,7 +3,7 @@ import json
 import api.schemas.users as usersSchema
 import api.schemas.lotteries as lotteriesSchema
 from httpx import Headers
- 
+
 @pytest.mark.asyncio
 async def test_integration(client_generator):
     client = await client_generator.__anext__()
