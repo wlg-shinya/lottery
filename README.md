@@ -14,7 +14,7 @@ $ echo SMTP_PASSWORD=\"YourGmailAppPassword\" > .env.local
 ### DB's docker startup
 
 ```
-$ docker-compose up db
+$ docker compose up db
 ```
 
 ### Backend build and run
@@ -34,7 +34,7 @@ $ npm run dev
 First time only
 
 ```
-$ docker-compose -f docker-compose-db-test.yml up
+$ docker compose -f docker-compose-db-test.yml up
 ```
 
 Main process
@@ -46,7 +46,7 @@ $ npm run srv:test
 ### Backend's docker startup
 
 ```
-$ docker-compose up backend --build
+$ docker compose up backend --build
 ```
 
 ### Frontend build and run for production
@@ -74,5 +74,5 @@ $ npm run openapi:update
 ## Deploy
 
 ```
-$ npm run clean && docker-compose up --build
+$ npm run clean && docker compose up --build
 ```
