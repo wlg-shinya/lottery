@@ -38,7 +38,7 @@ services:
       - APP_TITLE=くじ引きメーカー(β)
       - DB_URL=postgres:postgres@lottery-db:5432/lottery
       - FRONTEND_URL=http://localhost:8500
-      - NOTICE_EMAIL=info@welovegamesinc.com
+      - NOTICE_EMAIL=welovegamesinc+info@gmail.com
     depends_on:
       db:
         condition: service_healthy
