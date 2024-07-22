@@ -4,12 +4,17 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.config import default_timezone
 from api.models import SignupTokens as Model
+from api.crud.token_hash import access_token_hash
 import api.schemas.signup_tokens as schema
 
 async def create_token(
     db: AsyncSession, body: schema.SignupTokenCreate
 ) -> Model:
     model = Model(**body.model_dump())
+    model.identification = access_token_hash(
+        key=body.email, 
+        src=body.identification
+        )
     return await _update_model(db=db, model=model)
 
 async def read_token(
@@ -40,7 +45,10 @@ async def update_token(
     original.token = body.token
     original.email = body.email
     original.account_name = body.account_name
-    original.identification = body.identification
+    original.identification = access_token_hash(
+        email=body.email, 
+        identification=body.identification
+        ), 
     original.expire_at = body.expire_at
     return await _update_model(db=db, model=original)
 

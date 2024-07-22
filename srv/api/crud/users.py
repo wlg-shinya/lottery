@@ -2,17 +2,16 @@ from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
-from hashlib import sha256
-from time import time
+from textwrap import dedent
 from core.config import env
 from core.mail import send_gmail
 from api.models import Users as Model
 from api.schemas.access_tokens import AccessTokenCreate, default_expire_at as access_tokens_default_expire_at
 from api.schemas.signup_tokens import SignupTokenCreate, default_expire_at as signup_tokens_default_expire_at
+from api.crud.token_hash import signup_token_hash, access_token_hash
 import api.schemas.users as schema
 import api.crud.access_tokens as access_tokens
 import api.crud.signup_tokens as signup_tokens
-from textwrap import dedent
 
 async def create_user(
     db: AsyncSession, body: schema.UserCreate
@@ -20,10 +19,7 @@ async def create_user(
     model = Model(
         email=body.email,
         account_name=body.account_name, 
-        identification=access_token_hash(
-            email=body.email, 
-            identification=body.identification
-            ), 
+        identification=body.identification,
         pull_lottery_ids=[]
         )
     return await _update_model(db=db, model=model)
@@ -63,7 +59,7 @@ async def update_user(
 ) -> schema.UserUpdateResponse:
     original.email = body.email
     original.account_name = body.account_name
-    original.identification = access_token_hash(email=body.email, identification=body.identification)
+    original.identification = access_token_hash(key=body.email, src=body.identification)
     original.pull_lottery_ids = body.pull_lottery_ids
     model = await _update_model(db=db, model=original)
     new_access_token = model.identification
@@ -105,7 +101,7 @@ async def signup_step1(
     if len(result.all()) > 0:
         raise HTTPException(status_code=400, detail="DuplicatedException")
     # サインアップトークンの発行
-    token = signup_token_hash(email=body.email)
+    token = signup_token_hash(key=body.email)
     await _create_or_update_signup_token(
         db=db, 
         body=SignupTokenCreate(
@@ -139,7 +135,7 @@ async def signin(
     db: AsyncSession, body: schema.UserSignin
 ) -> schema.UserSigninResponse:
     # アカウントマッチング
-    access_token = access_token_hash(email=body.email, identification=body.identification)
+    access_token = access_token_hash(key=body.email, src=body.identification)
     row = (await db.execute(select(Model).filter(Model.email == body.email, Model.identification == access_token))).first()
     if row is None or len(row) == 0:
         raise HTTPException(status_code=404, detail="NotFoundException")
@@ -161,7 +157,7 @@ async def change_password(
 ) -> schema.UserUpdateResponse:
     # 現在のパスワードの検証
     old_model = await read_user_by_access_token(db=db, access_token=body.access_token)
-    old_access_token = access_token_hash(email=old_model.email, identification=body.old_password)
+    old_access_token = access_token_hash(key=old_model.email, src=body.old_password)
     if old_access_token != old_model.identification:
         raise HTTPException(status_code=403, detail="InvalidPasswordException")
     # 検証を通過したので新しいパスワードでユーザーを更新
@@ -177,14 +173,6 @@ async def change_password(
         original=old_model
         )
     return schema.UserUpdateResponse(access_token=response.access_token)
-
-def access_token_hash(email: str, identification: str) -> str:
-    src = email + identification # TODO:salt/pepperの検討
-    return sha256(src.encode("utf-8")).hexdigest()
-
-def signup_token_hash(email: str) -> str:
-    src = email + str(time())
-    return sha256(src.encode("utf-8")).hexdigest()
 
 def send_signup_gmail(to_email: str, signup_token: str) -> None:
     # 認証用URL
