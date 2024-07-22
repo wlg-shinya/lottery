@@ -37,6 +37,7 @@ services:
     environment:
       - APP_TITLE=くじ引きメーカー(β)
       - DB_URL=postgres:postgres@lottery-db:5432/lottery
+      - DB_TEST_URL=
       - FRONTEND_URL=http://localhost:8500
       - NOTICE_EMAIL=welovegamesinc+info@gmail.com
     depends_on:
