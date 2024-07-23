@@ -1,15 +1,20 @@
 # lottery
 
-## Project setup
+## At first setup
+
+```
+$ echo SMTP_PASSWORD=\"YourGmailAppPassword\" > srv/.env.local
+```
+
+## Development
+
+## Setup
 
 ```
 $ npm install
 $ cd ./srv
 $ poetry install
-$ echo SMTP_PASSWORD=\"YourGmailAppPassword\" > .env.local
 ```
-
-## Development
 
 ### DB's docker startup
 
@@ -74,5 +79,5 @@ $ npm run openapi:update
 ## Deploy
 
 ```
-$ npm run clean && docker compose up --build
+$ docker compose up --build
 ```
