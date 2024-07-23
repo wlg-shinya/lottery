@@ -3,7 +3,7 @@
 ## At first setup
 
 ```
-$ echo SMTP_PASSWORD=\"YourGmailAppPassword\" > srv/.env.local
+echo SMTP_PASSWORD=\"YourGmailAppPassword\" > srv/.env.local
 ```
 
 ## Development
@@ -11,27 +11,27 @@ $ echo SMTP_PASSWORD=\"YourGmailAppPassword\" > srv/.env.local
 ## Setup
 
 ```
-$ npm install
-$ cd ./srv
-$ poetry install
+npm install
+cd ./srv
+poetry install
 ```
 
 ### DB's docker startup
 
 ```
-$ docker compose up db
+docker compose up db
 ```
 
 ### Backend build and run
 
 ```
-$ npm run srv
+npm run srv
 ```
 
 ### Frontend build and run
 
 ```
-$ npm run dev
+npm run dev
 ```
 
 ### Backend test
@@ -39,25 +39,25 @@ $ npm run dev
 First time only
 
 ```
-$ docker compose -f docker-compose-db-test.yml up
+docker compose -f docker-compose-db-test.yml up
 ```
 
 Main process
 
 ```
-$ npm run srv:test
+npm run srv:test
 ```
 
 ### Backend's docker startup
 
 ```
-$ docker compose up backend --build
+docker compose up backend --build
 ```
 
 ### Frontend build and run for production
 
 ```
-$ npm run build && npm run preview
+npm run build && npm run preview
 ```
 
 ### DB migration
@@ -65,7 +65,7 @@ $ npm run build && npm run preview
 After edit 'srv/api/models.py'
 
 ```
-$ npm run db:migration
+npm run db:migration
 ```
 
 ### OpenAPI update
@@ -73,11 +73,11 @@ $ npm run db:migration
 After edit below 'srv/api/' and backend is running
 
 ```
-$ npm run openapi:update
+npm run openapi:update
 ```
 
 ## Deploy
 
 ```
-$ docker compose up --build
+docker compose up --build
 ```
