@@ -58,6 +58,6 @@ services:
       - "6100:5173"
     command: http-server -p 5173
     environment:
-      - VITE_BACKEND_URL=https://lottery.welovegamesinc.com:16101
+      - VITE_BACKEND_URL=https://lottery-backend.welovegamesinc.com/
     depends_on:
       - backend
