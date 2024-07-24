@@ -2,6 +2,9 @@ FROM node:20.9.0 as frontend-build
 WORKDIR /usr/src/app
 COPY . /usr/src/app
 ENV NODE_ENV=development
+ENV VITE_APP_TITLE=くじ引きメーカー(β)
+ENV VITE_BACKEND_URL=https://lottery-backend.welovegamesinc.com/
+ENV VITE_X_URL=https://x.com/welovegamesinc
 RUN npm install
 RUN npm run build
 
