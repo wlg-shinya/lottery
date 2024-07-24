@@ -40,6 +40,9 @@ services:
       - DB_TEST_URL=
       - FRONTEND_URL=http://localhost:8500
       - NOTICE_EMAIL=welovegamesinc+info@gmail.com
+      - OPENAPI_URL=
+      - DOCS_URL=
+      - REDOC_URL=
     depends_on:
       db:
         condition: service_healthy

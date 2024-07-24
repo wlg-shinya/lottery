@@ -70,7 +70,7 @@ npm run db:migration
 
 ### OpenAPI update
 
-After edit below 'srv/api/' and backend is running
+After edit below 'srv/api/' and backend is running by 'npm run srv'
 
 ```
 npm run openapi:update

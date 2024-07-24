@@ -3,7 +3,11 @@ from starlette.middleware.cors import CORSMiddleware
 from core.config import env
 from api.routers import users, lotteries
 
-app = FastAPI()
+app = FastAPI(
+    openapi_url=env().openapi_url,
+    docs_url=env().docs_url,
+    redoc_url=env().redoc_url,
+)
 app.include_router(users.router)
 app.include_router(lotteries.router)
 
