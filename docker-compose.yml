@@ -4,7 +4,7 @@ services:
     container_name: lottery-db
     restart: always
     ports:
-      - "8502:5432"
+      - "6102:5432"
     volumes:
       - ./initdb.d:/docker-entrypoint-initdb.d
       - ./pgdata:/var/lib/postgresql/data
@@ -28,7 +28,7 @@ services:
       dockerfile: Dockerfile
       target: backend
     ports:
-      - "8501:5000"
+      - "6101:5000"
     command: >
       sh -c "
       poetry run alembic upgrade head &&
@@ -38,7 +38,7 @@ services:
       - APP_TITLE=くじ引きメーカー(β)
       - DB_URL=postgres:postgres@lottery-db:5432/lottery
       - DB_TEST_URL=
-      - FRONTEND_URL=http://localhost:8500
+      - FRONTEND_URL=http://localhost:6100
       - NOTICE_EMAIL=welovegamesinc+info@gmail.com
       - OPENAPI_URL=
       - DOCS_URL=
@@ -55,7 +55,9 @@ services:
       dockerfile: Dockerfile
       target: frontend
     ports:
-      - "8500:5173"
+      - "6100:5173"
     command: http-server -p 5173
+    environment:
+      - VITE_BACKEND_URL=https://lottery.welovegamesinc.com:16101
     depends_on:
       - backend

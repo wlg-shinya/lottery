@@ -14,10 +14,10 @@ export default ({ mode }) => {
       keepNames: true,
     },
     server: {
-      port: 8500,
+      port: 6100,
     },
     preview: {
-      port: 8500,
+      port: 6100,
     },
   });
 };

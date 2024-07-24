@@ -4,7 +4,7 @@ services:
     container_name: lottery-db-test
     restart: always
     ports:
-      - "8552:5432"
+      - "6109:5432"
     volumes:
       - ./initdb.d:/docker-entrypoint-initdb.d
       - ./pgdata_test:/var/lib/postgresql/data
