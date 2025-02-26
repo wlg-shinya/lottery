@@ -1,4 +1,8 @@
-# lottery
+# くじ引きメーカー(β) (lottery)
+
+https://lottery.welovegamesinc.com/#/
+
+自分の好きなくじ引きを作ることができます。作ったくじ引きをシェアすることもできます
 
 ## At first setup
 
